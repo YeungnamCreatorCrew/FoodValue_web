@@ -1,5 +1,5 @@
 import { changeRate, forecastRate } from "./format";
-import type { Category, PriceItem, PricesDataSource, RecipeRecommendation, Recommendation } from "./types";
+import type { Category, PriceItem, PricesDataSource, Recommendation } from "./types";
 
 // Fixed illustrative data, never presented as live prices or measured accuracy.
 export const MOCK_BASE_DATE = "2026-10-06";
@@ -60,18 +60,6 @@ export const mockPriceItems: PriceItem[] = seeds.map(([id, name, category, unitL
     ],
   };
 });
-function recipesFor(item: PriceItem): RecipeRecommendation[] {
-  const ingredient = item.id === 1 ? "대파" : item.name;
-  const titles = item.id === 1 ? ["대파 계란볶음", "대파 제육볶음", "대파 파스타"] : [`${ingredient} 볶음`, `${ingredient} 덮밥`, `${ingredient} 곁들임`];
-  const otherIngredients = ["달걀", "돼지고기", "파스타면"];
-  return titles.map((title, i) => ({ title, minutes: [10, 20, 15][i], difficulty: "쉬움", servings: 2,
-    description: `${ingredient}를 활용해 간편하게 만드는 ${title}입니다.`,
-    ingredients: [ingredient, otherIngredients[i]],
-    ownedCount: item.inventory.length ? 1 : 0, matchRate: item.inventory.length ? 50 : 0,
-    missingIngredients: item.inventory.length ? [otherIngredients[i]] : [ingredient, otherIngredients[i]],
-    usesExpiringIngredient: false,
-  }));
-}
 // No backend routes added. Replace this provider when response contracts are agreed.
 export const mockPricesSource: PricesDataSource = {
   async list(query) {
@@ -91,5 +79,4 @@ export const mockPricesSource: PricesDataSource = {
     return { history: item.history.slice(-(period + 1)), forecast: item.forecast };
   },
   async regions(id) { return (await this.detail(id))?.regions ?? []; },
-  async recommendations(id) { const item = await this.detail(id); return item ? recipesFor(item) : []; },
 };

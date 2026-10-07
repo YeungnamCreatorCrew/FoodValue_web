@@ -13,12 +13,13 @@
 | 기능 | 명세의 엔드포인트 (base `/api/v1`) |
 | --- | --- |
 | 품목명·별칭 검색, 카테고리, 정렬, 페이지 처리 | `GET /prices?category=&keyword=&sort=&page=&size=` |
-| 현재가·전주 등락·7일 예상가·구매 가이드·결정 요인·보유량 | `GET /prices/{itemId}` |
+| 현재가·전주 등락·7일 예상가·구매 가이드·결정 요인 | `GET /prices/{itemId}` |
 | 과거 14/30/90일 차트·7일 예측·95% 구간·툴팁 | `GET /prices/{itemId}/chart?period=` |
-| 지역 가격·전국 대비 차액·전체보기 | `GET /prices/{itemId}/regions` |
-| 품목을 포함한 메뉴 3개 추천·다시 추천·추천 미리보기 | `POST /recipes/recommendations` |
+| 지역 가격 2줄 요약·전국 대비 차액·전체보기 대화상자 | `GET /prices/{itemId}/regions` |
 
-레시피 카드는 추천 응답의 메뉴·시간·난이도·인분·재료·매칭 정보를 미리본다. RCP-02 전체 조리법 화면은 이번 시세 화면 범위에 포함하지 않는다.
+PRC-02는 품목 정보 → 현재가·전주 등락·7일 예상가 → AI 구매 가이드 → 차트 → AI 가격 결정 요인 → 지역 가격 요약 순서로 구성한다. 지역 가격은 최저 지역과 전국 대비 차액을 보조 정보로 표시하며, 전체 목록은 작은 대화상자에서 확인한다. 별도 지역 상세 페이지는 없다.
+
+레시피 추천과 냉장고 보유량은 API 지원 여부와 별개로 이번 PRC-02의 가격 분석·구매 판단 흐름에서 제외한다. `POST /recipes/recommendations`를 위한 UI와 PRC-02 전용 추천 타입·mock·로딩은 제거했다. 공통 컴포넌트와 원본 Figma 에셋은 유지한다.
 
 ## 제외 기능
 
@@ -40,8 +41,8 @@
 
 - 공통: FigmaIcon, PriceNavigation, SectionTitle, SampleNotice, PriceChange, RecommendationBadge, UnsupportedAction.
 - 목록: PriceList, PriceCard, 데이터로 그리는 Sparkline, 검색·카테고리·정렬·페이지 UI.
-- 상세: PriceDetail, PriceChart, 구매 가이드·냉장고·요인·지역 UI, RecipeSection.
-- 상태: loading, error, not-found, 검색 빈 결과·추천 오류 및 재시도.
+- 상세: PriceDetail, PriceChart, 구매 가이드·요인 UI, RegionPriceSummary.
+- 상태: loading, error, not-found, 검색 빈 결과·지역 가격 빈 결과.
 
 ## Mock와 연결 준비
 
@@ -50,8 +51,7 @@
 - 샘플 기준일: 2026-10-06. 품목 13개, 별칭, API category 값, 가격 단위.
 - 품목별 과거 90일 + 오늘, D+1~D+7 가격·하한·상한, 5개 지역 가격.
 - 구매 상태 4종, 권장 시점·절약액·MAPE·요인 기여도.
-- 대파 보유량 0.2단 / 최초 1단. 다른 품목은 보유 없음.
-- 품목별 추천 3개. 생성·매칭 결과도 샘플이며 저장하지 않음.
+- API 요약의 보유량 view model과 샘플은 유지하지만 PRC-02에는 표시하지 않는다.
 - Figma 대파 구매 안내가 목록과 상세에서 다르므로 상세의 `BUY_LATER`, 3일 뒤 450원 절약으로 통일했다. 예측은 3일 뒤 2,800원, 7일 뒤 3,450원이다.
 - MAPE 3.8%는 샘플 오차로만 표시하며, Figma의 별도 ±4.2% 값으로 신뢰구간을 계산하지 않는다.
 - 차트와 스파크라인은 데이터 기반 SVG. Figma 차트의 고정 경로 이미지는 데이터 그래프에 사용하지 않는다.

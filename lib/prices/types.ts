@@ -32,18 +32,6 @@ export interface PriceItem {
   inventory: { quantity: number; initialQuantity: number; unit: string }[];
   regions: { code: string; name: string; price: number }[];
 }
-export interface RecipeRecommendation {
-  title: string;
-  minutes: number;
-  difficulty: string;
-  servings: number;
-  description: string;
-  ingredients: string[];
-  matchRate: number;
-  ownedCount: number;
-  missingIngredients: string[];
-  usesExpiringIngredient: boolean;
-}
 export interface PriceQuery {
   category: Category | "ALL";
   keyword: string;
@@ -57,5 +45,4 @@ export interface PricesDataSource {
   detail(itemId: number): Promise<PriceItem | null>;
   chart(itemId: number, period: Period): Promise<{ history: DailyPrice[]; forecast: Forecast[] }>;
   regions(itemId: number): Promise<PriceItem["regions"]>;
-  recommendations(itemId: number): Promise<RecipeRecommendation[]>;
 }

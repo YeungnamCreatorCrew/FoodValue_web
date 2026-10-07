@@ -15,8 +15,8 @@ export default async function PriceDetailPage({ params }: { params: Promise<{ it
   const id = Number(itemId);
   const item = await mockPricesSource.detail(id);
   if (!item) notFound();
-  const [chart, regions, recipes] = await Promise.all([
-    mockPricesSource.chart(id, 90), mockPricesSource.regions(id), mockPricesSource.recommendations(id),
+  const [chart, regions] = await Promise.all([
+    mockPricesSource.chart(id, 90), mockPricesSource.regions(id),
   ]);
   return <div className="bg-[#f7faf8]">
     <header className="flex h-14 items-center gap-3 bg-white px-4">
@@ -27,6 +27,6 @@ export default async function PriceDetailPage({ params }: { params: Promise<{ it
         <UnsupportedAction label="공유" icon="imgIconShare2" detail size={22} />
       </div>
     </header>
-    <PriceDetail item={{ ...item, history: chart.history, forecast: chart.forecast, regions }} recipes={recipes} />
+    <PriceDetail item={{ ...item, history: chart.history, forecast: chart.forecast, regions }} />
   </div>;
 }
