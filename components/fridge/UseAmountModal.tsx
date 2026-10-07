@@ -4,26 +4,9 @@ import { useState } from "react";
 import { Modal } from "@/components/ui/Modal";
 import { consumeFridgeItem } from "@/lib/api/fridge";
 import { fromMilli, toMilli } from "@/lib/fridge/decimal";
+import { stepOf } from "@/lib/fridge/units";
 import { formatQuantity } from "@/lib/fridge/utils";
-import type { FridgeItem, Unit } from "@/types/fridge";
-
-// [확인 필요] - / + 버튼이 한 번에 바꾸는 양. 피그마에 값이 없어서 단위별로 임시로 정했다.
-function stepOf(unit: Unit): number {
-  switch (unit) {
-    case "g":
-    case "ml":
-      return 10;
-    case "kg":
-    case "L":
-      return 0.1;
-    case "단":
-    case "모":
-    case "송이":
-      return 0.5;
-    default:
-      return 1; // 개, 팩, 봉, 구
-  }
-}
+import type { FridgeItem } from "@/types/fridge";
 
 const STEP_BUTTON =
   "flex size-11 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-white text-xl font-semibold leading-7 tracking-[-0.1px] text-slate-700 disabled:opacity-40";

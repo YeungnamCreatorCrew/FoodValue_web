@@ -7,6 +7,7 @@ interface ConfirmDialogProps {
   description?: string;
   confirmLabel: string;
   cancelLabel?: string;
+  tone?: "primary" | "danger"; // danger는 삭제처럼 되돌리기 어려운 동작 (빨간 버튼)
   busy?: boolean; // 처리 중이면 버튼을 잠근다
   error?: string | null; // 실패했을 때 보여 줄 메시지
   onConfirm: () => void;
@@ -19,6 +20,7 @@ export function ConfirmDialog({
   description,
   confirmLabel,
   cancelLabel = "취소",
+  tone = "primary",
   busy = false,
   error,
   onConfirm,
@@ -45,7 +47,9 @@ export function ConfirmDialog({
           type="button"
           onClick={onConfirm}
           disabled={busy}
-          className="rounded-md bg-primary px-4 py-2 text-sm font-medium leading-6 whitespace-nowrap text-primary-foreground hover:bg-primary-hover disabled:opacity-50"
+          className={`rounded-md px-4 py-2 text-sm font-medium leading-6 whitespace-nowrap text-white disabled:opacity-50 ${
+            tone === "danger" ? "bg-red-500 hover:bg-red-600" : "bg-primary hover:bg-primary-hover"
+          }`}
         >
           {busy ? "처리 중..." : confirmLabel}
         </button>

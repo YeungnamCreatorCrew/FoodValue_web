@@ -5,16 +5,23 @@ export type IconName =
   | "alert-triangle"
   | "avatar-bg"
   | "bell"
+  | "book-open"
+  | "camera"
   | "chevron-left"
   | "image-off"
+  | "info"
+  | "line-chart"
   | "nav-community"
   | "nav-fridge-active"
   | "nav-home"
   | "nav-price"
   | "nav-recipe"
+  | "pencil"
   | "plus"
+  | "receipt"
   | "scan-line"
-  | "search";
+  | "search"
+  | "upload-cloud";
 
 interface IconProps {
   name: IconName;

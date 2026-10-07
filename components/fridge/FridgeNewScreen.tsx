@@ -9,6 +9,7 @@ import { DatePickerModal } from "@/components/ui/DatePickerModal";
 import { SegmentedControl } from "@/components/ui/SegmentedControl";
 import { createFridgeItem } from "@/lib/api/fridge";
 import { addDays, formatDotted, relativeDayLabel, todayString } from "@/lib/date";
+import { isCountUnit } from "@/lib/fridge/units";
 import { UNITS, type CatalogItem, type FoodType, type StorageType, type Unit } from "@/types/fridge";
 
 const STORAGE_OPTIONS: { value: StorageType; label: string }[] = [
@@ -29,8 +30,6 @@ const HELP = "text-sm leading-5 text-slate-500";
 const ERROR = "text-xs leading-5 text-red-600";
 
 const DECIMAL_PATTERN = /^\d+(\.\d{1,3})?$/; // 소수 3자리까지
-// 무게(gramsPerUnit)는 "개수 단위"일 때만 의미가 있다. g, kg, ml, L는 단위 자체가 무게·부피다.
-const MEASURE_UNITS: Unit[] = ["g", "kg", "ml", "L"];
 
 export function FridgeNewScreen() {
   const router = useRouter();
@@ -51,7 +50,7 @@ export function FridgeNewScreen() {
   const [busy, setBusy] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
-  const isCountUnit = !MEASURE_UNITS.includes(unit);
+  const countUnit = isCountUnit(unit); // 무게(gramsPerUnit)는 개수 단위일 때만 의미가 있다
 
   // ───────── 입력 검사 ─────────
   const errors = {
@@ -61,7 +60,7 @@ export function FridgeNewScreen() {
         ? null
         : "0보다 큰 숫자(소수 3자리까지)를 입력해 주세요",
     gramsPerUnit:
-      !isCountUnit || gramsPerUnit === "" || (DECIMAL_PATTERN.test(gramsPerUnit) && Number(gramsPerUnit) > 0)
+      !countUnit || gramsPerUnit === "" || (DECIMAL_PATTERN.test(gramsPerUnit) && Number(gramsPerUnit) > 0)
         ? null
         : "0보다 큰 숫자로 입력해 주세요",
     purchasePrice:
@@ -91,7 +90,7 @@ export function FridgeNewScreen() {
         storage,
         foodType,
         purchasedAt,
-        gramsPerUnit: isCountUnit && gramsPerUnit ? String(Number(gramsPerUnit)) : null,
+        gramsPerUnit: countUnit && gramsPerUnit ? String(Number(gramsPerUnit)) : null,
         purchasePrice: purchasePrice ? Number(purchasePrice) : null,
       });
       // 등록한 재료가 목록 맨 위에 보이도록 id를 들고 목록 화면으로 간다
@@ -197,7 +196,7 @@ export function FridgeNewScreen() {
           </button>
         </div>
 
-        {isCountUnit && (
+        {countUnit && (
           <div className="flex flex-col gap-1.5">
             <label htmlFor="grams-per-unit" className={SUB_LABEL}>
               1{unit}당 무게 (g) <span className="font-normal text-slate-500">· 선택</span>
