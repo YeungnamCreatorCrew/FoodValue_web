@@ -108,10 +108,10 @@ export const NUTRITION_SAMPLE: NutritionSummary = {
   complete: false,
   nutrients: [
     { key: "carbohydrate", unit: "g", dailyReference: "324", total: "210", status: "LOW", shortfall: "114", complete: true, missingIngredientIds: [] },
-    { key: "protein", unit: "g", dailyReference: "55", total: "38", status: "LOW", shortfall: "17", complete: true, missingIngredientIds: [] },
+    { key: "protein", unit: "g", dailyReference: "55", total: "61", status: "SUFFICIENT", shortfall: null, complete: true, missingIngredientIds: [] },
     { key: "fat", unit: "g", dailyReference: "54", total: "20", status: "INCOMPLETE", shortfall: null, complete: false, missingIngredientIds: [11, 3] },
     { key: "sodium", unit: "mg", dailyReference: "2000", total: "1200", status: "SUFFICIENT", shortfall: null, complete: true, missingIngredientIds: [] },
     { key: "sugars", unit: "g", dailyReference: "100", total: "45", status: "SUFFICIENT", shortfall: null, complete: true, missingIngredientIds: [] },
-    { key: "cholesterol", unit: "mg", dailyReference: "300", total: "180", status: "SUFFICIENT", shortfall: null, complete: true, missingIngredientIds: [] },
+    { key: "cholesterol", unit: "mg", dailyReference: "300", total: "345", status: "EXCESS", shortfall: null, complete: true, missingIngredientIds: [] },
   ],
 };

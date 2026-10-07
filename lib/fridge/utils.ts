@@ -54,6 +54,22 @@ export function withObjectParticle(word: string): string {
   return `${word}${hasFinalConsonant ? "을" : "를"}`;
 }
 
+/** 이름 뒤에 알맞은 조사를 붙인다: "단백질" → "단백질이", "철" → "철이", "비타민" → "비타민이" (받침 없으면 "가") */
+export function withSubjectParticle(word: string): string {
+  const code = word.trim().charCodeAt(word.trim().length - 1);
+  const isHangul = code >= 0xac00 && code <= 0xd7a3;
+  const hasFinalConsonant = isHangul && (code - 0xac00) % 28 !== 0;
+  return `${word}${hasFinalConsonant ? "이" : "가"}`;
+}
+
+/** 이름 뒤에 은/는을 붙인다: "지방" → "지방은", "나트륨" → "나트륨은", "철분" → "철분은", "비타민" → "비타민은" (받침 없으면 "는") */
+export function withTopicParticle(word: string): string {
+  const code = word.trim().charCodeAt(word.trim().length - 1);
+  const isHangul = code >= 0xac00 && code <= 0xd7a3;
+  const hasFinalConsonant = isHangul && (code - 0xac00) % 28 !== 0;
+  return `${word}${hasFinalConsonant ? "은" : "는"}`;
+}
+
 /** "2026-09-28" → "09.28" */
 export function formatPurchaseDate(date: string): string {
   const [, month, day] = date.split("-");

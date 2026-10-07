@@ -2,12 +2,14 @@ import Image from "next/image";
 
 // 피그마에서 내려받은 아이콘 (public/icons/*.svg)
 export type IconName =
+  | "activity"
   | "alert-triangle"
   | "avatar-bg"
   | "bell"
   | "book-open"
   | "camera"
   | "chevron-left"
+  | "circle-alert"
   | "image-off"
   | "info"
   | "line-chart"
