@@ -165,10 +165,13 @@ export interface ReceiptCandidate {
   displayName: string;
   itemId: number | null; // 이름·별칭이 마스터와 정확히 일치할 때만
   quantity: Decimal;
-  unit: Unit | null;
+  unit: Unit | null; // 인식하지 못했으면 null → 사용자가 고른다
   purchasePrice: number | null;
   confidence: number; // 0~1
   needsReview: boolean;
+  // [확인 필요] 가이드에 없는 필드. 마스터와 일치한 품목의 기본 보관 위치를 후보에 같이 주면 좋겠다.
+  // 없으면 화면이 "냉장"으로 시작한다.
+  defaultStorage?: StorageType;
 }
 
 /** [확인 필요] POST /fridge/receipts, GET /fridge/receipts/{id} 응답 */

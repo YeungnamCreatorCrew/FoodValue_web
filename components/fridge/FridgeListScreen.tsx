@@ -41,19 +41,21 @@ function errorMessage(error: unknown): string {
 }
 
 interface FridgeListScreenProps {
-  addedIdParam?: number; // 방금 등록한 재료의 id (등록 화면에서 /fridge?added=id 로 넘어온 경우)
+  // 방금 등록한 재료들의 id (등록 화면에서 /fridge?added=12 또는 영수증 등록 후 /fridge?added=12,13,14 로 넘어온 경우)
+  addedIdsParam?: number[];
 }
 
-export function FridgeListScreen({ addedIdParam }: FridgeListScreenProps) {
+export function FridgeListScreen({ addedIdsParam }: FridgeListScreenProps) {
   const router = useRouter();
-  const [addedId] = useState(addedIdParam ?? null); // 주소에서 지워도 기억하려고 상태로 복사해 둔다
-  const [toastOpen, setToastOpen] = useState(addedIdParam !== undefined);
+  const hasAdded = !!addedIdsParam && addedIdsParam.length > 0;
+  const [addedIds] = useState<number[]>(addedIdsParam ?? []); // 주소에서 지워도 기억하려고 상태로 복사해 둔다
+  const [toastOpen, setToastOpen] = useState(hasAdded);
   const [undoing, setUndoing] = useState(false);
   const [undoFailed, setUndoFailed] = useState(false);
 
   const [storage, setStorage] = useState<StorageType | undefined>(undefined);
   // 서버 기본 정렬은 구입일 오래된 순. 방금 등록한 재료가 맨 위에 보이도록 등록 직후에는 "최근 등록순"으로 시작한다.
-  const [sort, setSort] = useState<FridgeSort>(addedIdParam !== undefined ? "newest" : "purchased");
+  const [sort, setSort] = useState<FridgeSort>(hasAdded ? "newest" : "purchased");
   const [keywordInput, setKeywordInput] = useState("");
   const keyword = useDebouncedValue(keywordInput, 300).trim();
   const [retry, setRetry] = useState(0); // [다시 시도]를 누를 때마다 1씩 늘려서 다시 불러온다
@@ -72,8 +74,8 @@ export function FridgeListScreen({ addedIdParam }: FridgeListScreenProps) {
 
   // 주소에 붙은 ?added=... 는 한 번 쓰고 지운다 (새로고침해도 토스트가 또 뜨지 않게)
   useEffect(() => {
-    if (addedIdParam !== undefined) router.replace("/fridge");
-  }, [addedIdParam, router]);
+    if (hasAdded) router.replace("/fridge");
+  }, [hasAdded, router]);
 
   // 목록 불러오기: 탭·정렬·검색어가 바뀌면 처음(1페이지)부터 다시 불러온다
   useEffect(() => {
@@ -174,24 +176,29 @@ export function FridgeListScreen({ addedIdParam }: FridgeListScreenProps) {
   const isFridgeEmpty = !!okList && okList.total === 0 && !keyword && !storage;
 
   // 방금 등록한 재료가 목록에 나타나면 토스트를 띄우고, 6초 뒤 닫는다
-  const addedItem = addedId !== null && okList ? okList.items.find((i) => i.id === addedId) : undefined;
-  const toastVisible = toastOpen && !!addedItem;
+  const addedItems = okList ? okList.items.filter((i) => addedIds.includes(i.id)) : [];
+  const toastVisible = toastOpen && addedItems.length > 0;
   useEffect(() => {
     if (!toastVisible) return;
     const timer = setTimeout(() => setToastOpen(false), 6000);
     return () => clearTimeout(timer);
   }, [toastVisible]);
 
-  /** [실행 취소]: 방금 등록한 재료를 삭제한다 */
+  /** [실행 취소]: 방금 등록한 재료(들)를 삭제한다 */
   async function handleUndo() {
-    if (!addedItem) return;
+    if (addedItems.length === 0) return;
     setUndoing(true);
     setUndoFailed(false);
+    const targetIds = addedItems.map((i) => i.id);
     try {
-      await deleteFridgeItem(addedItem.id);
+      await Promise.all(targetIds.map((targetId) => deleteFridgeItem(targetId)));
       setList((prev) =>
         prev && prev.ok
-          ? { ...prev, items: prev.items.filter((i) => i.id !== addedItem.id), total: prev.total - 1 }
+          ? {
+              ...prev,
+              items: prev.items.filter((i) => !targetIds.includes(i.id)),
+              total: prev.total - targetIds.length,
+            }
           : prev,
       );
       setSummaryVersion((n) => n + 1);
@@ -266,7 +273,7 @@ export function FridgeListScreen({ addedIdParam }: FridgeListScreenProps) {
                       <FridgeItemCard
                         key={item.id}
                         item={item}
-                        highlighted={toastVisible && item.id === addedId}
+                        highlighted={toastVisible && addedIds.includes(item.id)}
                         onUse={(target) => setModal({ type: "use", item: target })}
                         onFinish={(target) => setModal({ type: "finish", item: target })}
                       />
@@ -296,12 +303,14 @@ export function FridgeListScreen({ addedIdParam }: FridgeListScreenProps) {
         )}
       </main>
       <BottomTabBar active="fridge" />
-      {toastVisible && addedItem && (
+      {toastVisible && (
         <Toast
           message={
             undoFailed
               ? "되돌리지 못했어요. 다시 시도해 주세요"
-              : `${withObjectParticle(addedItem.displayName)} 냉장고에 등록했어요`
+              : addedItems.length === 1
+                ? `${withObjectParticle(addedItems[0].displayName)} 냉장고에 등록했어요`
+                : `재료 ${addedItems.length}개를 냉장고에 등록했어요`
           }
           actionLabel="실행 취소"
           onAction={handleUndo}

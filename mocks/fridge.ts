@@ -94,12 +94,13 @@ export const CATALOG: (CatalogItem & { aliases: string[] })[] = [
 
 /** 영수증 인식 결과. 모든 후보는 needsReview=true, 무게는 추정하지 않으므로 단위가 비어 있을 수 있다. */
 export const RECEIPT_CANDIDATES: ReceiptCandidate[] = [
-  { displayName: "계란", itemId: 104, quantity: "10", unit: "개", purchasePrice: 6500, confidence: 0.97, needsReview: true },
-  { displayName: "우유", itemId: 105, quantity: "1000", unit: "ml", purchasePrice: 2800, confidence: 0.95, needsReview: true },
-  { displayName: "다진 마늘", itemId: 115, quantity: "200", unit: "g", purchasePrice: 3900, confidence: 0.88, needsReview: true },
-  { displayName: "표고버섯", itemId: 116, quantity: "1", unit: "팩", purchasePrice: 3200, confidence: 0.91, needsReview: true },
-  { displayName: "당근", itemId: 107, quantity: "3", unit: "개", purchasePrice: 2400, confidence: 0.72, needsReview: true },
-  { displayName: "비비고 왕교자", itemId: null, quantity: "1", unit: null, purchasePrice: 8900, confidence: 0.6, needsReview: true },
+  { displayName: "대파", itemId: 101, quantity: "1", unit: "단", purchasePrice: 3500, confidence: 0.97, needsReview: true, defaultStorage: "FRIDGE" },
+  { displayName: "달걀", itemId: 104, quantity: "10", unit: "개", purchasePrice: 6500, confidence: 0.95, needsReview: true, defaultStorage: "FRIDGE" },
+  { displayName: "두부", itemId: 102, quantity: "2", unit: "모", purchasePrice: 4000, confidence: 0.93, needsReview: true, defaultStorage: "FRIDGE" },
+  { displayName: "닭가슴살", itemId: 103, quantity: "500", unit: "g", purchasePrice: 5900, confidence: 0.9, needsReview: true, defaultStorage: "FREEZER" },
+  { displayName: "바나나", itemId: null, quantity: "1", unit: "송이", purchasePrice: 3000, confidence: 0.88, needsReview: true, defaultStorage: "ROOM" },
+  // 단위를 인식하지 못했고 식품이 아닌 줄 (사용자가 빼거나 고친다)
+  { displayName: "종량제봉투", itemId: null, quantity: "1", unit: null, purchasePrice: 500, confidence: 0.6, needsReview: true },
 ];
 
 /** 영양 요약 샘플 (성인 1일 기준치와 비교). fat 은 정보 누락으로 INCOMPLETE 상태를 보여 준다. */
