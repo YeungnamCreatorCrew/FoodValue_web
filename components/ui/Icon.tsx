@@ -7,23 +7,29 @@ export type IconName =
   | "avatar-bg"
   | "bell"
   | "book-open"
+  | "bookmark"
   | "camera"
+  | "check"
   | "chevron-left"
   | "circle-alert"
   | "image-off"
   | "info"
   | "line-chart"
+  | "list-checks"
   | "nav-community"
+  | "nav-fridge"
   | "nav-fridge-active"
   | "nav-home"
   | "nav-price"
   | "nav-recipe"
+  | "nav-recipe-active"
   | "pencil"
   | "plus"
   | "receipt"
   | "scan-line"
   | "search"
-  | "upload-cloud";
+  | "upload-cloud"
+  | "utensils";
 
 interface IconProps {
   name: IconName;
