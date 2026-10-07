@@ -4,6 +4,7 @@ import Image from "next/image";
 export type IconName =
   | "activity"
   | "alert-triangle"
+  | "arrow-left"
   | "avatar-bg"
   | "bell"
   | "book-open"
@@ -28,6 +29,7 @@ export type IconName =
   | "receipt"
   | "scan-line"
   | "search"
+  | "share"
   | "upload-cloud"
   | "utensils";
 

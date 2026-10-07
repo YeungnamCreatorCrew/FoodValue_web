@@ -50,6 +50,11 @@ export function peekItems(ids: number[]): FridgeItem[] {
   return items.filter((i) => ids.includes(i.id)).map((i) => ({ ...i }));
 }
 
+/** 레시피 가짜 서버가 냉장고에 있는 재료 전체를 볼 때 쓴다 (읽기만 한다) */
+export function peekAllItems(): FridgeItem[] {
+  return items.map((i) => ({ ...i }));
+}
+
 // ───────── 작은 도구들 ─────────
 
 function assertQuantity(value: Decimal, label = "수량") {
