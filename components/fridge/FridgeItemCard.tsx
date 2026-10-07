@@ -21,7 +21,6 @@ interface FridgeItemCardProps {
   highlighted?: boolean; // 방금 등록한 재료처럼 눈에 띄게 (초록 테두리)
 }
 
-// TODO: [레시피]는 레시피 재료 선택 화면(그 재료를 미리 체크)으로 가야 한다. 해당 화면이 생기면 연결한다.
 export function FridgeItemCard({ item, onUse, onFinish, highlighted = false }: FridgeItemCardProps) {
   const ratio = remainingRatio(item);
 
@@ -77,9 +76,10 @@ export function FridgeItemCard({ item, onUse, onFinish, highlighted = false }: F
         <button type="button" onClick={() => onFinish(item)} className={SECONDARY_BUTTON}>
           다 먹음
         </button>
-        <button type="button" className={SECONDARY_BUTTON}>
+        {/* 레시피 재료 선택 화면으로 가서 이 재료를 미리 체크해 둔다 */}
+        <Link href={`/recipes/select?item=${item.id}`} className={SECONDARY_BUTTON}>
           레시피
-        </button>
+        </Link>
       </div>
     </article>
   );
