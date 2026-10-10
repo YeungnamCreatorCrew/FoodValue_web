@@ -1,26 +1,18 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* FoodValue 디자인 토큰 (피그마 shadcn/ui 키트 기준) */
+@theme {
+  --color-primary: #14532d; /* primary/default */
+  --color-primary-hover: #166534; /* primary/hover — 임시값(Tailwind green-800). 피그마 값 확인 후 교체 */
+  --color-primary-foreground: #ffffff; /* primary 배경 위 글자색 */
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-sans:
+    "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont,
+    system-ui, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-slate-100);
+  color: var(--color-slate-900);
+  font-family: var(--font-sans);
 }
