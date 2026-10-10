@@ -1,5 +1,6 @@
 @import "tailwindcss";
 
+<<<<<<< HEAD
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -38,4 +39,21 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-pretendard), Arial, sans-serif;
+=======
+/* FoodValue 디자인 토큰 (피그마 shadcn/ui 키트 기준) */
+@theme {
+  --color-primary: #14532d; /* primary/default */
+  --color-primary-hover: #166534; /* primary/hover — 임시값(Tailwind green-800). 피그마 값 확인 후 교체 */
+  --color-primary-foreground: #ffffff; /* primary 배경 위 글자색 */
+
+  --font-sans:
+    "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont,
+    system-ui, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+}
+
+body {
+  background: var(--color-slate-100);
+  color: var(--color-slate-900);
+  font-family: var(--font-sans);
+>>>>>>> dev
 }
