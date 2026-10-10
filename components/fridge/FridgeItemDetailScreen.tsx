@@ -342,17 +342,17 @@ export function FridgeItemDetailScreen({ id }: FridgeItemDetailScreenProps) {
                   <span className="text-xs font-medium leading-5 text-slate-500">›</span>
                 </Link>
               )}
-              {/* 레시피 이동은 레시피 화면과 협의 후 연결한다 (백엔드 가이드). 그때까지는 눌리지 않는다. */}
-              <div
-                aria-disabled="true"
-                className="flex h-[38px] items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 opacity-60"
+              {/* 레시피 재료 선택 화면으로 가서 이 재료를 미리 체크해 둔다 */}
+              <Link
+                href={`/recipes/select?item=${item.id}`}
+                className="flex h-[38px] items-center gap-2 rounded-lg border border-slate-200 bg-white px-3"
               >
                 <Icon name="book-open" size={16} className="shrink-0" />
                 <span className="min-w-0 flex-1 text-sm font-medium leading-6 text-slate-700">
                   이 재료로 만들 수 있는 레시피
                 </span>
-                <span className="text-xs font-medium leading-5 whitespace-nowrap text-slate-500">준비 중</span>
-              </div>
+                <span className="text-xs font-medium leading-5 text-slate-500">›</span>
+              </Link>
             </section>
           </>
         )}

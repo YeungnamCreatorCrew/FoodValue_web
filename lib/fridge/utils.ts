@@ -70,6 +70,15 @@ export function withTopicParticle(word: string): string {
   return `${word}${hasFinalConsonant ? "은" : "는"}`;
 }
 
+/** 이름 뒤에 으로/로를 붙인다: "계란" → "계란으로", "두부" → "두부로", "대파, 계란" → "대파, 계란으로" (ㄹ 받침은 "로") */
+export function withMeansParticle(word: string): string {
+  const code = word.trim().charCodeAt(word.trim().length - 1);
+  const isHangul = code >= 0xac00 && code <= 0xd7a3;
+  const finalIndex = isHangul ? (code - 0xac00) % 28 : 0;
+  const useEu = finalIndex !== 0 && finalIndex !== 8; // 받침이 있고 ㄹ이 아니면 "으로"
+  return `${word}${useEu ? "으로" : "로"}`;
+}
+
 /** "2026-09-28" → "09.28" */
 export function formatPurchaseDate(date: string): string {
   const [, month, day] = date.split("-");

@@ -3,7 +3,7 @@
 // - 백엔드 "냉장고 API 가이드"(10/7)의 규칙을 흉내 낸다: 구입일 미래 불가, 수정 가능 필드 제한,
 //   소프트 삭제(사용 이력 보존), 잔량 0 숨김, 영수증 중복 확인 409 등.
 // - 데이터는 브라우저 메모리에 있어서 페이지를 옮겨 다녀도 유지되고, 새로고침하면 처음 샘플로 돌아간다.
-// - 주소 뒤에 ?mock=empty 를 붙이면 빈 목록, ?mock=error 를 붙이면 모든 호출이 실패한다.
+// - 주소 뒤에 ?mock=empty 를 붙이면 빈 목록, ?mock=error 를 붙이면 모든 호출이 실패한다. (mockMode.ts)
 import { ApiError } from "@/lib/api/error";
 import { todayString } from "@/lib/date";
 import { fromMilli, toMilli } from "@/lib/fridge/decimal";
@@ -32,8 +32,8 @@ import {
   PRICE_AVAILABLE_ITEM_IDS,
   RECEIPT_CANDIDATES,
 } from "./fridge";
+import { simulateRequest } from "./mockMode";
 
-const DELAY_MS = 400; // 진짜 서버처럼 기다려서 로딩 화면을 볼 수 있게 한다
 const MAX_FILE_BYTES = 5 * 1024 * 1024; // 영수증 사진 5MB
 
 let items: FridgeItem[] = INITIAL_ITEMS.map((i) => ({ ...i }));
@@ -45,22 +45,14 @@ let nextItemId = 1000;
 let nextUsageId = 1000;
 let nextReceiptId = 1;
 
-type MockMode = "normal" | "empty" | "error";
-
-function getMockMode(): MockMode {
-  if (typeof window === "undefined") return "normal";
-  const value = new URLSearchParams(window.location.search).get("mock");
-  return value === "empty" || value === "error" ? value : "normal";
+/** 레시피 가짜 서버가 선택한 재료의 이름을 알아볼 때 쓴다 (냉장고 서버와 같은 메모리 데이터를 읽기만 한다) */
+export function peekItems(ids: number[]): FridgeItem[] {
+  return items.filter((i) => ids.includes(i.id)).map((i) => ({ ...i }));
 }
 
-/** 지연을 흉내 내고, error 모드면 실패시킨다 */
-async function simulateRequest(extraDelayMs = 0): Promise<MockMode> {
-  await new Promise((resolve) => setTimeout(resolve, DELAY_MS + extraDelayMs));
-  const mode = getMockMode();
-  if (mode === "error") {
-    throw new ApiError(500, "서버에 문제가 생겼어요. 잠시 후 다시 시도해 주세요.");
-  }
-  return mode;
+/** 레시피 가짜 서버가 냉장고에 있는 재료 전체를 볼 때 쓴다 (읽기만 한다) */
+export function peekAllItems(): FridgeItem[] {
+  return items.map((i) => ({ ...i }));
 }
 
 // ───────── 작은 도구들 ─────────

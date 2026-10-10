@@ -1,6 +1,7 @@
 "use client";
 
 // FRG-05 영양 분석 화면: 냉장고에 있는 재료를 성인 1일 영양성분 기준치와 비교한다 (실제 섭취량이 아니다)
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { BackHeader } from "@/components/common/BackHeader";
 import { NutrientRow } from "@/components/fridge/nutrition/NutrientRow";
@@ -134,14 +135,13 @@ export function NutritionScreen() {
       <BackHeader title="영양 분석" backHref="/fridge" />
       <main className="flex flex-1 flex-col gap-3 bg-slate-50 px-4 pb-2.5 pt-3.5">{body}</main>
       <div className="sticky bottom-0 z-10 flex h-[72px] shrink-0 items-center border-t border-slate-200 bg-white px-4 pb-4 pt-3 shadow-[0_-4px_12px_rgba(15,23,42,0.06)]">
-        {/* 레시피 연동은 레시피 화면과 협의 후 연결한다 (백엔드 가이드). 그때까지는 눌리지 않는다. */}
-        <button
-          type="button"
-          disabled
-          className="flex flex-1 items-center justify-center rounded-md bg-slate-300 px-4 py-2 text-sm font-medium leading-6 whitespace-nowrap text-slate-700"
+        {/* 레시피 재료 선택 화면으로 가서 "부족 영양소 보충" 조건을 미리 켜 둔다 */}
+        <Link
+          href="/recipes/select?nutrition=1"
+          className="flex flex-1 items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium leading-6 whitespace-nowrap text-primary-foreground hover:bg-primary-hover"
         >
-          부족 영양소 채우는 레시피 보기 (준비 중)
-        </button>
+          부족 영양소 채우는 레시피 보기
+        </Link>
       </div>
     </>
   );
