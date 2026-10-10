@@ -148,13 +148,15 @@ export function RecipeResultScreen({ fridgeItemIds, conditions }: RecipeResultSc
           <>
             <SortTabs value={sort} onChange={setSort} />
             {/* 메뉴를 고르면 그때 상세 레시피를 만든다 (메뉴명 + 인분으로 요청). 저장 북마크는 상세에서만 누를 수 있다. */}
-            {suggestions.map((recipe) => (
-              <RecipeCard
-                key={recipe.title}
-                recipe={recipe}
-                href={`/recipes/detail?title=${encodeURIComponent(recipe.title)}&servings=${recipe.servings}`}
-              />
-            ))}
+            <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
+              {suggestions.map((recipe) => (
+                <RecipeCard
+                  key={recipe.title}
+                  recipe={recipe}
+                  href={`/recipes/detail?title=${encodeURIComponent(recipe.title)}&servings=${recipe.servings}`}
+                />
+              ))}
+            </div>
           </>
         )}
       </main>

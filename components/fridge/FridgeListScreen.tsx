@@ -246,7 +246,7 @@ export function FridgeListScreen({ addedIdsParam }: FridgeListScreenProps) {
             <StorageTabs value={storage} counts={summaryData?.counts ?? null} onChange={setStorage} />
 
             {isLoading ? (
-              <div className="flex flex-col gap-2" aria-busy="true" aria-label="재료 목록을 불러오는 중">
+              <div className="grid grid-cols-1 gap-2 md:grid-cols-2" aria-busy="true" aria-label="재료 목록을 불러오는 중">
                 <FridgeItemCardSkeleton />
                 <FridgeItemCardSkeleton />
                 <FridgeItemCardSkeleton />
@@ -268,7 +268,7 @@ export function FridgeListScreen({ addedIdsParam }: FridgeListScreenProps) {
             ) : (
               okList && (
                 <>
-                  <div className="flex flex-col gap-2">
+                  <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
                     {okList.items.map((item) => (
                       <FridgeItemCard
                         key={item.id}

@@ -151,9 +151,9 @@ export function RecipeSelectScreen({ preselectedIds, initialNutrition }: RecipeS
         <SearchBar value={keywordInput} onChange={setKeywordInput} />
         <StorageTabs value={storage} counts={summary?.counts ?? null} onChange={setStorage} />
 
-        <div className="flex flex-col gap-2">
+        <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
           {current && !current.ok ? (
-            <div className="py-8">
+            <div className="py-8 md:col-span-2">
               <ErrorState
                 description={current.message}
                 onRetry={() => {
@@ -163,13 +163,13 @@ export function RecipeSelectScreen({ preselectedIds, initialNutrition }: RecipeS
               />
             </div>
           ) : !okList ? (
-            <div className="flex flex-col gap-2" aria-busy="true" aria-label="재료를 불러오는 중">
+            <div className="grid grid-cols-1 gap-2 md:grid-cols-2 md:col-span-2" aria-busy="true" aria-label="재료를 불러오는 중">
               {[0, 1, 2, 3].map((i) => (
                 <Skeleton key={i} className="h-[50px] shrink-0 rounded-[10px]" />
               ))}
             </div>
           ) : okList.items.length === 0 ? (
-            <div className="py-8">
+            <div className="py-8 md:col-span-2">
               <EmptyState
                 showIllustration={false}
                 title={keyword ? `"${keyword}" 검색 결과가 없어요` : `${storage ? STORAGE_LABEL[storage] : ""} 재료가 없어요`.trim()}
