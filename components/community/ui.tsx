@@ -3,21 +3,83 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { categories, type Category } from "@/lib/community/types";
 
-export function Icon({ name }: { name: "back" | "close" | "image" | "search" | "comment" | "home" | "fridge" | "price" | "recipe" | "community" }) {
-  const size = name === "back" || name === "close" ? 22 : name === "comment" ? 12 : name === "image" || name === "search" ? 24 : 20;
-  return <Image className={`cm-icon cm-icon-${name}`} src={`/community/${name}.svg`} alt="" width={size} height={size} unoptimized />;
+export function Icon({
+  name,
+}: {
+  name:
+    | "back"
+    | "close"
+    | "image"
+    | "search"
+    | "comment"
+    | "home"
+    | "fridge"
+    | "price"
+    | "recipe"
+    | "community";
+}) {
+  const size =
+    name === "back" || name === "close"
+      ? 22
+      : name === "comment"
+        ? 12
+        : name === "image" || name === "search"
+          ? 24
+          : 20;
+
+  return (
+    <Image
+      className={`cm-icon cm-icon-${name}`}
+      src={`/community/${name}.svg`}
+      alt=""
+      width={size}
+      height={size}
+      unoptimized
+    />
+  );
 }
 
-export function AppBar({ title, backHref, action }: { title: string; backHref?: string; action?: ReactNode }) {
-  return <header className={`cm-appbar ${backHref ? "" : "cm-appbar-main"}`}>
-    {backHref && <Link href={backHref} className="cm-icon-button" aria-label="뒤로가기"><Icon name="back" /></Link>}
-    <h1>{title}</h1>
-    {action ?? (!backHref && <Avatar name="FV" />)}
-  </header>;
+export function AppBar({
+  title,
+  backHref,
+  action,
+}: {
+  title: string;
+  backHref?: string;
+  action?: ReactNode;
+}) {
+  return (
+    <header className={`cm-appbar ${backHref ? "" : "cm-appbar-main"}`}>
+      {backHref && (
+        <Link
+          href={backHref}
+          className="cm-icon-button"
+          aria-label="뒤로가기"
+        >
+          <Icon name="back" />
+        </Link>
+      )}
+
+      <h1>{title}</h1>
+
+      {action ?? (!backHref && <Avatar name="FV" />)}
+    </header>
+  );
 }
 
 export function Avatar({ name }: { name: string }) {
-  return <span className="cm-avatar" aria-hidden="true"><Image src="/community/avatar.svg" alt="" width={32} height={32} unoptimized /><span>{name === "FV" ? name : name.slice(0, 1)}</span></span>;
+  return (
+    <span className="cm-avatar" aria-hidden="true">
+      <Image
+        src="/community/avatar.svg"
+        alt=""
+        width={32}
+        height={32}
+        unoptimized
+      />
+      <span>{name === "FV" ? name : name.slice(0, 1)}</span>
+    </span>
+  );
 }
 
 export function Badge({ category }: { category: Category }) {
@@ -25,20 +87,75 @@ export function Badge({ category }: { category: Category }) {
 }
 
 export function PostDate({ value }: { value: string }) {
-  return <time dateTime={value}>{new Intl.DateTimeFormat("ko-KR", { year: "numeric", month: "2-digit", day: "2-digit", timeZone: "Asia/Seoul" }).format(new Date(value))}</time>;
+  return (
+    <time dateTime={value}>
+      {new Intl.DateTimeFormat("ko-KR", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        timeZone: "Asia/Seoul",
+      }).format(new Date(value))}
+    </time>
+  );
 }
 
 export function BottomNavigation() {
-  return <nav className="cm-bottom-nav" aria-label="주요 메뉴">
-    <Link href="/"><Icon name="home" /><span>홈</span></Link>
-    {/* These routes do not exist on this branch yet. Avoid sending users to 404s. */}
-    <span aria-disabled="true" title="준비 중"><Icon name="fridge" /><span>냉장고</span></span>
-    <span aria-disabled="true" title="준비 중"><Icon name="price" /><span>시세</span></span>
-    <span aria-disabled="true" title="준비 중"><Icon name="recipe" /><span>레시피</span></span>
-    <Link href="/community" aria-current="page"><Icon name="community" /><span>커뮤니티</span></Link>
-  </nav>;
+  return (
+    <nav className="cm-bottom-nav" aria-label="주요 메뉴">
+      <Link href="/">
+        <Icon name="home" />
+        <span>홈</span>
+      </Link>
+
+      <Link href="/fridge">
+        <Icon name="fridge" />
+        <span>냉장고</span>
+      </Link>
+
+      <Link href="/prices">
+        <Icon name="price" />
+        <span>시세</span>
+      </Link>
+
+      <Link href="/recipes">
+        <Icon name="recipe" />
+        <span>레시피</span>
+      </Link>
+
+      <Link href="/community" aria-current="page">
+        <Icon name="community" />
+        <span>커뮤니티</span>
+      </Link>
+    </nav>
+  );
 }
 
-export function MissingPost({ forbidden = false }: { forbidden?: boolean }) {
-  return <><AppBar title="커뮤니티" backHref="/community" /><main className="cm-empty"><h2>{forbidden ? "작성자만 수정할 수 있어요" : "게시글을 찾을 수 없어요"}</h2><p>{forbidden ? "내가 작성한 게시글에서 다시 시도해주세요." : "삭제되었거나 존재하지 않는 게시글입니다."}</p><Link className="cm-primary" href="/community">커뮤니티로 돌아가기</Link></main></>;
+export function MissingPost({
+  forbidden = false,
+}: {
+  forbidden?: boolean;
+}) {
+  return (
+    <>
+      <AppBar title="커뮤니티" backHref="/community" />
+
+      <main className="cm-empty">
+        <h2>
+          {forbidden
+            ? "작성자만 수정할 수 있어요"
+            : "게시글을 찾을 수 없어요"}
+        </h2>
+
+        <p>
+          {forbidden
+            ? "내가 작성한 게시글에서 다시 시도해주세요."
+            : "삭제되었거나 존재하지 않는 게시글입니다."}
+        </p>
+
+        <Link className="cm-primary" href="/community">
+          커뮤니티로 돌아가기
+        </Link>
+      </main>
+    </>
+  );
 }
