@@ -71,7 +71,7 @@ export function RecipeHomeScreen() {
           <h2 className="text-base font-medium leading-6 text-slate-900">저장한 레시피</h2>
 
           {!current ? (
-            <div className="flex flex-col gap-2" aria-busy="true" aria-label="저장한 레시피를 불러오는 중">
+            <div className="grid grid-cols-1 gap-2 md:grid-cols-2" aria-busy="true" aria-label="저장한 레시피를 불러오는 중">
               <RecipeCardSkeleton />
             </div>
           ) : !current.ok ? (
@@ -93,9 +93,11 @@ export function RecipeHomeScreen() {
               />
             </div>
           ) : (
-            current.recipes.map((recipe) => (
-              <RecipeCard key={recipe.id} recipe={recipe} href={`/recipes/saved/${recipe.id}`} bookmarked />
-            ))
+            <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
+              {current.recipes.map((recipe) => (
+                <RecipeCard key={recipe.id} recipe={recipe} href={`/recipes/saved/${recipe.id}`} bookmarked />
+              ))}
+            </div>
           )}
         </section>
       </main>
