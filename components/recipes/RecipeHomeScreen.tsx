@@ -3,7 +3,6 @@
 // RCP-00 레시피 홈: [재료 고르기] 카드 + 저장한 레시피. 들어오자마자 LLM을 부르지 않는다. (CLAUDE.md 확정 결정 2번)
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { BottomTabBar } from "@/components/common/BottomTabBar";
 import { TabHeader } from "@/components/common/TabHeader";
 import { RecipeCard, RecipeCardSkeleton } from "@/components/recipes/RecipeCard";
 import { EmptyState } from "@/components/ui/EmptyState";
@@ -101,7 +100,6 @@ export function RecipeHomeScreen() {
           )}
         </section>
       </main>
-      <BottomTabBar active="recipe" />
     </>
   );
 }

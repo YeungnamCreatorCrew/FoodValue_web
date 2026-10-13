@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Link from "next/link";
 import { recommendationLabel } from "@/lib/prices/format";
 import type { Category, PriceItem } from "@/lib/prices/types";
 
@@ -62,43 +61,6 @@ export function RecommendationBadge({ item }: { item: PriceItem }) {
     >
       {recommendationLabel(item)}
     </span>
-  );
-}
-
-const tabs = [
-  { label: "홈", icon: "img5", href: "/" },
-  { label: "냉장고", icon: "img6", href: "/fridge" },
-  { label: "시세", icon: "img7", href: "/prices" },
-  { label: "레시피", icon: "img8", href: "/recipes" },
-  { label: "커뮤니티", icon: "img9", href: "/community" },
-] as const;
-
-export function PriceNavigation() {
-  return (
-    <nav
-      aria-label="주 메뉴"
-      className="fixed bottom-0 left-1/2 z-20 w-full max-w-[390px] -translate-x-1/2 border-t border-border bg-white pb-[env(safe-area-inset-bottom)]"
-    >
-      <div className="flex h-[67px] w-full items-center px-2.5">
-        {tabs.map((tab) => {
-          const isActive = tab.href === "/prices";
-
-          return (
-            <Link
-              key={tab.label}
-              href={tab.href}
-              aria-current={isActive ? "page" : undefined}
-              className={`flex h-[60px] min-w-0 flex-1 flex-col items-center justify-center gap-1 text-xs ${
-                isActive ? "text-primary" : "text-muted"
-              }`}
-            >
-              <FigmaIcon name={tab.icon} />
-              <span>{tab.label}</span>
-            </Link>
-          );
-        })}
-      </div>
-    </nav>
   );
 }
 

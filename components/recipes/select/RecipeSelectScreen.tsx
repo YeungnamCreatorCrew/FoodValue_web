@@ -7,7 +7,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { BackHeader } from "@/components/common/BackHeader";
-import { BottomTabBar } from "@/components/common/BottomTabBar";
 import { SearchBar } from "@/components/fridge/SearchBar";
 import { StorageTabs } from "@/components/fridge/StorageTabs";
 import { IngredientPickRow } from "@/components/recipes/select/IngredientPickRow";
@@ -134,7 +133,6 @@ export function RecipeSelectScreen({ preselectedIds, initialNutrition }: RecipeS
             </Link>
           </EmptyState>
         </main>
-        <BottomTabBar active="recipe" />
       </>
     );
   }
@@ -200,7 +198,7 @@ export function RecipeSelectScreen({ preselectedIds, initialNutrition }: RecipeS
         </section>
       </main>
 
-      <div className="sticky bottom-0 z-10 flex h-[72px] shrink-0 items-center gap-2 border-t border-slate-200 bg-white px-4 pb-4 pt-3 shadow-[0_-4px_12px_rgba(15,23,42,0.06)]">
+      <div className="service-action-bar sticky z-10 flex h-[72px] shrink-0 items-center gap-2 border-t border-slate-200 bg-white px-4 pb-4 pt-3 shadow-[0_-4px_12px_rgba(15,23,42,0.06)]">
         <div className="flex min-w-0 flex-1 flex-col">
           <p className="text-base font-medium leading-6 text-slate-900">선택한 재료 {picked.length}개</p>
           <p className="truncate text-xs font-medium leading-5 text-slate-500">

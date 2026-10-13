@@ -1,6 +1,5 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { BottomNavigation } from "@/components/layout/bottom-navigation";
 import { homeRoutes } from "@/lib/home/routes";
 import type { HomeCommunityPost, HomeData, HomeUser } from "@/lib/home/types";
 import { FigmaIcon } from "./figma-icon";
@@ -24,9 +23,9 @@ export function HomeScreen({ user, data }: { user: HomeUser; data: HomeData }) {
   const isLoggedIn = user !== null;
 
   return (
-    <div className="mx-auto min-h-dvh w-full max-w-[390px] bg-home-background">
+    <div className="flex min-w-0 flex-1 flex-col bg-slate-50">
       <a href="#home-content" className="sr-only focus:not-sr-only focus:block focus:bg-white focus:p-3">본문 바로가기</a>
-      <header className="flex h-14 items-center justify-between gap-3 bg-white px-4">
+      <header className="flex h-14 shrink-0 items-center justify-between gap-3 bg-white px-5">
         <Link href={homeRoutes.home} className="flex min-h-11 items-center text-xl leading-7 font-semibold tracking-[-0.1px] text-primary" aria-label="FoodValue 홈">FoodValue</Link>
         {user ? (
           <Link href={homeRoutes.mypage} prefetch={false} aria-label={`${user.nickname} 마이페이지`} className="flex min-h-11 min-w-11 items-center justify-center rounded-full">
@@ -37,13 +36,13 @@ export function HomeScreen({ user, data }: { user: HomeUser; data: HomeData }) {
         )}
       </header>
 
-      <main id="home-content" className="flex flex-col gap-[22px] px-4 pt-3.5 pb-[calc(96px+env(safe-area-inset-bottom))]">
-        <div>
+      <main id="home-content" className="grid min-w-0 flex-1 content-start gap-[22px] px-4 py-2.5 md:grid-cols-2">
+        <div className="md:col-span-2">
           <h1 className="text-[21px] leading-7 font-bold tracking-[-0.147px] break-keep">오늘 식재료, 언제 사면 좋을까요?</h1>
           <p className="mt-1 text-[10px] leading-[15px] text-muted"><time dateTime={data.priceDate}>{data.priceDate.replaceAll("-", ". ")}</time> 기준 · 전국 평균 · 샘플 시세</p>
         </div>
 
-        <section aria-labelledby="prices-title">
+        <section aria-labelledby="prices-title" className="min-w-0 md:col-span-2">
           <div className="mb-2.5">
             <h2 id="prices-title" className="text-[17px] leading-6 font-bold tracking-[-0.068px]">오늘 시세 &amp; AI 7일 예측</h2>
             <p className="mt-0.5 text-[11px] leading-4 text-muted">주요 장바구니 품목의 가격과 구매 타이밍</p>
@@ -111,7 +110,6 @@ export function HomeScreen({ user, data }: { user: HomeUser; data: HomeData }) {
           </ul>
         </section>
       </main>
-      <BottomNavigation isLoggedIn={isLoggedIn} />
     </div>
   );
 }

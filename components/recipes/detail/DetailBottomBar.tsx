@@ -11,7 +11,7 @@ interface DetailBottomBarProps {
 /** 하단 고정 바: 북마크(저장), 공유, 요리 완료 */
 export function DetailBottomBar({ saved, busy, onToggleSave, onShare, onComplete }: DetailBottomBarProps) {
   return (
-    <div className="sticky bottom-0 z-10 flex h-[72px] shrink-0 items-center gap-2 border-t border-slate-200 bg-white px-4 pb-4 pt-3 shadow-[0_-4px_12px_rgba(15,23,42,0.06)]">
+    <div className="service-action-bar sticky z-10 flex h-[72px] shrink-0 items-center gap-2 border-t border-slate-200 bg-white px-4 pb-4 pt-3 shadow-[0_-4px_12px_rgba(15,23,42,0.06)]">
       <button
         type="button"
         onClick={onToggleSave}

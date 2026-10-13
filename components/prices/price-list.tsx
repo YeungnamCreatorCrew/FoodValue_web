@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { forecastRate, won } from "@/lib/prices/format";
 import { MOCK_BASE_DATE, mockPricesSource } from "@/lib/prices/mock";
 import type { Category, PriceItem, PricePage, PriceSort } from "@/lib/prices/types";
@@ -17,7 +17,7 @@ function Sparkline({ item }: { item: PriceItem }) {
 }
 function PriceCard({ item }: { item: PriceItem }) {
   return <article className="relative shrink-0 rounded-[10px] border border-border bg-white">
-    <Link href={`/prices/${item.id}`} className="flex h-[132px] flex-col gap-2 overflow-hidden rounded-[10px] p-3 focus-visible:outline-offset-[-2px]" aria-label={`${item.name} 시세 상세, 현재 ${won(item.currentPrice)}`}>
+    <Link href={`/prices/${item.id}`} className="flex min-h-[132px] flex-col gap-2 rounded-[10px] p-3 focus-visible:outline-offset-[-2px]" aria-label={`${item.name} 시세 상세, 현재 ${won(item.currentPrice)}`}>
     <div className="flex h-[38px] items-center gap-2">
       <span className="flex size-[38px] shrink-0 items-center justify-center rounded-md bg-emerald-50"><FigmaIcon name="imgPlaceholder" /></span>
       <div className="min-w-0 flex-1"><h2 className="truncate text-base font-semibold leading-[18px] tracking-[-0.08px]">{item.name}</h2><p className="mt-[3px] text-[11px] leading-[14px] text-muted">{item.unitLabel}</p></div>
@@ -45,19 +45,18 @@ export function PriceList({ initial }: { initial: PricePage }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [retry, setRetry] = useState(0);
-  const listScroll = useRef<HTMLDivElement>(null);
   useEffect(() => {
     let active = true;
     const timer = window.setTimeout(() => {
       setLoading(true); setError(false);
       mockPricesSource.list({ category, keyword, sort, page, size: pageSize }).then(data => {
-        if (active) { setResult(data); if (listScroll.current) listScroll.current.scrollTop = 0; }
+        if (active) setResult(data);
       }).catch(() => { if (active) setError(true); }).finally(() => { if (active) setLoading(false); });
     }, keyword ? 180 : 0);
     return () => { active = false; window.clearTimeout(timer); };
   }, [category, keyword, sort, page, retry]);
   const totalPages = Math.ceil(result.total / pageSize);
-  return <main id="main-content" className="flex h-[calc(100dvh_-_124px_-_env(safe-area-inset-bottom))] w-full flex-col gap-3 bg-slate-50 px-4 py-3">
+  return <main id="main-content" className="flex min-w-0 flex-1 flex-col gap-3 bg-slate-50 px-4 py-2.5">
     <div className="flex h-14 shrink-0 items-center gap-3 rounded-[10px] bg-emerald-50 px-3">
       <FigmaIcon name="imgAi" size={24} /><div><p className="text-[13px] font-medium leading-5 text-primary">AI가 분석하는 오늘의 식자재 시세</p><p className="text-[11px] leading-[18px] text-muted">지금 가격과 7일 뒤 예측을 한눈에 확인하세요.</p></div>
     </div>
@@ -76,12 +75,12 @@ export function PriceList({ initial }: { initial: PricePage }) {
         <option value="price-drop">가격 하락률순</option><option value="forecast-drop">예측 하락률순</option><option value="name">이름순</option>
       </select><span className="pointer-events-none absolute right-3 top-2"><FigmaIcon name="imgIconChevronDown" size={16} /></span></div>
     </div>
-    <div ref={listScroll} aria-live="polite" aria-busy={loading} className="relative min-h-0 flex-1 overflow-x-hidden overflow-y-auto">
+    <div aria-live="polite" aria-busy={loading} className="relative min-w-0 flex-1">
       {error ? <div role="alert" className="rounded-xl border border-border bg-white p-8 text-center"><p>시세를 불러오지 못했습니다.</p><button onClick={() => setRetry(n => n + 1)} className="mt-3 text-sm text-primary underline">다시 시도</button></div>
         : result.total === 0 ? <div className="rounded-xl border border-border bg-white p-10 text-center"><p className="font-medium">검색 결과가 없습니다.</p><p className="mt-2 text-sm text-muted">다른 품목명이나 카테고리로 검색해 보세요.</p><button onClick={() => { setKeyword(""); setCategory("ALL"); setPage(1); }} className="mt-4 text-sm text-primary underline">필터 초기화</button></div>
-        : <div className={`flex flex-col gap-3 ${loading ? "opacity-60" : ""}`}>{result.items.map(item => <PriceCard key={item.id} item={item} />)}</div>}
+        : <div className={`grid grid-cols-1 gap-3 md:grid-cols-2 ${loading ? "opacity-60" : ""}`}>{result.items.map(item => <PriceCard key={item.id} item={item} />)}</div>}
       <span className="sr-only top-0 left-0">{loading ? "시세 불러오는 중" : `${result.total}개 품목`}</span>
-      {totalPages > 1 && <nav aria-label="시세 목록 페이지" className="flex items-center justify-center gap-4 py-3 text-xs"><button disabled={page === 1 || loading} onClick={() => setPage(n => n - 1)} className="rounded-md border border-border bg-white px-3 py-2 disabled:opacity-40">이전</button><span>{page} / {totalPages}</span><button disabled={page >= totalPages || loading} onClick={() => setPage(n => n + 1)} className="rounded-md border border-border bg-white px-3 py-2 disabled:opacity-40">다음</button></nav>}
+      {totalPages > 1 && <nav aria-label="시세 목록 페이지" className="flex items-center justify-center gap-4 py-3 text-xs"><button disabled={page === 1 || loading} onClick={() => { setPage(n => n - 1); window.scrollTo({ top: 0 }); }} className="rounded-md border border-border bg-white px-3 py-2 disabled:opacity-40">이전</button><span>{page} / {totalPages}</span><button disabled={page >= totalPages || loading} onClick={() => { setPage(n => n + 1); window.scrollTo({ top: 0 }); }} className="rounded-md border border-border bg-white px-3 py-2 disabled:opacity-40">다음</button></nav>}
     </div>
     <SampleNotice />
   </main>;

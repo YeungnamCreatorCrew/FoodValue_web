@@ -60,7 +60,7 @@ export function PriceDetail({ item }: { item: PriceItem }) {
     : item.recommendation === "BUY_NOW" ? "가격 상승이 예상돼 지금 구매를 추천해요."
     : item.recommendation === "HOLD" ? "가격 변화를 지켜본 뒤 구매를 결정해 보세요."
     : "가격이 보합세예요. 필요한 시점에 구매하세요.";
-  return <main id="main-content" className="flex w-full min-w-0 flex-col gap-[18px] bg-[#f7faf8] px-5 pt-4 pb-[calc(84px_+_env(safe-area-inset-bottom))] text-[#17251f]">
+  return <main id="main-content" className="grid w-full min-w-0 flex-1 content-start items-start gap-[18px] bg-slate-50 px-4 py-2.5 text-[#17251f] lg:grid-cols-2">
       <section aria-label="품목과 가격 요약" className="flex flex-col gap-3">
         <div className="flex items-center gap-3.5 rounded-2xl border border-[#e1e9e5] bg-white p-3.5">
           {item.id === 1 ? <Image src="/figma/prices/detail-imgProductImage.png" alt="흙대파" width={84} height={84} priority className="size-[84px] rounded-xl object-cover" /> : <div className="flex size-[84px] shrink-0 items-center justify-center rounded-xl bg-emerald-50"><FigmaIcon name="imgPlaceholder" /></div>}
@@ -79,6 +79,6 @@ export function PriceDetail({ item }: { item: PriceItem }) {
         <div className="rounded-2xl border border-[#e1e9e5] bg-white px-3.5">{item.factors.map(factor => <div key={factor.kind} className="border-b border-[#e1e9e5] py-[11px] last:border-b-0"><div className="flex items-center gap-[9px]"><span className="flex size-8 shrink-0 items-center justify-center rounded-[9px] bg-[#ecf8f2]"><FigmaIcon name={factorInfo[factor.kind].icon} detail size={17} /></span><div className="min-w-0 flex-1"><h3 className="text-[13px] font-semibold">{factorInfo[factor.kind].title}</h3><p className="text-sm leading-5 text-[#607068]">{factor.description}</p></div><span className={`shrink-0 rounded-full px-2 py-[3px] text-[11px] ${factor.direction === "UP" ? "bg-[#fff0f0] text-[#e14b4b]" : "bg-[#edf5ff] text-[#3377c9]"}`}>{factor.direction === "UP" ? "상승" : "하락"} 영향</span></div><div className="mt-2 flex items-center gap-[9px]"><div role="meter" aria-label={`${factorInfo[factor.kind].title} 기여도`} aria-valuenow={factor.contribution} aria-valuemin={0} aria-valuemax={100} className="h-[7px] flex-1 overflow-hidden rounded-full bg-[#e9f0ec]"><div className="h-full rounded-full bg-primary" style={{ width: `${factor.contribution}%` }} /></div><span className="w-7 text-right text-[10px] text-[#607068]">{factor.contribution}%</span></div></div>)}</div>
       </section>
       <RegionPriceSummary item={item} />
-      <footer><SampleNotice date={item.baseDate} /></footer>
+      <footer className="lg:col-span-2"><SampleNotice date={item.baseDate} /></footer>
   </main>;
 }

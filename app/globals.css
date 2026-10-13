@@ -5,13 +5,33 @@
   --color-primary: #14532d; /* primary/default */
   --color-primary-hover: #166534; /* primary/hover — 임시값(Tailwind green-800). 피그마 값 확인 후 교체 */
   --color-primary-foreground: #ffffff; /* primary 배경 위 글자색 */
+  --color-primary-soft: var(--color-emerald-50);
+  --color-muted: var(--color-slate-500);
+  --color-border: var(--color-slate-200);
+  --color-canvas: var(--color-slate-50);
+  --color-home-background: var(--color-slate-50);
+  --color-danger: var(--color-red-600);
 
   --font-sans:
-    "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont,
+    var(--font-pretendard), "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont,
     system-ui, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
 }
 
+/* 기존 냉장고·레시피 탭바의 68px 규격에 기기 안전 영역을 더한다. */
+.service-shell {
+  --service-nav-height: calc(68px + env(safe-area-inset-bottom, 0px));
+}
+
+.service-action-bar {
+  bottom: var(--service-nav-height);
+}
+
+@media (min-width: 1024px) {
+  .service-shell { --service-nav-height: 0px; }
+}
+
 body {
+  color-scheme: light;
   background: var(--color-slate-100);
   color: var(--color-slate-900);
   font-family: var(--font-sans);

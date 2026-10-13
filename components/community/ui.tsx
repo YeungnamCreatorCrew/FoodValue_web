@@ -99,37 +99,6 @@ export function PostDate({ value }: { value: string }) {
   );
 }
 
-export function BottomNavigation() {
-  return (
-    <nav className="cm-bottom-nav" aria-label="주요 메뉴">
-      <Link href="/">
-        <Icon name="home" />
-        <span>홈</span>
-      </Link>
-
-      <Link href="/fridge">
-        <Icon name="fridge" />
-        <span>냉장고</span>
-      </Link>
-
-      <Link href="/prices">
-        <Icon name="price" />
-        <span>시세</span>
-      </Link>
-
-      <Link href="/recipes">
-        <Icon name="recipe" />
-        <span>레시피</span>
-      </Link>
-
-      <Link href="/community" aria-current="page">
-        <Icon name="community" />
-        <span>커뮤니티</span>
-      </Link>
-    </nav>
-  );
-}
-
 export function MissingPost({
   forbidden = false,
 }: {

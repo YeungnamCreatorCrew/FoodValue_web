@@ -31,7 +31,7 @@ export function CookingResultModal({ result, onConfirm, onClose }: CookingResult
         >
           확인
         </button>
-        {/* TODO: 커뮤니티 "요리 자랑" 글쓰기 화면은 친구(커뮤니티 담당)가 만든다. 주소가 정해지면 바꾼다. 지금은 커뮤니티 첫 화면으로 보낸다. */}
+        {/* TODO: 레시피 정보를 전달할 수 있을 때 /community/write?recipe=...로 연결한다. 현재는 커뮤니티 첫 화면으로 이동한다. */}
         <Link
           href="/community"
           className="rounded-md bg-primary px-4 py-2 text-sm font-medium leading-6 whitespace-nowrap text-primary-foreground hover:bg-primary-hover"

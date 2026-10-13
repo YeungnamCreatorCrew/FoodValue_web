@@ -134,7 +134,7 @@ export function NutritionScreen() {
     <>
       <BackHeader title="영양 분석" backHref="/fridge" />
       <main className="flex flex-1 flex-col gap-3 bg-slate-50 px-4 pb-2.5 pt-3.5">{body}</main>
-      <div className="sticky bottom-0 z-10 flex h-[72px] shrink-0 items-center border-t border-slate-200 bg-white px-4 pb-4 pt-3 shadow-[0_-4px_12px_rgba(15,23,42,0.06)]">
+      <div className="service-action-bar sticky z-10 flex h-[72px] shrink-0 items-center border-t border-slate-200 bg-white px-4 pb-4 pt-3 shadow-[0_-4px_12px_rgba(15,23,42,0.06)]">
         {/* 레시피 재료 선택 화면으로 가서 "부족 영양소 보충" 조건을 미리 켜 둔다 */}
         <Link
           href="/recipes/select?nutrition=1"

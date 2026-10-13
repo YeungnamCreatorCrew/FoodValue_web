@@ -225,7 +225,7 @@ export function FridgeReceiptScreen() {
         )}
       </main>
 
-      <div className="sticky bottom-0 z-10 flex h-[72px] shrink-0 items-center border-t border-slate-200 bg-white px-4 pb-4 pt-3 shadow-[0_-4px_12px_rgba(15,23,42,0.06)]">
+      <div className="service-action-bar sticky z-10 flex h-[72px] shrink-0 items-center border-t border-slate-200 bg-white px-4 pb-4 pt-3 shadow-[0_-4px_12px_rgba(15,23,42,0.06)]">
         <button
           type="button"
           disabled={!canSubmit}

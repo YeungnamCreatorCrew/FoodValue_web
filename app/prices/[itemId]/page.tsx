@@ -1,7 +1,7 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PriceDetail } from "@/components/prices/price-detail";
-import { FigmaIcon, UnsupportedAction } from "@/components/prices/ui";
+import { UnsupportedAction } from "@/components/prices/ui";
+import { BackHeader } from "@/components/common/BackHeader";
 import { mockPricesSource } from "@/lib/prices/mock";
 
 export async function generateMetadata({ params }: { params: Promise<{ itemId: string }> }) {
@@ -18,15 +18,11 @@ export default async function PriceDetailPage({ params }: { params: Promise<{ it
   const [chart, regions] = await Promise.all([
     mockPricesSource.chart(id, 90), mockPricesSource.regions(id),
   ]);
-  return <div className="bg-[#f7faf8]">
-    <header className="flex h-14 items-center gap-3 bg-white px-4">
-      <Link href="/prices" aria-label="시세 목록으로 돌아가기" className="flex size-[22px] items-center justify-center"><FigmaIcon name="img" detail size={22} /></Link>
-      <p className="flex-1 text-sm font-semibold leading-5 text-[#17251f]">시세 상세</p>
-      <div className="flex items-center gap-2.5">
+  return <div className="flex min-w-0 flex-1 flex-col bg-slate-50">
+    <BackHeader title="시세 상세" backHref="/prices" right={<div className="flex items-center gap-2.5">
         <UnsupportedAction label="관심 품목" icon="imgIconStarOff" detail size={22} />
         <UnsupportedAction label="공유" icon="imgIconShare2" detail size={22} />
-      </div>
-    </header>
+      </div>} />
     <PriceDetail item={{ ...item, history: chart.history, forecast: chart.forecast, regions }} />
   </div>;
 }

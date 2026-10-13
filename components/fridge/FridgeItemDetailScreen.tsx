@@ -330,7 +330,7 @@ export function FridgeItemDetailScreen({ id }: FridgeItemDetailScreenProps) {
             <section className="flex shrink-0 flex-col gap-1.5">
               <h2 className={SECTION_TITLE}>바로가기</h2>
               {item.priceAvailable && (
-                // TODO: 시세 상세 주소는 시세 화면(친구 담당)이 정해지면 맞춘다. itemId로 연결할 준비만 해 둔다.
+                // 시세 상세 라우트는 식재료 itemId로 연결한다.
                 <Link
                   href={`/prices/${item.itemId}`}
                   className="flex h-[38px] items-center gap-2 rounded-lg border border-slate-200 bg-white px-3"
@@ -358,7 +358,7 @@ export function FridgeItemDetailScreen({ id }: FridgeItemDetailScreenProps) {
         )}
       </main>
 
-      <div className="sticky bottom-0 z-10 flex h-[72px] shrink-0 items-center gap-2 border-t border-slate-200 bg-white px-4 pb-4 pt-3 shadow-[0_-4px_12px_rgba(15,23,42,0.06)]">
+      <div className="service-action-bar sticky z-10 flex h-[72px] shrink-0 items-center gap-2 border-t border-slate-200 bg-white px-4 pb-4 pt-3 shadow-[0_-4px_12px_rgba(15,23,42,0.06)]">
         <button
           type="button"
           disabled={!item || Number(item.quantity) <= 0}

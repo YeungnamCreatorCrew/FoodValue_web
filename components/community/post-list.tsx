@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { categories, type Category } from "@/lib/community/types";
 import { communityService } from "@/lib/community/mock-service";
-import { AppBar, Badge, BottomNavigation, Icon, PostDate } from "./ui";
+import { AppBar, Badge, Icon, PostDate } from "./ui";
 import { useCommunity } from "./use-community";
 
 export function PostList() {
@@ -32,6 +32,5 @@ export function PostList() {
       <nav className="cm-pagination" aria-label="게시글 페이지"><button disabled={result.page === 0} onClick={() => setPage(result.page - 1)}>이전</button><span aria-live="polite">{result.page + 1} / {result.pageCount}</span><button disabled={result.page + 1 >= result.pageCount} onClick={() => { setPage(result.page + 1); window.scrollTo({ top: 0 }); }}>다음</button></nav>
     </main>
     <div className="cm-write-position"><Link className="cm-write-link" href="/community/write">+ 글쓰기</Link></div>
-    <BottomNavigation />
   </>;
 }

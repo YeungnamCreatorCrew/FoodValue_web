@@ -4,7 +4,6 @@
 // "use client"는 이 파일이 브라우저에서 동작한다는 표시다. 탭·검색·정렬 같은 "상태"(화면이 기억하는 값)를 쓰기 때문이다.
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { BottomTabBar } from "@/components/common/BottomTabBar";
 import { FridgeHeader } from "@/components/fridge/FridgeHeader";
 import { FinishItemDialog } from "@/components/fridge/FinishItemDialog";
 import { FridgeItemCard, FridgeItemCardSkeleton } from "@/components/fridge/FridgeItemCard";
@@ -302,7 +301,6 @@ export function FridgeListScreen({ addedIdsParam }: FridgeListScreenProps) {
           </>
         )}
       </main>
-      <BottomTabBar active="fridge" />
       {toastVisible && (
         <Toast
           message={

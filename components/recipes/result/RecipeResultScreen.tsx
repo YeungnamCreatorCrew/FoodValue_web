@@ -5,7 +5,6 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { BackHeader } from "@/components/common/BackHeader";
-import { BottomTabBar } from "@/components/common/BottomTabBar";
 import { TabHeader } from "@/components/common/TabHeader";
 import { RecipeCard } from "@/components/recipes/RecipeCard";
 import { GeneratingView } from "@/components/recipes/result/GeneratingView";
@@ -87,7 +86,6 @@ export function RecipeResultScreen({ fridgeItemIds, conditions }: RecipeResultSc
         <main className="flex flex-1 flex-col bg-slate-50 px-4 py-2.5">
           <GeneratingView count={fridgeItemIds.length} names={names} />
         </main>
-        <BottomTabBar active="recipe" />
       </>
     );
   }
@@ -160,7 +158,6 @@ export function RecipeResultScreen({ fridgeItemIds, conditions }: RecipeResultSc
           </>
         )}
       </main>
-      <BottomTabBar active="recipe" />
     </>
   );
 }
