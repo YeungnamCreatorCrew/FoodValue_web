@@ -1,72 +1,47 @@
-"use client";
+﻿"use client";
 
-import { useState } from "react";
-import { won } from "@/lib/prices/format";
-import type { DailyPrice, Forecast, Period } from "@/lib/prices/types";
-import { SectionTitle } from "./ui";
+import { useEffect, useRef, useState } from "react";
+import { formatDate, formatNumber, won } from "@/lib/prices/format";
+import { forecastChart } from "@/lib/prices/forecast-chart";
+import type { PriceRecord } from "@/lib/prices/poc-types";
 
-export function PriceChart({ history, forecast, mape }: { history: DailyPrice[]; forecast: Forecast[]; mape: number | null }) {
-  const [period, setPeriod] = useState<Period>(14);
-  const [selected, setSelected] = useState<number | null>(null);
-  const past = history.slice(-(period + 1));
-  const points = [...past, ...forecast];
-  const values = [...past.map(p => p.price), ...forecast.flatMap(p => [p.lower, p.upper])];
-  const low = Math.min(...values), high = Math.max(...values);
-  const pad = (high - low || high * 0.1 || 100) * 0.15;
-  const min = low - pad, max = high + pad;
-  // Fixed viewBox preserves Figma's chart geometry on mobile and scales on desktop.
-  const x = (i: number) => 44 + i / (points.length - 1) * 278;
-  const y = (price: number) => 150 - (price - min) / (max - min) * 132;
-  const path = (data: DailyPrice[], offset = 0) => data.map((p, i) => `${i ? "L" : "M"}${x(i + offset).toFixed(2)},${y(p.price).toFixed(2)}`).join(" ");
-  const todayIndex = past.length - 1;
-  const todayX = x(todayIndex);
-  const today = past[todayIndex];
-  const last = forecast.at(-1)!;
-  const band = [
-    `${x(todayIndex)},${y(today.price)}`,
-    ...forecast.map((p, i) => `${x(past.length + i)},${y(p.upper)}`),
-    ...forecast.toReversed().map((p, i) => `${x(points.length - 1 - i)},${y(p.lower)}`),
-  ].join(" ");
-  const active = selected === null ? null : points[selected];
-  const minimumIndex = forecast.reduce((best, p, i) => p.price < forecast[best].price ? i : best, 0);
-  const currentLabelX = Math.max(44, Math.min(234, todayX - 80));
-  const currentLabelY = Math.max(36, y(today.price) - 28);
-  const todayAxisX = Math.min(todayX, 290);
-  return <section aria-label="가격 추이 및 7일 예측">
-    <SectionTitle icon="imgLineChart" title="시세 추이 & 7일 AI 예측">
-      <div role="group" aria-label="과거 가격 조회 기간" className="flex shrink-0 rounded-lg bg-[#e9f0ec] p-0.5">
-        {([14, 30, 90] as Period[]).map(value => <button key={value} aria-pressed={period === value} onClick={() => { setPeriod(value); setSelected(null); }} className={`rounded-md px-2 py-1 text-[11px] ${period === value ? "bg-white font-semibold text-[#0f6d47] shadow-sm" : "text-[#87948d]"}`}>{value}일</button>)}
-      </div>
-    </SectionTitle>
-    <div className="rounded-2xl border border-[#e1e9e5] bg-white px-3 pt-3.5">
-      <div className="flex flex-wrap gap-3 text-[11px] text-[#87948d]">
-        <span className="flex items-center gap-1"><i className="h-0.5 w-3 bg-[#83918b]" />실제 가격</span>
-        <span className="flex items-center gap-1"><i className="h-0.5 w-3 bg-[#169b62]" />AI 7일 예측</span>
-        <span className="flex items-center gap-1"><i className="h-2 w-3 bg-[#bce8d4]" />95% 신뢰구간</span>
-      </div>
-      <svg className="mt-2 block w-full" viewBox="0 0 326 220" aria-label={`과거 ${period}일 가격과 7일 예측. 차트의 점을 선택하면 날짜와 가격을 확인할 수 있습니다.`}>
-        {[max, (max + min) / 2, min].map(value => <g key={value}><line x1="44" x2="322" y1={y(value)} y2={y(value)} stroke="#edf1ef" /><text x="38" y={y(value) + 3} textAnchor="end" fill="#87948d" fontSize="9">{won(Math.round(value / 10) * 10)}</text></g>)}
-        <polygon points={band} fill="#bce8d4" opacity="0.6" />
-        <path d={path(past)} fill="none" stroke="#83918b" strokeWidth="1.8" strokeLinejoin="round" />
-        <path d={path([today, ...forecast], todayIndex)} fill="none" stroke="#169b62" strokeWidth="2" strokeDasharray="4 2" strokeLinejoin="round" />
-        <line x1={x(todayIndex)} x2={x(todayIndex)} y1="16" y2="156" stroke="#f97316" strokeDasharray="3 3" />
-        <circle cx={x(todayIndex)} cy={y(today.price)} r="4" fill="#f97316" stroke="white" />
-        <circle cx={x(points.length - 1)} cy={y(last.price)} r="4" fill="#169b62" stroke="white" />
-        <text x={x(0)} y="173" fontSize="9" fill="#87948d">{period}일 전</text>
-        <text x={todayAxisX} y="170" textAnchor="middle" fontSize="9" fill="#f97316"><tspan x={todayAxisX}>오늘</tspan><tspan x={todayAxisX} dy="11">D-Day</tspan></text>
-        <text x="322" y="173" textAnchor="end" fontSize="9" fill="#0f6d47">+7일</text>
-        <g aria-label={`오늘 현재가 ${won(today.price)}`}><rect x={currentLabelX} y={currentLabelY} width="88" height="22" rx="6" fill="#17251f" /><text x={currentLabelX + 44} y={currentLabelY + 15} textAnchor="middle" fill="white" fontSize="10">오늘 {won(today.price)}</text></g>
-        <g aria-label={`7일 후 예상가 ${won(last.price)}`}><rect x="222" y="0" width="104" height="22" rx="6" fill="#0f6d47" /><text x="274" y="15" textAnchor="middle" fill="white" fontSize="10">7일 후 {won(last.price)}</text></g>
-        <text x="44" y="201" fontSize="10" fill="#607068">오늘 {won(today.price)} · 예상 최저 {minimumIndex + 1}일 뒤 {won(forecast[minimumIndex].price)}</text>
-        {points.map((p, i) => <circle key={p.date} cx={x(i)} cy={y(p.price)} r="5" fill="transparent" stroke="transparent" tabIndex={0} role="button" aria-label={`${p.date} ${i > todayIndex ? "예측" : "실제"} ${won(p.price)}`} onMouseEnter={() => setSelected(i)} onMouseLeave={() => setSelected(null)} onFocus={() => setSelected(i)} onBlur={() => setSelected(null)} onClick={() => setSelected(i)} onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setSelected(i); } }} />)}
-        {active && selected !== null && <g pointerEvents="none">
-          <circle cx={x(selected)} cy={y(active.price)} r="4" fill="#17251f" />
-          <rect x={Math.min(210, Math.max(44, x(selected) - 58))} y={Math.max(25, y(active.price) - 37)} width="112" height="28" rx="6" fill="#17251f" />
-          <text x={Math.min(210, Math.max(44, x(selected) - 58)) + 56} y={Math.max(25, y(active.price) - 37) + 18} textAnchor="middle" fill="white" fontSize="10">{active.date.slice(5)} · {won(active.price)}</text>
-        </g>}
-      </svg>
-      {active && <p role="status" className="sr-only">{active.date}: {won(active.price)}{"lower" in active && "upper" in active ? `, 95% 신뢰구간 ${won(active.lower as number)} ~ ${won(active.upper as number)}` : ""}</p>}
-      <div className="flex flex-wrap items-center justify-between gap-2 border-t border-[#e1e9e5] py-3 text-[10px]"><span className="text-[#87948d]">KAMIS 기준 · 샘플 데이터</span>{mape !== null && <span className="rounded-full bg-[#ecf8f2] px-2 py-1 font-semibold text-[#0f6d47]">예측 오차 MAPE {mape}%</span>}</div>
+export function PriceChart({ item, presentation = "detail" }: { item: PriceRecord; presentation?: "detail" | "home" }) {
+  const [period, setPeriod] = useState(30);
+  const container = useRef<HTMLElement>(null);
+  const [wide, setWide] = useState(false);
+  useEffect(() => {
+    const observer = new ResizeObserver(entries => setWide(entries[0].contentRect.width >= 640));
+    if (container.current) observer.observe(container.current);
+    return () => observer.disconnect();
+  }, []);
+  const width = wide ? 760 : 360;
+  const left = 52, right = width - 14;
+  const { past, min, max, x, y, currentX: todayX, actualPath, forecastPath } = forecastChart(item, period, { left, right, top: 45, bottom: 205 });
+  const chartLabel = `${item.name} 가격 흐름 및 7일 예측`;
+  const description = `${item.isPoc ? "KAMIS 실제 가격 이력" : "DEMO 가격 이력"} ${past.length}개. ${formatDate(item.baseDate)} 현재 ${won(item.currentPrice)}, ${formatDate(item.forecastDate)} 예상 ${won(item.forecastPrice)}. 점선은 두 기준점을 연결하며 중간 날짜의 예측값을 의미하지 않습니다.`;
+  return <section ref={container} className="price-chart-section" aria-label={chartLabel}>
+    <div className="price-chart-heading">
+      {presentation === "detail" ? <h2>가격 흐름 및 7일 예측</h2> : <span className="text-sm text-muted">조회 기간</span>}
+      <div className="chart-periods" role="group" aria-label="과거 가격 조회 기간">{[14, 30, 90].map(value => <button type="button" key={value} aria-pressed={period === value} onClick={() => setPeriod(value)}>{`${value}일`}</button>)}</div>
     </div>
+    <p className={item.isPoc ? "chart-source-notice" : "chart-demo-notice"}>{item.isPoc ? "실제 KAMIS 가격 이력과 Colab PoC의 7일 후 예측입니다." : "이 품목의 가격과 그래프는 모두 DEMO 데이터입니다."}</p>
+    <div className="chart-legend"><span><i className="legend-actual" />{item.isPoc ? "실제 가격" : "가격 이력 · DEMO"}</span><span><i className="legend-dashed" />{item.isPoc ? "7일 예측" : "7일 예측 · DEMO"}</span></div>
+    <svg viewBox={`0 0 ${width} 260`} className="price-trend-svg" role="img" aria-label={chartLabel}>
+      <title>{chartLabel}</title>
+      <desc>{description}</desc>
+      <rect x={todayX} y="28" width={right - todayX} height="184" fill="#eef7f0" rx="5" />
+      {[max, (max + min) / 2, min].map(value => <g key={value}><line x1={left} x2={right} y1={y(value)} y2={y(value)} stroke="#e8eee8" /><text x={left - 8} y={y(value) + 4} textAnchor="end" fill="#65776b" fontSize="11">{formatNumber(value)}</text></g>)}
+      <text x={left - 8} y="19" textAnchor="end" fontSize="10" fill="#65776b">원</text>
+      <path data-series="history" data-point-count={past.length} d={actualPath} fill="none" stroke="#23804d" strokeWidth="2" strokeLinejoin="round" />
+      <path data-series="forecast" data-point-count="2" d={forecastPath} fill="none" stroke="#14532d" strokeWidth="2.5" strokeDasharray="6 5" />
+      <line x1={todayX} x2={todayX} y1="28" y2="212" stroke="#6b8c72" strokeDasharray="4 4" />
+      <circle cx={todayX} cy={y(item.currentPrice)} r="5" fill="#334c3c" stroke="white" strokeWidth="2" />
+      <circle cx={right} cy={y(item.forecastPrice)} r="5" fill="#14532d" stroke="white" strokeWidth="2" />
+      {past[0] && <text x={x(past[0].date)} y="231" fontSize="11" fill="#65776b">{past[0].date.slice(5)}</text>}
+      <text x={todayX - 4} y="231" textAnchor="end" fontSize="11" fill="#334c3c">{`기준 ${item.baseDate.slice(5)}`}</text>
+      <text x={right} y="251" textAnchor="end" fontSize="11" fill="#14532d">{`예측 ${item.forecastDate.slice(5)}`}</text>
+    </svg>
+    <dl className="chart-endpoints"><div><dt>현재 · {formatDate(item.baseDate)}</dt><dd>{won(item.currentPrice)}</dd></div><div><dt>7일 후 · {formatDate(item.forecastDate)}</dt><dd>{won(item.forecastPrice)}</dd></div></dl>
+    <p className="chart-footnote">기준일 포함 최근 {period}일 · 관측 {past.length}건. 미제공 날짜의 가격은 생성하지 않습니다. 점선은 현재가와 7일 후 예측값의 연결선입니다.</p>
   </section>;
 }

@@ -1,0 +1,176 @@
+{
+   "checksum": "8ee36b21193d272b3d08b7041d71b9e0",
+   "roots": {
+      "bookmark_bar": {
+         "children": [ {
+            "date_added": "13275134920000000",
+            "date_last_used": "13435685323636915",
+            "guid": "09c0f3ed-e8c0-41f2-b737-61b8d6d0a50c",
+            "id": "13",
+            "name": "YouTube",
+            "show_icon": false,
+            "source": "sync",
+            "type": "url",
+            "url": "https://youtube.com/",
+            "visit_count": 100
+         }, {
+            "date_added": "13319632329000000",
+            "date_last_used": "13436000139319749",
+            "guid": "45145726-0ce1-4f08-bf46-1f3002f95f90",
+            "id": "14",
+            "name": "NAVER",
+            "show_icon": false,
+            "source": "sync",
+            "type": "url",
+            "url": "https://www.naver.com/",
+            "visit_count": 660
+         }, {
+            "date_added": "13385737165381449",
+            "date_last_used": "13435915573706050",
+            "guid": "3236af9a-2213-49e6-be68-4b8cdf73bf9f",
+            "id": "15",
+            "meta_info": {
+               "power_bookmark_meta": ""
+            },
+            "name": "Google",
+            "show_icon": false,
+            "source": "sync",
+            "type": "url",
+            "url": "https://www.google.com/",
+            "visit_count": 261
+         }, {
+            "date_added": "13386670509730942",
+            "date_last_used": "13435937951947759",
+            "guid": "681c74fe-b957-4886-9c4e-e7ad85134dca",
+            "id": "16",
+            "meta_info": {
+               "power_bookmark_meta": ""
+            },
+            "name": "영남대학교 LMS",
+            "show_icon": false,
+            "source": "sync",
+            "type": "url",
+            "url": "https://nice.yu.ac.kr/lms",
+            "visit_count": 337
+         }, {
+            "date_added": "13418793699468617",
+            "date_last_used": "13435993907282765",
+            "guid": "3a697bbc-8268-4bba-b562-0fa5e2aa770e",
+            "id": "17",
+            "name": "ihakjin125 (HakJin Lee)",
+            "show_icon": false,
+            "source": "sync",
+            "type": "url",
+            "url": "https://github.com/ihakjin125",
+            "visit_count": 77
+         }, {
+            "date_added": "13438081398814927",
+            "date_last_used": "0",
+            "guid": "f3b43f95-904d-4e41-b094-cc93fd2056ee",
+            "id": "10",
+            "name": "Adobe Acrobat Pro DC for Samsung",
+            "show_icon": false,
+            "source": "oem_preload",
+            "type": "url",
+            "url": "http://www.adobe.com/go/samsung_apdc",
+            "visit_count": 0
+         }, {
+            "date_added": "13438081398814753",
+            "date_last_used": "0",
+            "guid": "dc0c8ef4-4648-42fe-9f91-b24c5251adef",
+            "id": "9",
+            "name": "Adobe Creative Cloud All Apps for Samsung",
+            "show_icon": false,
+            "source": "oem_preload",
+            "type": "url",
+            "url": "http://www.adobe.com/go/samsung_cci",
+            "visit_count": 0
+         }, {
+            "date_added": "13438081398814497",
+            "date_last_used": "0",
+            "guid": "ad189a88-4ff8-4959-ac71-c78156e265c5",
+            "id": "8",
+            "name": "Adobe Premiere Pro CC for Samsung",
+            "show_icon": false,
+            "source": "oem_preload",
+            "type": "url",
+            "url": "http://www.adobe.com/go/samsung_ppcc",
+            "visit_count": 0
+         }, {
+            "date_added": "13438081398814027",
+            "date_last_used": "0",
+            "guid": "8bb8e4cd-7c64-44cb-9e6c-ab0147f31ec9",
+            "id": "7",
+            "name": "McAfee LiveSafe - Benefits for Samsung PC users",
+            "show_icon": false,
+            "source": "oem_preload",
+            "type": "url",
+            "url": "https://home.mcafee.com/root/campaign.aspx?cid=249249",
+            "visit_count": 0
+         } ],
+         "date_added": "13438081398586606",
+         "date_last_used": "0",
+         "date_modified": "13438081398814927",
+         "guid": "0bc5d13f-2cba-5d74-951f-3f233fe6c908",
+         "id": "1",
+         "name": "즐겨찾기 모음",
+         "source": "unknown",
+         "type": "folder"
+      },
+      "other": {
+         "children": [ {
+            "children": [  ],
+            "date_added": "13381556129149287",
+            "date_last_used": "0",
+            "date_modified": "13381556129149287",
+            "guid": "f1205c22-d02e-458d-bcd6-481e2cbbbb16",
+            "id": "11",
+            "name": "Other Bookmarks",
+            "source": "unknown",
+            "type": "folder"
+         }, {
+            "children": [  ],
+            "date_added": "13381556129149444",
+            "date_last_used": "0",
+            "date_modified": "13381556129149444",
+            "guid": "28b067c0-0796-4116-bdf1-4494a39efd03",
+            "id": "12",
+            "name": "Synced Bookmarks",
+            "source": "unknown",
+            "type": "folder"
+         } ],
+         "date_added": "13438081398586606",
+         "date_last_used": "0",
+         "date_modified": "0",
+         "guid": "82b081ec-3dd3-529c-8475-ab6c344590dd",
+         "id": "2",
+         "name": "다른 즐겨찾기",
+         "source": "unknown",
+         "type": "folder"
+      },
+      "synced": {
+         "children": [  ],
+         "date_added": "13438081398586606",
+         "date_last_used": "0",
+         "date_modified": "0",
+         "guid": "4cf2e351-0e85-532b-bb37-df045d8f8d0f",
+         "id": "3",
+         "name": "모바일 즐겨찾기",
+         "source": "unknown",
+         "type": "folder"
+      },
+      "workspaces_v2": {
+         "children": [  ],
+         "date_added": "13438081398586606",
+         "date_last_used": "0",
+         "date_modified": "0",
+         "guid": "75aa6670-344f-549d-b742-660f029506ab",
+         "id": "5",
+         "name": "작업 영역",
+         "source": "unknown",
+         "type": "folder"
+      }
+   },
+   "sync_metadata": "CjEKDgiIgQISCAHHTR+hAQAAEgAqGGpZT3poeUJWcDZpbjJzRXFsSzRxZkE9PUgDoAYJEowBCAUShwEKHHdSQnJaTCs2UEE5YXZLZ2pOUDdKWERMY2Z2cz0SJGRhZTgwYTFmLWE4ZDUtNWE4MS05NzI3LWI5ODc0NWI1NDljMxgAIAAoADCF77vjpDM47/C746QzQO/wu+OkM0ocbm14NjVzUUR2eEk4VGdFZXYrQStudHRvU240PWUAAAAAwj4CYAASrQEIEBKoAQocYzJPTWR1RGxJTzNiczdiMnNwYk1HSjdZT3JFPRIkNjgxYzc0ZmUtYjk1Ny00ODg2LTljNGUtZTdhZDg1MTM0ZGNhGAAgACgAMPjj4tyRNDiIoZ2Y2jJAiKGdmNoyShxDd3lZRTlqMHI3ZDBXZ1FKZGVuTVkweFRRWGs9Wh8iHft3Q2Njc095bFozUHJ4eWl1VlhFN0N0WC9rbVk9Zeq+N2HCPgJgBRKtAQgOEqgBChxKUGFhczNMOTJwM1lqelgxaUVxdTBVT3AyRzg9EiQ0NTE0NTcyNi0wY2UxLTRmMDgtYmY0Ni0xZjMwMDJmOTVmOTAYACAAKAAw67K2+pE0OKPgv5HHMkCj4L+RxzJKHExnN0EyUzBFMmN6bWFHTGJ6eXE5a0pxcmRwVT1aHyId70FiTHNTS1RaN1Y3dzVzd3NhTHRScVRpYmRVaz1l6+ZyJsI+AmAFEq0BCA0SqAEKHGU0dk00RVZzMWJNK1dIeGlxaGRCdFdkdnV0WT0SJDA5YzBmM2VkLWU4YzAtNDFmMi1iNzM3LTYxYjhkNmQwYTUwYxgAIAAoADDlv6fkkDQ43uC/kccyQN7gv5HHMkocUTROdE96YXV0OE1PTmRFaG9KdUxBM2pmU0tFPVofIh3eRWx3RnlwTmEwWjNJZUJsbFFwNGw1eEtnL2pJPWVQQsPSwj4CYAUSjAEIARKHAQoceXhKLzZmdmtlY3I3a3A1RVF6QjR0V0xwZGJFPRIkN2IyNjQ1ZGUtODJhOC01MmZlLTkyOTYtYzI4MzVmYzgzODA1GAAgACgAMIr2p5HHMji0/qeRxzJAtP6nkccyShxhUkNXTGdoRjliNUlucUtJRHZ1Si9qdlFrRmM9ZQAAAADCPgJgABKtAQgREqgBChxiQnRPbGU2L0Fuc3FkRHRDRUZ4Q3ZLOExvYXM9EiQzYTY5N2JiYy04MjY4LTRiYmEtYjU2Mi0wZmE1ZTJhYTc3MGUYACAAKAAw4YC695E0OJXa4O3RM0CV2uDt0TNKHFIvU0x2TURTcE9BZFlETUlNbDlmRFBPTzY4cz1aHyId/2tVVWxCRnIrdG5MaDBUWUJtSjlVRDJGT0FFcz1l15E9OcI+AmAFEq0BCAwSqAEKHCs3bXErZW8rWkhSdTZxVHhvcUNzMGdQRlV6MD0SJDI4YjA2N2MwLTA3OTYtNDExNi1iZGYxLTQ0OTRhMzllZmQwMxgAIAAoADD/2r+RxzI4guC/kccyQILgv5HHMkoca21nMXdNajBsZXZWQ0t1aGZKTmM5aXJWOFp3PVofIh23SEpjWjdXbG9IOWRJOURJbU5mYlcxT2tPRDhVPWUAAAAAwj4CYAASrAEICxKnAQocODhrU2VjOFdjTmk5dGREbnErakx3aFJQbndRPRIkZjEyMDVjMjItZDAyZS00NThkLWJjZDYtNDgxZTJjYmJiYjE2GAAgACgAMP3av5HHMji437+RxzJAuN+/kccyShxjam03WE9mSHV4M2Q1YW5qbW1vZWRaOWVNVkU9Wh4iHG9UOUYvZGN5bFJFdW1XLzdGVUZJVCt1WkF0UT1lAAAAAMI+AmAAEowBCAIShwEKHFljU1RvbnZFU1B3cUNzNEwyY3JWaHY2OEw5OD0SJGY5NWIyMTU5LTc1Y2MtNTNlYy1iMjhkLTQyM2U0NGQ0ZjBiZBgAIAAoADCL9qeRxzI47f6nkccyQO3+p5HHMkocb1BWa2h3QlJiVjY1S0NXUjIrSU9OSFdvT3U4PWUAAAAAwj4CYAASrQEIDxKoAQocYzB6ZDRRdTJpOXJmcktYdHR4a2ZoakdtektBPRIkMzIzNmFmOWEtMjIxMy00OWU2LWJlNjgtNGI4Y2RmNzNiZjlmGAAgACgAMJr5jNKRNDi3+ZXb1jJAt/mV29YyShxucnJxeituL2p4U1BZTjRoZ2NOZi9vcXFCVVk9Wh8iHfdGL0lhblM4TUsxcVlqdld2M2kyMTF1KzNYTmc9ZWLpsknCPgJgBRKMAQgDEocBChxuamdEdTg4ZUNydlhwODZwRDdmSEdjcUZwODg9EiQyYmZkOWYyYy02MmU3LTVhMWYtODhhZi1lODgzNGYzNGI5YzEYACAAKAAwkPankccyOKn/p5HHMkCp/6eRxzJKHHl6TkIwMWNuNTRBN2NSVTB1VCsvUGdtVHRVbz1lAAAAAMI+AmAAMAA4AA==",
+   "version": 1
+}

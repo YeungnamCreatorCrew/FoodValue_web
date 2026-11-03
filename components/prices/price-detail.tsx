@@ -1,84 +1,32 @@
-"use client";
+﻿import Link from "next/link";
+import type { PriceRecord } from "@/lib/prices/poc-types";
+import { formatDate, formatNumber, formatPercent, won } from "@/lib/prices/format";
+import { DataBadge, IngredientImage } from "./price-forecast-card";
+import { PriceFactorAccordion } from "./price-factors";
+import { RecentPriceChart } from "./recent-price-chart";
+import "./price-detail.css";
 
-import Image from "next/image";
-import { useRef } from "react";
-import { forecastRate, recommendationLabel, won } from "@/lib/prices/format";
-import type { FactorKind, PriceItem } from "@/lib/prices/types";
-import { PriceChart } from "./price-chart";
-import { categoryLabels, FigmaIcon, PriceChange, RecommendationBadge, SampleNotice, SectionTitle } from "./ui";
-
-const factorInfo: Record<FactorKind, { title: string; icon: string }> = {
-  WEATHER: { title: "전국 날씨", icon: "imgCloudSun" },
-  PRODUCTION: { title: "생산량 / 출하량", icon: "imgPackageOpen" },
-  EVENT: { title: "명절 / 이벤트", icon: "imgCalendarDays" },
-  SEASONAL: { title: "계절 요인", icon: "imgCalendarDays" },
-  TREND: { title: "최근 가격 추세", icon: "imgTrendingUp" },
-};
-
-function RegionPriceSummary({ item }: { item: PriceItem }) {
-  const dialog = useRef<HTMLDialogElement>(null);
-  const lowest = item.regions.reduce<PriceItem["regions"][number] | undefined>(
-    (best, region) => !best || region.price < best.price ? region : best, undefined,
-  );
-  const differenceLabel = (price: number) => {
-    const difference = price - item.currentPrice;
-    return `${difference > 0 ? "+" : difference < 0 ? "−" : ""}${won(Math.abs(difference))}`;
-  };
-  const differenceTone = (price: number) => price > item.currentPrice
-    ? "text-[#e14b4b]" : price < item.currentPrice ? "text-[#3377c9]" : "text-[#87948d]";
-
-  return <section aria-labelledby="region-summary-title" className="rounded-2xl border border-[#e1e9e5] bg-white px-3.5 py-3">
-    <div className="flex items-center justify-between gap-2">
-      <h2 id="region-summary-title" className="flex items-center gap-2 text-sm font-semibold leading-5">
-        <FigmaIcon name="imgMapPin" detail size={18} />지역별 가격
-      </h2>
-      {lowest && <button type="button" aria-haspopup="dialog" aria-controls="region-prices-dialog" onClick={() => dialog.current?.showModal()} className="-my-2 py-2 text-xs text-[#3377c9]">전체보기 &gt;</button>}
-    </div>
-    {lowest ? <p className="mt-1.5 flex flex-wrap items-baseline gap-x-1.5 text-[13px] leading-5">
-      <span>{lowest.name} <strong className="font-semibold">{won(lowest.price)}</strong></span>
-      <span className="text-[#87948d]">· 전국 대비 <span className={differenceTone(lowest.price)}>{differenceLabel(lowest.price)}</span></span>
-    </p> : <p className="mt-1.5 text-[13px] leading-5 text-[#87948d]">지역별 가격 정보가 없어요.</p>}
-    <dialog id="region-prices-dialog" ref={dialog} aria-labelledby="region-dialog-title" className="fixed inset-0 m-auto max-h-[calc(100dvh_-_48px)] w-[calc(100%_-_32px)] max-w-[358px] overflow-y-auto rounded-2xl border border-[#e1e9e5] bg-white p-4 text-[#17251f] shadow-xl backdrop:bg-black/40">
-      <div className="flex items-center justify-between gap-2">
-        <h2 id="region-dialog-title" className="text-base font-semibold">지역별 가격</h2>
-        <button type="button" onClick={() => dialog.current?.close()} aria-label="지역별 가격 닫기" className="-my-2 px-2 py-2 text-sm text-[#607068]">닫기</button>
+export function PriceDetail({ item }: { item: PriceRecord }) {
+  const down = item.forecastDirection === "down";
+  const direction = down ? "하락" : item.forecastDirection === "up" ? "상승" : "보합";
+  return <main id="main-content" className="price-page price-detail-page price-dashboard">
+    <header className="dashboard-heading"><h1>시세 상세</h1><nav aria-label="현재 위치"><Link href="/prices">시세</Link><span aria-hidden="true">›</span><span aria-current="page">{item.name}</span></nav></header>
+    <section className="dashboard-summary" aria-label="상품 정보 및 가격 예측">
+      <div className="dashboard-product-image"><IngredientImage item={item} /></div>
+      <div className="dashboard-product">
+        <div className="dashboard-product-heading"><div><span className="ingredient-category">{item.category}</span><h2>{item.name}</h2><p>{item.unit} · 전국 평균</p></div><DataBadge item={item} /></div>
+        <div className="dashboard-metrics">
+          <div className="dashboard-metric"><h3>현재 가격</h3><strong>{won(item.currentPrice)}</strong></div>
+          <div className="dashboard-metric forecast-metric"><span className="metric-arrow" aria-hidden="true">→</span><h3>7일 뒤 예상가</h3><strong>{won(item.forecastPrice)}</strong></div>
+          <div className={`dashboard-metric direction-metric ${down ? "is-down" : "is-up"}`}><h3>예측 방향</h3><strong>{down ? "↓" : item.forecastDirection === "up" ? "↑" : "—"} {direction} 예상</strong><p>{item.forecastDelta > 0 ? "+" : ""}{won(item.forecastDelta)} ({formatPercent(item.forecastPercent)})</p></div>
+          <div className="dashboard-metric guide-metric"><h3>구매 가이드</h3><strong><span aria-hidden="true">◷ </span>{down ? "조금 기다려보세요" : "구매 시점을 살펴보세요"}</strong><p>{down ? "향후 가격이 현재보다 낮아질 것으로 예측되고 있습니다." : "예측을 참고해 구매 시점을 계획해보세요."}</p></div>
+        </div>
+        <p className="dashboard-dates">예측 기준일 <time dateTime={item.baseDate}>{formatDate(item.baseDate)}</time><span aria-hidden="true"> · </span>예측 대상일 <time dateTime={item.forecastDate}>{formatDate(item.forecastDate)}</time></p>
       </div>
-      <p className="mt-1 text-xs leading-5 text-[#607068]">{item.name} · {item.unitLabel} · 전국 평균 대비</p>
-      <dl className="mt-3 divide-y divide-[#e1e9e5]">
-        {item.regions.map(region => <div key={region.code} className="flex items-center justify-between gap-2 py-2.5 text-[13px]">
-          <dt>{region.name}</dt>
-          <dd className="flex items-center gap-3"><strong className="font-semibold">{won(region.price)}</strong><span className={`w-16 text-right text-xs ${differenceTone(region.price)}`}>{differenceLabel(region.price)}</span></dd>
-        </div>)}
-      </dl>
-    </dialog>
-  </section>;
-}
-
-export function PriceDetail({ item }: { item: PriceItem }) {
-  const last = item.forecast.at(-1)!;
-  const guide = item.recommendation === "BUY_LATER" ? `${item.buyAfterDays}일 뒤 구매 시 약 ${won(item.expectedSaving ?? 0)} 절약이 예상돼요.`
-    : item.recommendation === "BUY_NOW" ? "가격 상승이 예상돼 지금 구매를 추천해요."
-    : item.recommendation === "HOLD" ? "가격 변화를 지켜본 뒤 구매를 결정해 보세요."
-    : "가격이 보합세예요. 필요한 시점에 구매하세요.";
-  return <main id="main-content" className="grid w-full min-w-0 flex-1 content-start items-start gap-[18px] bg-slate-50 px-4 py-2.5 text-[#17251f] lg:grid-cols-2">
-      <section aria-label="품목과 가격 요약" className="flex flex-col gap-3">
-        <div className="flex items-center gap-3.5 rounded-2xl border border-[#e1e9e5] bg-white p-3.5">
-          {item.id === 1 ? <Image src="/figma/prices/detail-imgProductImage.png" alt="흙대파" width={84} height={84} priority className="size-[84px] rounded-xl object-cover" /> : <div className="flex size-[84px] shrink-0 items-center justify-center rounded-xl bg-emerald-50"><FigmaIcon name="imgPlaceholder" /></div>}
-          <div className="flex min-w-0 flex-1 flex-col items-start gap-[5px]"><span className="rounded-full bg-[#ecf8f2] px-2 py-[3px] text-[11px] font-medium text-[#0f6d47]">{categoryLabels[item.category]}</span><h1 className="text-xl font-semibold leading-[26px] tracking-[-0.2px]">{item.name}</h1><p className="text-sm leading-5 text-[#607068]">{item.unitLabel}</p></div>
-        </div>
-        <div className="grid grid-cols-2 gap-4 rounded-2xl border border-[#e1e9e5] bg-white p-4">
-          <div className="flex flex-col gap-[5px]"><p className="text-sm text-[#607068]">오늘 전국 평균가</p><strong className="text-[25px] leading-8 tracking-[-0.5px]">{won(item.currentPrice)}</strong><p className="flex flex-wrap items-center gap-[5px]"><span className="text-[11px] text-[#87948d]">전주 대비</span><PriceChange rate={item.weeklyChangeRate} /></p></div>
-          <div className="flex flex-col gap-[5px] border-l border-[#e1e9e5] pl-4"><p className="text-sm text-[#607068]">7일 뒤 AI 예상가</p><strong className="text-[25px] leading-8 tracking-[-0.5px] text-[#0f6d47]">{won(last.price)}</strong><p className="flex flex-wrap items-center gap-[5px]"><span className="text-[11px] text-[#87948d]">예상 등락률</span><PriceChange rate={forecastRate(item)} /></p></div>
-        </div>
-      </section>
-      <section aria-label="AI 구매 가이드">
-        <div className="flex flex-col gap-2.5 rounded-2xl border border-[#c8e4e5] bg-[#eef7fa] p-4"><div className="flex items-center justify-between gap-2"><h2 className="flex items-center gap-[7px] text-sm font-semibold"><span className="flex size-[26px] items-center justify-center rounded-lg bg-[#1a8f8a]"><FigmaIcon name="imgSparkles" detail size={15} /></span>AI 구매 가이드</h2><RecommendationBadge item={item} /></div><p className="text-[15px] font-medium leading-[22px]">{guide}</p><p className="text-sm leading-5 text-[#607068]">{item.recommendation === "BUY_LATER" ? "단기 가격이 내려간 뒤 다시 오를 수 있어요. 예측 가격과 구매 시점을 함께 확인하세요." : `${recommendationLabel(item)} · 예측은 참고용으로 활용하세요.`}</p></div>
-      </section>
-      <PriceChart history={item.history} forecast={item.forecast} mape={item.mape} />
-      <section><SectionTitle icon="imgScanSearch" title="AI 가격 결정 요인" description="가격 예측에 영향을 준 주요 요인이에요" />
-        <div className="rounded-2xl border border-[#e1e9e5] bg-white px-3.5">{item.factors.map(factor => <div key={factor.kind} className="border-b border-[#e1e9e5] py-[11px] last:border-b-0"><div className="flex items-center gap-[9px]"><span className="flex size-8 shrink-0 items-center justify-center rounded-[9px] bg-[#ecf8f2]"><FigmaIcon name={factorInfo[factor.kind].icon} detail size={17} /></span><div className="min-w-0 flex-1"><h3 className="text-[13px] font-semibold">{factorInfo[factor.kind].title}</h3><p className="text-sm leading-5 text-[#607068]">{factor.description}</p></div><span className={`shrink-0 rounded-full px-2 py-[3px] text-[11px] ${factor.direction === "UP" ? "bg-[#fff0f0] text-[#e14b4b]" : "bg-[#edf5ff] text-[#3377c9]"}`}>{factor.direction === "UP" ? "상승" : "하락"} 영향</span></div><div className="mt-2 flex items-center gap-[9px]"><div role="meter" aria-label={`${factorInfo[factor.kind].title} 기여도`} aria-valuenow={factor.contribution} aria-valuemin={0} aria-valuemax={100} className="h-[7px] flex-1 overflow-hidden rounded-full bg-[#e9f0ec]"><div className="h-full rounded-full bg-primary" style={{ width: `${factor.contribution}%` }} /></div><span className="w-7 text-right text-[10px] text-[#607068]">{factor.contribution}%</span></div></div>)}</div>
-      </section>
-      <RegionPriceSummary item={item} />
-      <footer className="lg:col-span-2"><SampleNotice date={item.baseDate} /></footer>
+      <RecentPriceChart item={item} />
+    </section>
+    <section className="dashboard-ai-summary" aria-labelledby="prediction-summary-title"><h2 id="prediction-summary-title"><span aria-hidden="true">✧</span> AI 예측 요약</h2><div className="dashboard-ai-body"><span className="dashboard-ai-icon" aria-hidden="true">AI</span><div><p>현재 <strong>{won(item.currentPrice)}</strong>인 {item.name} 가격은 7일 후 <strong>{won(item.forecastPrice)}</strong>으로 {item.forecastDirection === "flat" ? "보합을 유지할" : `약 ${formatNumber(Math.abs(item.forecastPercent), 1)}% ${down ? "낮아질" : "높아질"}`} 것으로 예측되었습니다.</p><p>{item.isPoc ? "이번 예측에서 기상 관련 변수는 하락 방향, 최근 가격 흐름 일부는 상승 방향으로 작용했습니다." : "이 품목은 실제 모델 결과가 아닌 화면 시연용 DEMO 데이터입니다."}</p></div></div></section>
+    <PriceFactorAccordion item={item} />
+    <p className="dashboard-footnote">{item.isPoc ? "KAMIS 실제 가격 · Colab PoC" : "DEMO"} · AI 예측은 실제 가격과 다를 수 있으며, SHAP은 인과관계를 의미하지 않습니다.</p>
   </main>;
 }

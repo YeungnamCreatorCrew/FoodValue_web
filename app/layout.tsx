@@ -7,7 +7,7 @@ const pretendard = localFont({ src: "./fonts/PretendardVariable.woff2", display:
 
 export const metadata: Metadata = {
   title: "FoodValue",
-  description: "1~2인 가구를 위한 식자재 관리 서비스",
+  description: "AI 식자재 시세 예측 및 구매 시점 지원 서비스",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

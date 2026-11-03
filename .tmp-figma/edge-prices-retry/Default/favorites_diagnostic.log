@@ -1,0 +1,26 @@
+2026-11-02 08:23:18.815: [INFO] CurrentProfilePath: C:\foodvalue_web\.tmp-figma\edge-prices-retry\Default
+2026-11-02 08:23:18.815: [INFO] Profiles total count: 1
+2026-11-02 08:23:18.815: [INFO] Profile: name=프로필 1 path=C:\foodvalue_web\.tmp-figma\edge-prices-retry\Default lastActive=2026-11-02T08:23:18.799Z
+2026-11-02 08:23:18.815: [INFO] LastUsedProfileDir: C:\foodvalue_web\.tmp-figma\edge-prices-retry\Default
+2026-11-02 08:23:18.815: [INFO] MostRecentlyActiveProfile: name=프로필 1 path=C:\foodvalue_web\.tmp-figma\edge-prices-retry\Default lastActive=2026-11-02T08:23:18.799Z
+2026-11-02 08:23:18.815: [INFO] OnDoneLoading sync enabled: 0
+2026-11-02 08:23:18.815: [INFO] BookmarkModelLoaded, ids_reassigned: 0
+2026-11-02 08:23:18.815: [INFO] BookmarksLoadDropped droppedNodes=0
+2026-11-02 08:23:18.815: [INFO] BookmarksSnapshot Startup total=4 bar=4 other=0 mobile=0 showBar=0 showBarNTP=1
+2026-11-02 08:23:18.868: [INFO] RecordSyncInitDuration has_sync_been_enabled: 0 state: 0
+2026-11-02 08:23:19.021: [INFO] VisibilityChanged: 0
+2026-11-02 08:23:20.985: [INFO] RecordSyncInitDuration has_sync_been_enabled: 0 state: 0
+2026-11-02 08:23:20.992: [INFO] RecordSyncInitDuration has_sync_been_enabled: 0 state: 3
+2026-11-02 08:23:20.998: [INFO] Primary account changed.
+2026-11-02 08:23:20.998: [INFO] OnPrimaryAccountChanged PrimaryAccountChangeEvent::Type::kSet
+2026-11-02 08:23:21.007: [INFO] RecordSyncInitDuration has_sync_been_enabled: 0 state: 3
+2026-11-02 08:23:21.044: [INFO] RecordSyncInitDuration has_sync_been_enabled: 0 state: 3
+2026-11-02 08:23:30.943: [INFO] BookmarkNodeAdded, ABU: 0
+2026-11-02 08:23:30.944: [INFO] BookmarkNodeAdded, ABU: 0
+2026-11-02 08:23:30.944: [INFO] BookmarkNodeAdded, ABU: 0
+2026-11-02 08:23:30.944: [INFO] BookmarkNodeAdded, ABU: 0
+2026-11-02 08:23:30.944: [INFO] BookmarkNodeAdded, ABU: 0
+2026-11-02 08:23:30.945: [INFO] BookmarkNodeAdded, ABU: 0
+2026-11-02 08:23:30.945: [INFO] BookmarkNodeAdded, ABU: 0
+2026-11-02 08:23:30.961: [INFO] BookmarkBarPrefChanged showBar=0 showBarNTP=0
+2026-11-02 08:23:31.033: [INFO] VisibilityChanged: 1

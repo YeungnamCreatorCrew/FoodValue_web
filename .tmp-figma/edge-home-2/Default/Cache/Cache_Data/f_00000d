@@ -1,0 +1,2089 @@
+(globalThis["TURBOPACK"] || (globalThis["TURBOPACK"] = [])).push([typeof document === "object" ? document.currentScript : undefined,
+"[project]/components/home/home-search.tsx [app-client] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "HomeSearch",
+    ()=>HomeSearch,
+    "PopularIngredientChips",
+    ()=>PopularIngredientChips
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/compiled/react/jsx-dev-runtime.js [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/compiled/react/index.js [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/navigation.js [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$home$2f$price$2d$focused$2d$mock$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__ = __turbopack_context__.i("[project]/lib/home/price-focused-mock.ts [app-client] (ecmascript) <locals>");
+var __TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$Icon$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/components/ui/Icon.tsx [app-client] (ecmascript)");
+;
+var _s = __turbopack_context__.k.signature(), _s1 = __turbopack_context__.k.signature();
+"use client";
+;
+;
+;
+;
+function HomeSearch() {
+    _s();
+    const router = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRouter"])();
+    const [keyword, setKeyword] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])("");
+    const search = (value)=>router.push(value.trim() ? `/prices?q=${encodeURIComponent(value.trim())}` : "/prices");
+    return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+        className: "home-search-area",
+        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("form", {
+            role: "search",
+            className: "home-search",
+            onSubmit: (event)=>{
+                event.preventDefault();
+                search(keyword);
+            },
+            children: [
+                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$Icon$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Icon"], {
+                    name: "search",
+                    size: 21
+                }, void 0, false, {
+                    fileName: "[project]/components/home/home-search.tsx",
+                    lineNumber: 14,
+                    columnNumber: 7
+                }, this),
+                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
+                    htmlFor: "home-search",
+                    className: "sr-only",
+                    children: "찾고 싶은 식재료"
+                }, void 0, false, {
+                    fileName: "[project]/components/home/home-search.tsx",
+                    lineNumber: 15,
+                    columnNumber: 7
+                }, this),
+                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                    id: "home-search",
+                    type: "search",
+                    value: keyword,
+                    onChange: (event)=>setKeyword(event.target.value),
+                    placeholder: "찾고 싶은 식재료를 검색해보세요. (예: 대파, 양파, 토마토)"
+                }, void 0, false, {
+                    fileName: "[project]/components/home/home-search.tsx",
+                    lineNumber: 16,
+                    columnNumber: 7
+                }, this),
+                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                    type: "submit",
+                    children: "검색"
+                }, void 0, false, {
+                    fileName: "[project]/components/home/home-search.tsx",
+                    lineNumber: 17,
+                    columnNumber: 7
+                }, this)
+            ]
+        }, void 0, true, {
+            fileName: "[project]/components/home/home-search.tsx",
+            lineNumber: 13,
+            columnNumber: 5
+        }, this)
+    }, void 0, false, {
+        fileName: "[project]/components/home/home-search.tsx",
+        lineNumber: 12,
+        columnNumber: 10
+    }, this);
+}
+_s(HomeSearch, "eZN5aUalw0beHOJiJdww7ZqgTB8=", false, function() {
+    return [
+        __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRouter"]
+    ];
+});
+_c = HomeSearch;
+function PopularIngredientChips() {
+    _s1();
+    const router = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRouter"])();
+    const search = (name)=>router.push(`/prices?q=${encodeURIComponent(name)}`);
+    return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+        className: "popular-ingredients",
+        children: [
+            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                children: [
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                        "aria-hidden": "true",
+                        children: "🔥"
+                    }, void 0, false, {
+                        fileName: "[project]/components/home/home-search.tsx",
+                        lineNumber: 26,
+                        columnNumber: 50
+                    }, this),
+                    " 많이 찾는 식재료"
+                ]
+            }, void 0, true, {
+                fileName: "[project]/components/home/home-search.tsx",
+                lineNumber: 26,
+                columnNumber: 47
+            }, this),
+            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                className: "popular-chips",
+                "aria-label": "많이 찾는 식재료",
+                children: __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$home$2f$price$2d$focused$2d$mock$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__["popularIngredients"].map((name)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                        type: "button",
+                        onClick: ()=>search(name),
+                        children: name
+                    }, name, false, {
+                        fileName: "[project]/components/home/home-search.tsx",
+                        lineNumber: 26,
+                        columnNumber: 184
+                    }, this))
+            }, void 0, false, {
+                fileName: "[project]/components/home/home-search.tsx",
+                lineNumber: 26,
+                columnNumber: 98
+            }, this)
+        ]
+    }, void 0, true, {
+        fileName: "[project]/components/home/home-search.tsx",
+        lineNumber: 26,
+        columnNumber: 10
+    }, this);
+}
+_s1(PopularIngredientChips, "fN7XvhJ+p5oE6+Xlo0NJmXpxjC8=", false, function() {
+    return [
+        __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRouter"]
+    ];
+});
+_c1 = PopularIngredientChips;
+var _c, _c1;
+__turbopack_context__.k.register(_c, "HomeSearch");
+__turbopack_context__.k.register(_c1, "PopularIngredientChips");
+if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
+    __turbopack_context__.k.registerExports(__turbopack_context__.m, globalThis.$RefreshHelpers$);
+}
+}),
+"[project]/components/home/price-trend-section.tsx [app-client] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "PriceTrendSection",
+    ()=>PriceTrendSection
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/compiled/react/jsx-dev-runtime.js [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/compiled/react/index.js [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$components$2f$prices$2f$price$2d$chart$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/components/prices/price-chart.tsx [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prices$2f$catalog$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/lib/prices/catalog.ts [app-client] (ecmascript)");
+;
+var _s = __turbopack_context__.k.signature();
+"use client";
+;
+;
+;
+function PriceTrendSection() {
+    _s();
+    const [selected, setSelected] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(__TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prices$2f$catalog$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["featuredPrices"][0].id);
+    const item = __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prices$2f$catalog$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["featuredPrices"].find((item)=>item.id === selected);
+    return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
+        className: "home-trend-panel",
+        "aria-labelledby": "trend-title",
+        children: [
+            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                className: "home-section-heading",
+                children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                    children: [
+                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
+                            id: "trend-title",
+                            children: "주요 식재료 가격 추이"
+                        }, void 0, false, {
+                            fileName: "[project]/components/home/price-trend-section.tsx",
+                            lineNumber: 11,
+                            columnNumber: 48
+                        }, this),
+                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                            children: "기준일 가격과 7일 후 예측 가격을 확인해보세요."
+                        }, void 0, false, {
+                            fileName: "[project]/components/home/price-trend-section.tsx",
+                            lineNumber: 11,
+                            columnNumber: 86
+                        }, this)
+                    ]
+                }, void 0, true, {
+                    fileName: "[project]/components/home/price-trend-section.tsx",
+                    lineNumber: 11,
+                    columnNumber: 43
+                }, this)
+            }, void 0, false, {
+                fileName: "[project]/components/home/price-trend-section.tsx",
+                lineNumber: 11,
+                columnNumber: 5
+            }, this),
+            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                className: "home-ingredient-selector",
+                role: "group",
+                "aria-label": "가격 추이 식재료",
+                children: __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prices$2f$catalog$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["featuredPrices"].map((ingredient)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                        type: "button",
+                        "aria-pressed": selected === ingredient.id,
+                        onClick: ()=>setSelected(ingredient.id),
+                        children: [
+                            ingredient.name,
+                            ingredient.isDemo ? " · DEMO" : ""
+                        ]
+                    }, ingredient.id, true, {
+                        fileName: "[project]/components/home/price-trend-section.tsx",
+                        lineNumber: 12,
+                        columnNumber: 117
+                    }, this))
+            }, void 0, false, {
+                fileName: "[project]/components/home/price-trend-section.tsx",
+                lineNumber: 12,
+                columnNumber: 5
+            }, this),
+            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$prices$2f$price$2d$chart$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["PriceChart"], {
+                item: item,
+                presentation: "home"
+            }, selected, false, {
+                fileName: "[project]/components/home/price-trend-section.tsx",
+                lineNumber: 13,
+                columnNumber: 5
+            }, this)
+        ]
+    }, void 0, true, {
+        fileName: "[project]/components/home/price-trend-section.tsx",
+        lineNumber: 10,
+        columnNumber: 10
+    }, this);
+}
+_s(PriceTrendSection, "TW584yKlr4SADtaVUChKKMfm6YE=");
+_c = PriceTrendSection;
+var _c;
+__turbopack_context__.k.register(_c, "PriceTrendSection");
+if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
+    __turbopack_context__.k.registerExports(__turbopack_context__.m, globalThis.$RefreshHelpers$);
+}
+}),
+"[project]/components/prices/factor-history-chart.tsx [app-client] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "FactorHistoryChart",
+    ()=>FactorHistoryChart
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/compiled/react/jsx-dev-runtime.js [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/compiled/react/index.js [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prices$2f$format$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/lib/prices/format.ts [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prices$2f$history$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/lib/prices/history.ts [app-client] (ecmascript)");
+;
+var _s = __turbopack_context__.k.signature();
+"use client";
+;
+;
+;
+function FactorHistoryChart({ factor, item }) {
+    _s();
+    const [period, setPeriod] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(30);
+    const container = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRef"])(null);
+    const [width, setWidth] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(360);
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
+        "FactorHistoryChart.useEffect": ()=>{
+            const element = container.current;
+            if (!element) return;
+            const observer = new ResizeObserver({
+                "FactorHistoryChart.useEffect": ([entry])=>setWidth(Math.max(300, Math.round(entry.contentRect.width)))
+            }["FactorHistoryChart.useEffect"]);
+            observer.observe(element);
+            return ({
+                "FactorHistoryChart.useEffect": ()=>observer.disconnect()
+            })["FactorHistoryChart.useEffect"];
+        }
+    }["FactorHistoryChart.useEffect"], []);
+    const key = factor.historyKey;
+    const points = key ? (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prices$2f$history$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["historyForPeriod"])(item.factorHistory, item.baseDate, period).filter((point)=>Number.isFinite(point[key])).map((point)=>({
+            date: point.date,
+            value: point[key]
+        })) : [];
+    if (!points.length) return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+        className: "factor-history-placeholder",
+        children: "이 요인의 실제 추이 데이터가 없습니다."
+    }, void 0, false, {
+        fileName: "[project]/components/prices/factor-history-chart.tsx",
+        lineNumber: 22,
+        columnNumber: 30
+    }, this);
+    const start = (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prices$2f$history$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["dateNumber"])(item.baseDate) - (period - 1) * 86_400_000;
+    const end = (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prices$2f$history$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["dateNumber"])(item.baseDate);
+    const values = points.map((point)=>point.value);
+    const low = Math.min(...values), high = Math.max(...values);
+    const pad = (high - low || Math.abs(high) * .1 || 1) * .2;
+    const min = low - pad, max = high + pad;
+    const right = width - 16;
+    const x = (date)=>58 + ((0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prices$2f$history$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["dateNumber"])(date) - start) / Math.max(1, end - start) * (right - 58);
+    const y = (value)=>152 - (value - min) / (max - min) * 116;
+    const path = points.map((point, index)=>`${index ? "L" : "M"}${x(point.date).toFixed(2)},${y(point.value).toFixed(2)}`).join(" ");
+    const last = points.at(-1);
+    const label = `${factor.label} 실제 과거 추이`;
+    const description = `${(0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prices$2f$format$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["formatDate"])(points[0].date)}부터 ${(0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prices$2f$format$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["formatDate"])(last.date)}까지 ${points.length}개 실제 feature 값. 마지막 값 ${(0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prices$2f$format$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["formatFactorValue"])(last.value, factor.unit)}.`;
+    return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+        className: "factor-history-chart",
+        ref: container,
+        children: [
+            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                className: "factor-history-heading",
+                children: [
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h4", {
+                        children: label
+                    }, void 0, false, {
+                        fileName: "[project]/components/prices/factor-history-chart.tsx",
+                        lineNumber: 37,
+                        columnNumber: 45
+                    }, this),
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                        role: "group",
+                        "aria-label": `${factor.label} 조회 기간`,
+                        className: "chart-periods",
+                        children: [
+                            14,
+                            30,
+                            90
+                        ].map((days)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                type: "button",
+                                "aria-pressed": period === days,
+                                onClick: ()=>setPeriod(days),
+                                children: `${days}일`
+                            }, days, false, {
+                                fileName: "[project]/components/prices/factor-history-chart.tsx",
+                                lineNumber: 37,
+                                columnNumber: 168
+                            }, this))
+                    }, void 0, false, {
+                        fileName: "[project]/components/prices/factor-history-chart.tsx",
+                        lineNumber: 37,
+                        columnNumber: 61
+                    }, this)
+                ]
+            }, void 0, true, {
+                fileName: "[project]/components/prices/factor-history-chart.tsx",
+                lineNumber: 37,
+                columnNumber: 5
+            }, this),
+            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("svg", {
+                viewBox: `0 0 ${width} 186`,
+                role: "img",
+                "aria-label": label,
+                className: "factor-history-svg",
+                children: [
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("title", {
+                        children: label
+                    }, void 0, false, {
+                        fileName: "[project]/components/prices/factor-history-chart.tsx",
+                        lineNumber: 39,
+                        columnNumber: 7
+                    }, this),
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("desc", {
+                        children: description
+                    }, void 0, false, {
+                        fileName: "[project]/components/prices/factor-history-chart.tsx",
+                        lineNumber: 39,
+                        columnNumber: 29
+                    }, this),
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("text", {
+                        x: "50",
+                        y: "17",
+                        textAnchor: "end",
+                        fontSize: "10",
+                        fill: "#65776b",
+                        children: factor.unit || "지표값"
+                    }, void 0, false, {
+                        fileName: "[project]/components/prices/factor-history-chart.tsx",
+                        lineNumber: 40,
+                        columnNumber: 7
+                    }, this),
+                    [
+                        max,
+                        (min + max) / 2,
+                        min
+                    ].map((value)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("g", {
+                            children: [
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("line", {
+                                    x1: "58",
+                                    x2: right,
+                                    y1: y(value),
+                                    y2: y(value),
+                                    stroke: "#e4ece2"
+                                }, void 0, false, {
+                                    fileName: "[project]/components/prices/factor-history-chart.tsx",
+                                    lineNumber: 41,
+                                    columnNumber: 64
+                                }, this),
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("text", {
+                                    x: "50",
+                                    y: y(value) + 4,
+                                    textAnchor: "end",
+                                    fill: "#65776b",
+                                    fontSize: "10",
+                                    children: (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prices$2f$format$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["formatNumber"])(value, factor.unit === "원" ? 0 : 1)
+                                }, void 0, false, {
+                                    fileName: "[project]/components/prices/factor-history-chart.tsx",
+                                    lineNumber: 41,
+                                    columnNumber: 136
+                                }, this)
+                            ]
+                        }, value, true, {
+                            fileName: "[project]/components/prices/factor-history-chart.tsx",
+                            lineNumber: 41,
+                            columnNumber: 49
+                        }, this)),
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("path", {
+                        "data-factor-history": key,
+                        "data-point-count": points.length,
+                        d: path,
+                        fill: "none",
+                        stroke: "#23804d",
+                        strokeWidth: "2",
+                        strokeLinejoin: "round"
+                    }, void 0, false, {
+                        fileName: "[project]/components/prices/factor-history-chart.tsx",
+                        lineNumber: 42,
+                        columnNumber: 7
+                    }, this),
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("circle", {
+                        cx: x(last.date),
+                        cy: y(last.value),
+                        r: "4",
+                        fill: "#14532d",
+                        stroke: "white",
+                        strokeWidth: "2"
+                    }, void 0, false, {
+                        fileName: "[project]/components/prices/factor-history-chart.tsx",
+                        lineNumber: 43,
+                        columnNumber: 7
+                    }, this),
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("text", {
+                        x: "58",
+                        y: "178",
+                        fontSize: "10",
+                        fill: "#65776b",
+                        children: points[0].date.slice(5)
+                    }, void 0, false, {
+                        fileName: "[project]/components/prices/factor-history-chart.tsx",
+                        lineNumber: 44,
+                        columnNumber: 7
+                    }, this),
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("text", {
+                        x: right,
+                        y: "178",
+                        textAnchor: "end",
+                        fontSize: "10",
+                        fill: "#65776b",
+                        children: last.date.slice(5)
+                    }, void 0, false, {
+                        fileName: "[project]/components/prices/factor-history-chart.tsx",
+                        lineNumber: 44,
+                        columnNumber: 89
+                    }, this)
+                ]
+            }, void 0, true, {
+                fileName: "[project]/components/prices/factor-history-chart.tsx",
+                lineNumber: 38,
+                columnNumber: 5
+            }, this),
+            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                className: "chart-footnote",
+                children: [
+                    (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prices$2f$format$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["formatDate"])(last.date),
+                    " · 마지막 값 ",
+                    (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prices$2f$format$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["formatFactorValue"])(last.value, factor.unit),
+                    " · 실제 feature ",
+                    points.length,
+                    "건"
+                ]
+            }, void 0, true, {
+                fileName: "[project]/components/prices/factor-history-chart.tsx",
+                lineNumber: 46,
+                columnNumber: 5
+            }, this)
+        ]
+    }, void 0, true, {
+        fileName: "[project]/components/prices/factor-history-chart.tsx",
+        lineNumber: 36,
+        columnNumber: 10
+    }, this);
+}
+_s(FactorHistoryChart, "lwCK+nYVqZBpvXyUPh44kQQE/Hk=");
+_c = FactorHistoryChart;
+var _c;
+__turbopack_context__.k.register(_c, "FactorHistoryChart");
+if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
+    __turbopack_context__.k.registerExports(__turbopack_context__.m, globalThis.$RefreshHelpers$);
+}
+}),
+"[project]/components/prices/price-chart.tsx [app-client] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "PriceChart",
+    ()=>PriceChart
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/compiled/react/jsx-dev-runtime.js [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/compiled/react/index.js [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prices$2f$format$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/lib/prices/format.ts [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prices$2f$forecast$2d$chart$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/lib/prices/forecast-chart.ts [app-client] (ecmascript)");
+;
+var _s = __turbopack_context__.k.signature();
+"use client";
+;
+;
+;
+function PriceChart({ item, presentation = "detail" }) {
+    _s();
+    const [period, setPeriod] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(30);
+    const container = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRef"])(null);
+    const [wide, setWide] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
+        "PriceChart.useEffect": ()=>{
+            const observer = new ResizeObserver({
+                "PriceChart.useEffect": (entries)=>setWide(entries[0].contentRect.width >= 640)
+            }["PriceChart.useEffect"]);
+            if (container.current) observer.observe(container.current);
+            return ({
+                "PriceChart.useEffect": ()=>observer.disconnect()
+            })["PriceChart.useEffect"];
+        }
+    }["PriceChart.useEffect"], []);
+    const width = wide ? 760 : 360;
+    const left = 52, right = width - 14;
+    const { past, min, max, x, y, currentX: todayX, actualPath, forecastPath } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prices$2f$forecast$2d$chart$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["forecastChart"])(item, period, {
+        left,
+        right,
+        top: 45,
+        bottom: 205
+    });
+    const chartLabel = `${item.name} 가격 흐름 및 7일 예측`;
+    const description = `${item.isPoc ? "KAMIS 실제 가격 이력" : "DEMO 가격 이력"} ${past.length}개. ${(0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prices$2f$format$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["formatDate"])(item.baseDate)} 현재 ${(0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prices$2f$format$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["won"])(item.currentPrice)}, ${(0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prices$2f$format$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["formatDate"])(item.forecastDate)} 예상 ${(0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prices$2f$format$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["won"])(item.forecastPrice)}. 점선은 두 기준점을 연결하며 중간 날짜의 예측값을 의미하지 않습니다.`;
+    return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
+        ref: container,
+        className: "price-chart-section",
+        "aria-label": chartLabel,
+        children: [
+            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                className: "price-chart-heading",
+                children: [
+                    presentation === "detail" ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
+                        children: "가격 흐름 및 7일 예측"
+                    }, void 0, false, {
+                        fileName: "[project]/components/prices/price-chart.tsx",
+                        lineNumber: 24,
+                        columnNumber: 36
+                    }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                        className: "text-sm text-muted",
+                        children: "조회 기간"
+                    }, void 0, false, {
+                        fileName: "[project]/components/prices/price-chart.tsx",
+                        lineNumber: 24,
+                        columnNumber: 61
+                    }, this),
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                        className: "chart-periods",
+                        role: "group",
+                        "aria-label": "과거 가격 조회 기간",
+                        children: [
+                            14,
+                            30,
+                            90
+                        ].map((value)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                type: "button",
+                                "aria-pressed": period === value,
+                                onClick: ()=>setPeriod(value),
+                                children: `${value}일`
+                            }, value, false, {
+                                fileName: "[project]/components/prices/price-chart.tsx",
+                                lineNumber: 25,
+                                columnNumber: 103
+                            }, this))
+                    }, void 0, false, {
+                        fileName: "[project]/components/prices/price-chart.tsx",
+                        lineNumber: 25,
+                        columnNumber: 7
+                    }, this)
+                ]
+            }, void 0, true, {
+                fileName: "[project]/components/prices/price-chart.tsx",
+                lineNumber: 23,
+                columnNumber: 5
+            }, this),
+            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                className: item.isPoc ? "chart-source-notice" : "chart-demo-notice",
+                children: item.isPoc ? "실제 KAMIS 가격 이력과 Colab PoC의 7일 후 예측입니다." : "이 품목의 가격과 그래프는 모두 DEMO 데이터입니다."
+            }, void 0, false, {
+                fileName: "[project]/components/prices/price-chart.tsx",
+                lineNumber: 27,
+                columnNumber: 5
+            }, this),
+            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                className: "chart-legend",
+                children: [
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                        children: [
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("i", {
+                                className: "legend-actual"
+                            }, void 0, false, {
+                                fileName: "[project]/components/prices/price-chart.tsx",
+                                lineNumber: 28,
+                                columnNumber: 41
+                            }, this),
+                            item.isPoc ? "실제 가격" : "가격 이력 · DEMO"
+                        ]
+                    }, void 0, true, {
+                        fileName: "[project]/components/prices/price-chart.tsx",
+                        lineNumber: 28,
+                        columnNumber: 35
+                    }, this),
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                        children: [
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("i", {
+                                className: "legend-dashed"
+                            }, void 0, false, {
+                                fileName: "[project]/components/prices/price-chart.tsx",
+                                lineNumber: 28,
+                                columnNumber: 124
+                            }, this),
+                            item.isPoc ? "7일 예측" : "7일 예측 · DEMO"
+                        ]
+                    }, void 0, true, {
+                        fileName: "[project]/components/prices/price-chart.tsx",
+                        lineNumber: 28,
+                        columnNumber: 118
+                    }, this)
+                ]
+            }, void 0, true, {
+                fileName: "[project]/components/prices/price-chart.tsx",
+                lineNumber: 28,
+                columnNumber: 5
+            }, this),
+            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("svg", {
+                viewBox: `0 0 ${width} 260`,
+                className: "price-trend-svg",
+                role: "img",
+                "aria-label": chartLabel,
+                children: [
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("title", {
+                        children: chartLabel
+                    }, void 0, false, {
+                        fileName: "[project]/components/prices/price-chart.tsx",
+                        lineNumber: 30,
+                        columnNumber: 7
+                    }, this),
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("desc", {
+                        children: description
+                    }, void 0, false, {
+                        fileName: "[project]/components/prices/price-chart.tsx",
+                        lineNumber: 31,
+                        columnNumber: 7
+                    }, this),
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("rect", {
+                        x: todayX,
+                        y: "28",
+                        width: right - todayX,
+                        height: "184",
+                        fill: "#eef7f0",
+                        rx: "5"
+                    }, void 0, false, {
+                        fileName: "[project]/components/prices/price-chart.tsx",
+                        lineNumber: 32,
+                        columnNumber: 7
+                    }, this),
+                    [
+                        max,
+                        (max + min) / 2,
+                        min
+                    ].map((value)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("g", {
+                            children: [
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("line", {
+                                    x1: left,
+                                    x2: right,
+                                    y1: y(value),
+                                    y2: y(value),
+                                    stroke: "#e8eee8"
+                                }, void 0, false, {
+                                    fileName: "[project]/components/prices/price-chart.tsx",
+                                    lineNumber: 33,
+                                    columnNumber: 64
+                                }, this),
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("text", {
+                                    x: left - 8,
+                                    y: y(value) + 4,
+                                    textAnchor: "end",
+                                    fill: "#65776b",
+                                    fontSize: "11",
+                                    children: (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prices$2f$format$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["formatNumber"])(value)
+                                }, void 0, false, {
+                                    fileName: "[project]/components/prices/price-chart.tsx",
+                                    lineNumber: 33,
+                                    columnNumber: 138
+                                }, this)
+                            ]
+                        }, value, true, {
+                            fileName: "[project]/components/prices/price-chart.tsx",
+                            lineNumber: 33,
+                            columnNumber: 49
+                        }, this)),
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("text", {
+                        x: left - 8,
+                        y: "19",
+                        textAnchor: "end",
+                        fontSize: "10",
+                        fill: "#65776b",
+                        children: "원"
+                    }, void 0, false, {
+                        fileName: "[project]/components/prices/price-chart.tsx",
+                        lineNumber: 34,
+                        columnNumber: 7
+                    }, this),
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("path", {
+                        "data-series": "history",
+                        "data-point-count": past.length,
+                        d: actualPath,
+                        fill: "none",
+                        stroke: "#23804d",
+                        strokeWidth: "2",
+                        strokeLinejoin: "round"
+                    }, void 0, false, {
+                        fileName: "[project]/components/prices/price-chart.tsx",
+                        lineNumber: 35,
+                        columnNumber: 7
+                    }, this),
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("path", {
+                        "data-series": "forecast",
+                        "data-point-count": "2",
+                        d: forecastPath,
+                        fill: "none",
+                        stroke: "#14532d",
+                        strokeWidth: "2.5",
+                        strokeDasharray: "6 5"
+                    }, void 0, false, {
+                        fileName: "[project]/components/prices/price-chart.tsx",
+                        lineNumber: 36,
+                        columnNumber: 7
+                    }, this),
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("line", {
+                        x1: todayX,
+                        x2: todayX,
+                        y1: "28",
+                        y2: "212",
+                        stroke: "#6b8c72",
+                        strokeDasharray: "4 4"
+                    }, void 0, false, {
+                        fileName: "[project]/components/prices/price-chart.tsx",
+                        lineNumber: 37,
+                        columnNumber: 7
+                    }, this),
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("circle", {
+                        cx: todayX,
+                        cy: y(item.currentPrice),
+                        r: "5",
+                        fill: "#334c3c",
+                        stroke: "white",
+                        strokeWidth: "2"
+                    }, void 0, false, {
+                        fileName: "[project]/components/prices/price-chart.tsx",
+                        lineNumber: 38,
+                        columnNumber: 7
+                    }, this),
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("circle", {
+                        cx: right,
+                        cy: y(item.forecastPrice),
+                        r: "5",
+                        fill: "#14532d",
+                        stroke: "white",
+                        strokeWidth: "2"
+                    }, void 0, false, {
+                        fileName: "[project]/components/prices/price-chart.tsx",
+                        lineNumber: 39,
+                        columnNumber: 7
+                    }, this),
+                    past[0] && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("text", {
+                        x: x(past[0].date),
+                        y: "231",
+                        fontSize: "11",
+                        fill: "#65776b",
+                        children: past[0].date.slice(5)
+                    }, void 0, false, {
+                        fileName: "[project]/components/prices/price-chart.tsx",
+                        lineNumber: 40,
+                        columnNumber: 19
+                    }, this),
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("text", {
+                        x: todayX - 4,
+                        y: "231",
+                        textAnchor: "end",
+                        fontSize: "11",
+                        fill: "#334c3c",
+                        children: `기준 ${item.baseDate.slice(5)}`
+                    }, void 0, false, {
+                        fileName: "[project]/components/prices/price-chart.tsx",
+                        lineNumber: 41,
+                        columnNumber: 7
+                    }, this),
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("text", {
+                        x: right,
+                        y: "251",
+                        textAnchor: "end",
+                        fontSize: "11",
+                        fill: "#14532d",
+                        children: `예측 ${item.forecastDate.slice(5)}`
+                    }, void 0, false, {
+                        fileName: "[project]/components/prices/price-chart.tsx",
+                        lineNumber: 42,
+                        columnNumber: 7
+                    }, this)
+                ]
+            }, void 0, true, {
+                fileName: "[project]/components/prices/price-chart.tsx",
+                lineNumber: 29,
+                columnNumber: 5
+            }, this),
+            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("dl", {
+                className: "chart-endpoints",
+                children: [
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                        children: [
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("dt", {
+                                children: [
+                                    "현재 · ",
+                                    (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prices$2f$format$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["formatDate"])(item.baseDate)
+                                ]
+                            }, void 0, true, {
+                                fileName: "[project]/components/prices/price-chart.tsx",
+                                lineNumber: 44,
+                                columnNumber: 42
+                            }, this),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("dd", {
+                                children: (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prices$2f$format$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["won"])(item.currentPrice)
+                            }, void 0, false, {
+                                fileName: "[project]/components/prices/price-chart.tsx",
+                                lineNumber: 44,
+                                columnNumber: 83
+                            }, this)
+                        ]
+                    }, void 0, true, {
+                        fileName: "[project]/components/prices/price-chart.tsx",
+                        lineNumber: 44,
+                        columnNumber: 37
+                    }, this),
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                        children: [
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("dt", {
+                                children: [
+                                    "7일 후 · ",
+                                    (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prices$2f$format$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["formatDate"])(item.forecastDate)
+                                ]
+                            }, void 0, true, {
+                                fileName: "[project]/components/prices/price-chart.tsx",
+                                lineNumber: 44,
+                                columnNumber: 127
+                            }, this),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("dd", {
+                                children: (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prices$2f$format$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["won"])(item.forecastPrice)
+                            }, void 0, false, {
+                                fileName: "[project]/components/prices/price-chart.tsx",
+                                lineNumber: 44,
+                                columnNumber: 174
+                            }, this)
+                        ]
+                    }, void 0, true, {
+                        fileName: "[project]/components/prices/price-chart.tsx",
+                        lineNumber: 44,
+                        columnNumber: 122
+                    }, this)
+                ]
+            }, void 0, true, {
+                fileName: "[project]/components/prices/price-chart.tsx",
+                lineNumber: 44,
+                columnNumber: 5
+            }, this),
+            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                className: "chart-footnote",
+                children: [
+                    "기준일 포함 최근 ",
+                    period,
+                    "일 · 관측 ",
+                    past.length,
+                    "건. 미제공 날짜의 가격은 생성하지 않습니다. 점선은 현재가와 7일 후 예측값의 연결선입니다."
+                ]
+            }, void 0, true, {
+                fileName: "[project]/components/prices/price-chart.tsx",
+                lineNumber: 45,
+                columnNumber: 5
+            }, this)
+        ]
+    }, void 0, true, {
+        fileName: "[project]/components/prices/price-chart.tsx",
+        lineNumber: 22,
+        columnNumber: 10
+    }, this);
+}
+_s(PriceChart, "ZhMf60PtzFr0OSG5H0GQ+ZxnMxM=");
+_c = PriceChart;
+var _c;
+__turbopack_context__.k.register(_c, "PriceChart");
+if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
+    __turbopack_context__.k.registerExports(__turbopack_context__.m, globalThis.$RefreshHelpers$);
+}
+}),
+"[project]/components/prices/price-factors.tsx [app-client] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "PriceFactorAccordion",
+    ()=>PriceFactorAccordion,
+    "PriceFactorSummary",
+    ()=>PriceFactorSummary
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/compiled/react/jsx-dev-runtime.js [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/compiled/react/index.js [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prices$2f$poc$2d$data$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/lib/prices/poc-data.ts [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prices$2f$format$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/lib/prices/format.ts [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prices$2f$history$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/lib/prices/history.ts [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$components$2f$prices$2f$factor$2d$history$2d$chart$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/components/prices/factor-history-chart.tsx [app-client] (ecmascript)");
+;
+var _s = __turbopack_context__.k.signature();
+"use client";
+;
+;
+;
+;
+;
+function PriceFactorSummary({ item, compact = false }) {
+    const groups = (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prices$2f$poc$2d$data$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["factorSummary"])(item);
+    return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
+        className: compact ? "home-factor-panel" : "price-panel factor-summary-panel",
+        "aria-label": "AI 분석 요약",
+        children: [
+            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                className: "home-eyebrow",
+                children: [
+                    "AI INSIGHT · ",
+                    item.name
+                ]
+            }, void 0, true, {
+                fileName: "[project]/components/prices/price-factors.tsx",
+                lineNumber: 13,
+                columnNumber: 5
+            }, this),
+            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
+                children: item.forecastDirection === "down" ? "AI는 왜 가격 하락을 예상했나요?" : "AI는 가격 흐름을 어떻게 해석했나요?"
+            }, void 0, false, {
+                fileName: "[project]/components/prices/price-factors.tsx",
+                lineNumber: 14,
+                columnNumber: 5
+            }, this),
+            groups.length ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                className: "factor-summary-grid",
+                children: groups.map((group)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("article", {
+                        className: "factor-category-card",
+                        children: [
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                className: "flex flex-wrap items-center justify-between gap-2",
+                                children: [
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
+                                        children: group.label
+                                    }, void 0, false, {
+                                        fileName: "[project]/components/prices/price-factors.tsx",
+                                        lineNumber: 16,
+                                        columnNumber: 74
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                        className: `price-direction ${group.direction === "down" ? "price-down" : "price-up"}`,
+                                        children: [
+                                            group.direction === "down" ? "하락" : "상승",
+                                            " 방향"
+                                        ]
+                                    }, void 0, true, {
+                                        fileName: "[project]/components/prices/price-factors.tsx",
+                                        lineNumber: 16,
+                                        columnNumber: 96
+                                    }, this)
+                                ]
+                            }, void 0, true, {
+                                fileName: "[project]/components/prices/price-factors.tsx",
+                                lineNumber: 16,
+                                columnNumber: 7
+                            }, this),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                children: [
+                                    group.label,
+                                    "은 이번 모델 예측에서 가격을 ",
+                                    group.direction === "down" ? "낮추는" : "높이는",
+                                    " 방향으로 작용했습니다."
+                                ]
+                            }, void 0, true, {
+                                fileName: "[project]/components/prices/price-factors.tsx",
+                                lineNumber: 17,
+                                columnNumber: 7
+                            }, this)
+                        ]
+                    }, group.category, true, {
+                        fileName: "[project]/components/prices/price-factors.tsx",
+                        lineNumber: 15,
+                        columnNumber: 80
+                    }, this))
+            }, void 0, false, {
+                fileName: "[project]/components/prices/price-factors.tsx",
+                lineNumber: 15,
+                columnNumber: 22
+            }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                className: "mt-4 text-sm text-muted",
+                children: "이 DEMO 품목은 실제 AI 분석 요인이 연결되지 않았습니다."
+            }, void 0, false, {
+                fileName: "[project]/components/prices/price-factors.tsx",
+                lineNumber: 18,
+                columnNumber: 26
+            }, this),
+            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                className: "factor-caveat",
+                children: "제공된 요인들의 SHAP 값을 범주별로 합산한 설명입니다. 인과관계를 뜻하지 않으며, 표시된 요인의 합은 현재가 대비 변동액과 다를 수 있습니다."
+            }, void 0, false, {
+                fileName: "[project]/components/prices/price-factors.tsx",
+                lineNumber: 19,
+                columnNumber: 5
+            }, this)
+        ]
+    }, void 0, true, {
+        fileName: "[project]/components/prices/price-factors.tsx",
+        lineNumber: 12,
+        columnNumber: 10
+    }, this);
+}
+_c = PriceFactorSummary;
+function PriceFactorAccordion({ item }) {
+    _s();
+    const ordered = [
+        ...item.factors.filter((factor)=>factor.category === "weather"),
+        ...item.factors.filter((factor)=>factor.category === "price")
+    ];
+    const [expanded, setExpanded] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(ordered[0]?.id ?? null);
+    const [category, setCategory] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])("all");
+    const maximum = Math.max(1, ...item.factors.map((factor)=>Math.abs(factor.shapValue)));
+    const visible = ordered.filter((factor)=>category === "all" || factor.category === category);
+    return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
+        className: "dashboard-factors",
+        "aria-labelledby": "factor-details-title",
+        children: [
+            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                className: "dashboard-factor-heading",
+                children: [
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
+                        id: "factor-details-title",
+                        children: "예측에 영향을 준 요인"
+                    }, void 0, false, {
+                        fileName: "[project]/components/prices/price-factors.tsx",
+                        lineNumber: 30,
+                        columnNumber: 47
+                    }, this),
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                        className: "factor-filter",
+                        role: "group",
+                        "aria-label": "영향 요인 분류",
+                        children: [
+                            {
+                                key: "all",
+                                label: "전체"
+                            },
+                            {
+                                key: "weather",
+                                label: "날씨"
+                            },
+                            {
+                                key: "price",
+                                label: "가격"
+                            }
+                        ].map((filter)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                type: "button",
+                                "aria-pressed": category === filter.key,
+                                onClick: ()=>{
+                                    setCategory(filter.key);
+                                    if (filter.key !== "all" && !item.factors.some((factor)=>factor.id === expanded && factor.category === filter.key)) setExpanded(null);
+                                },
+                                children: filter.label
+                            }, filter.key, false, {
+                                fileName: "[project]/components/prices/price-factors.tsx",
+                                lineNumber: 30,
+                                columnNumber: 280
+                            }, this))
+                    }, void 0, false, {
+                        fileName: "[project]/components/prices/price-factors.tsx",
+                        lineNumber: 30,
+                        columnNumber: 94
+                    }, this)
+                ]
+            }, void 0, true, {
+                fileName: "[project]/components/prices/price-factors.tsx",
+                lineNumber: 30,
+                columnNumber: 5
+            }, this),
+            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                className: "dashboard-factor-columns",
+                "aria-hidden": "true",
+                children: [
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                        children: "요인"
+                    }, void 0, false, {
+                        fileName: "[project]/components/prices/price-factors.tsx",
+                        lineNumber: 31,
+                        columnNumber: 66
+                    }, this),
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                        children: "현재 상태"
+                    }, void 0, false, {
+                        fileName: "[project]/components/prices/price-factors.tsx",
+                        lineNumber: 31,
+                        columnNumber: 81
+                    }, this),
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                        children: [
+                            "예측에 미친 영향 ",
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("small", {
+                                children: "← 하락 · 0 · 상승 →"
+                            }, void 0, false, {
+                                fileName: "[project]/components/prices/price-factors.tsx",
+                                lineNumber: 31,
+                                columnNumber: 115
+                            }, this)
+                        ]
+                    }, void 0, true, {
+                        fileName: "[project]/components/prices/price-factors.tsx",
+                        lineNumber: 31,
+                        columnNumber: 99
+                    }, this),
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                        children: "상태"
+                    }, void 0, false, {
+                        fileName: "[project]/components/prices/price-factors.tsx",
+                        lineNumber: 31,
+                        columnNumber: 152
+                    }, this),
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {}, void 0, false, {
+                        fileName: "[project]/components/prices/price-factors.tsx",
+                        lineNumber: 31,
+                        columnNumber: 167
+                    }, this)
+                ]
+            }, void 0, true, {
+                fileName: "[project]/components/prices/price-factors.tsx",
+                lineNumber: 31,
+                columnNumber: 5
+            }, this),
+            visible.map((factor)=>{
+                const open = expanded === factor.id;
+                const down = factor.direction === "down";
+                const comparison = factor.historyKey ? (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prices$2f$history$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["compareFactorWeek"])(item.factorHistory, item.baseDate, factor.historyKey) : null;
+                const difference = comparison ? Number(comparison.difference.toFixed(2)) : null;
+                return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                    className: "dashboard-factor-row",
+                    children: [
+                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
+                            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                type: "button",
+                                id: `factor-${factor.id}`,
+                                "aria-expanded": open,
+                                "aria-controls": `factor-content-${factor.id}`,
+                                className: "dashboard-factor-toggle",
+                                onClick: ()=>setExpanded(open ? null : factor.id),
+                                children: [
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                        className: "dashboard-factor-name",
+                                        children: factor.label
+                                    }, void 0, false, {
+                                        fileName: "[project]/components/prices/price-factors.tsx",
+                                        lineNumber: 39,
+                                        columnNumber: 11
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                        className: "dashboard-factor-value",
+                                        children: [
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("strong", {
+                                                children: (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prices$2f$format$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["formatFactorValue"])(factor.value, factor.unit)
+                                            }, void 0, false, {
+                                                fileName: "[project]/components/prices/price-factors.tsx",
+                                                lineNumber: 40,
+                                                columnNumber: 52
+                                            }, this),
+                                            difference !== null && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("small", {
+                                                children: [
+                                                    "7일 전 대비 ",
+                                                    difference > 0 ? "+" : "",
+                                                    (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prices$2f$format$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["formatNumber"])(difference, 2),
+                                                    factor.unit
+                                                ]
+                                            }, void 0, true, {
+                                                fileName: "[project]/components/prices/price-factors.tsx",
+                                                lineNumber: 40,
+                                                columnNumber: 139
+                                            }, this)
+                                        ]
+                                    }, void 0, true, {
+                                        fileName: "[project]/components/prices/price-factors.tsx",
+                                        lineNumber: 40,
+                                        columnNumber: 11
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                        className: "dashboard-factor-impact",
+                                        children: [
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                                className: "shap-bar",
+                                                "aria-hidden": "true",
+                                                children: [
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("i", {
+                                                        className: "shap-zero"
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/components/prices/price-factors.tsx",
+                                                        lineNumber: 41,
+                                                        columnNumber: 99
+                                                    }, this),
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("i", {
+                                                        className: down ? "shap-down" : "shap-up",
+                                                        style: {
+                                                            width: `${Math.abs(factor.shapValue) / maximum * 48}%`,
+                                                            [down ? "right" : "left"]: "50%"
+                                                        }
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/components/prices/price-factors.tsx",
+                                                        lineNumber: 41,
+                                                        columnNumber: 126
+                                                    }, this)
+                                                ]
+                                            }, void 0, true, {
+                                                fileName: "[project]/components/prices/price-factors.tsx",
+                                                lineNumber: 41,
+                                                columnNumber: 53
+                                            }, this),
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("strong", {
+                                                className: down ? "text-blue-700" : "text-red-600",
+                                                children: [
+                                                    factor.shapValue > 0 ? "+" : "",
+                                                    (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prices$2f$format$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["formatNumber"])(factor.shapValue, 1),
+                                                    "원"
+                                                ]
+                                            }, void 0, true, {
+                                                fileName: "[project]/components/prices/price-factors.tsx",
+                                                lineNumber: 41,
+                                                columnNumber: 282
+                                            }, this)
+                                        ]
+                                    }, void 0, true, {
+                                        fileName: "[project]/components/prices/price-factors.tsx",
+                                        lineNumber: 41,
+                                        columnNumber: 11
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                        className: `dashboard-factor-badge ${down ? "is-down" : "is-up"}`,
+                                        children: [
+                                            down ? "하락" : "상승",
+                                            " 요인"
+                                        ]
+                                    }, void 0, true, {
+                                        fileName: "[project]/components/prices/price-factors.tsx",
+                                        lineNumber: 42,
+                                        columnNumber: 11
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("svg", {
+                                        className: `dashboard-factor-chevron ${open ? "is-open" : ""}`,
+                                        viewBox: "0 0 20 20",
+                                        width: "18",
+                                        height: "18",
+                                        fill: "none",
+                                        stroke: "currentColor",
+                                        strokeWidth: "1.5",
+                                        "aria-hidden": "true",
+                                        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("path", {
+                                            d: "m5 7 5 5 5-5"
+                                        }, void 0, false, {
+                                            fileName: "[project]/components/prices/price-factors.tsx",
+                                            lineNumber: 43,
+                                            columnNumber: 194
+                                        }, this)
+                                    }, void 0, false, {
+                                        fileName: "[project]/components/prices/price-factors.tsx",
+                                        lineNumber: 43,
+                                        columnNumber: 11
+                                    }, this)
+                                ]
+                            }, void 0, true, {
+                                fileName: "[project]/components/prices/price-factors.tsx",
+                                lineNumber: 38,
+                                columnNumber: 13
+                            }, this)
+                        }, void 0, false, {
+                            fileName: "[project]/components/prices/price-factors.tsx",
+                            lineNumber: 38,
+                            columnNumber: 9
+                        }, this),
+                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                            id: `factor-content-${factor.id}`,
+                            role: "region",
+                            "aria-labelledby": `factor-${factor.id}`,
+                            hidden: !open,
+                            children: open && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                className: "dashboard-factor-expanded",
+                                children: [
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$prices$2f$factor$2d$history$2d$chart$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FactorHistoryChart"], {
+                                        factor: factor,
+                                        item: item
+                                    }, void 0, false, {
+                                        fileName: "[project]/components/prices/price-factors.tsx",
+                                        lineNumber: 46,
+                                        columnNumber: 63
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                        className: "dashboard-factor-interpretation",
+                                        children: [
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h4", {
+                                                children: "요인 해석"
+                                            }, void 0, false, {
+                                                fileName: "[project]/components/prices/price-factors.tsx",
+                                                lineNumber: 46,
+                                                columnNumber: 162
+                                            }, this),
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                                children: [
+                                                    factor.label,
+                                                    "은 이번 모델의 7일 후 가격 예측에서 ",
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("strong", {
+                                                        className: down ? "text-blue-700" : "text-red-600",
+                                                        children: [
+                                                            "가격을 ",
+                                                            down ? "낮추는" : "높이는",
+                                                            " 방향"
+                                                        ]
+                                                    }, void 0, true, {
+                                                        fileName: "[project]/components/prices/price-factors.tsx",
+                                                        lineNumber: 46,
+                                                        columnNumber: 215
+                                                    }, this),
+                                                    "으로 작용했습니다."
+                                                ]
+                                            }, void 0, true, {
+                                                fileName: "[project]/components/prices/price-factors.tsx",
+                                                lineNumber: 46,
+                                                columnNumber: 176
+                                            }, this),
+                                            comparison && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                                className: "factor-comparison-detail",
+                                                children: [
+                                                    (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prices$2f$format$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["formatDate"])(comparison.previousDate),
+                                                    "의 동일 지표 ",
+                                                    (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prices$2f$format$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["formatFactorValue"])(comparison.previous, factor.unit),
+                                                    "에서 현재 ",
+                                                    (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prices$2f$format$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["formatFactorValue"])(comparison.current, factor.unit),
+                                                    "로 변했습니다."
+                                                ]
+                                            }, void 0, true, {
+                                                fileName: "[project]/components/prices/price-factors.tsx",
+                                                lineNumber: 46,
+                                                columnNumber: 342
+                                            }, this),
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                                className: "factor-interpretation-note",
+                                                children: [
+                                                    "SHAP ",
+                                                    factor.shapValue > 0 ? "+" : "",
+                                                    (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prices$2f$format$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["formatNumber"])(factor.shapValue, 1),
+                                                    "원은 모델 예측에 대한 기여입니다. 실제 가격 변동액이나 인과관계를 뜻하지 않습니다."
+                                                ]
+                                            }, void 0, true, {
+                                                fileName: "[project]/components/prices/price-factors.tsx",
+                                                lineNumber: 46,
+                                                columnNumber: 551
+                                            }, this)
+                                        ]
+                                    }, void 0, true, {
+                                        fileName: "[project]/components/prices/price-factors.tsx",
+                                        lineNumber: 46,
+                                        columnNumber: 113
+                                    }, this)
+                                ]
+                            }, void 0, true, {
+                                fileName: "[project]/components/prices/price-factors.tsx",
+                                lineNumber: 46,
+                                columnNumber: 20
+                            }, this)
+                        }, void 0, false, {
+                            fileName: "[project]/components/prices/price-factors.tsx",
+                            lineNumber: 45,
+                            columnNumber: 9
+                        }, this)
+                    ]
+                }, factor.id, true, {
+                    fileName: "[project]/components/prices/price-factors.tsx",
+                    lineNumber: 37,
+                    columnNumber: 14
+                }, this);
+            }),
+            !visible.length && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                className: "dashboard-factor-empty",
+                children: "이 분류의 분석 요인이 없습니다."
+            }, void 0, false, {
+                fileName: "[project]/components/prices/price-factors.tsx",
+                lineNumber: 50,
+                columnNumber: 25
+            }, this),
+            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                className: "dashboard-factor-note",
+                children: "SHAP은 모델 예측에 대한 기여입니다. 비교값은 기준일과 정확히 7일 전의 동일 지표를 비교합니다."
+            }, void 0, false, {
+                fileName: "[project]/components/prices/price-factors.tsx",
+                lineNumber: 51,
+                columnNumber: 5
+            }, this)
+        ]
+    }, void 0, true, {
+        fileName: "[project]/components/prices/price-factors.tsx",
+        lineNumber: 29,
+        columnNumber: 10
+    }, this);
+}
+_s(PriceFactorAccordion, "W59qil9HJTMZWEIQ/DBiA4iHM4s=");
+_c1 = PriceFactorAccordion;
+var _c, _c1;
+__turbopack_context__.k.register(_c, "PriceFactorSummary");
+__turbopack_context__.k.register(_c1, "PriceFactorAccordion");
+if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
+    __turbopack_context__.k.registerExports(__turbopack_context__.m, globalThis.$RefreshHelpers$);
+}
+}),
+"[project]/lib/home/price-focused-mock.ts [app-client] (ecmascript) <locals>", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "popularIngredients",
+    ()=>popularIngredients
+]);
+// Home selection is a view of the shared price catalog, not a separate price fixture.
+var __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prices$2f$catalog$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/lib/prices/catalog.ts [app-client] (ecmascript)");
+;
+const popularIngredients = [
+    "대파",
+    "양파",
+    "토마토",
+    "감자",
+    "사과",
+    "소고기",
+    "배추"
+];
+if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
+    __turbopack_context__.k.registerExports(__turbopack_context__.m, globalThis.$RefreshHelpers$);
+}
+}),
+"[project]/lib/prices/catalog.ts [app-client] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "featuredPrices",
+    ()=>featuredPrices,
+    "filterPrices",
+    ()=>filterPrices,
+    "findPrice",
+    ()=>findPrice,
+    "priceCatalog",
+    ()=>priceCatalog
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prices$2f$mock$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/lib/prices/mock.ts [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prices$2f$poc$2d$data$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/lib/prices/poc-data.ts [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prices$2f$poc$2d$types$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/lib/prices/poc-types.ts [app-client] (ecmascript)");
+;
+;
+;
+const categories = {
+    VEGETABLE: "채소류",
+    GRAIN: "곡류",
+    FRUIT: "과일류",
+    MEAT: "육류",
+    SEAFOOD: "수산물",
+    ETC: "기타"
+};
+// Legacy fixture adapters: deliberately exclude the obsolete green-onion record.
+const demoItems = __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prices$2f$mock$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["mockPriceItems"].filter((item)=>item.id !== 1).map((item)=>{
+    const last = item.forecast.at(-1);
+    return {
+        id: String(item.id),
+        name: item.name,
+        aliases: item.aliases,
+        category: categories[item.category],
+        categoryCode: item.category,
+        unit: item.unitLabel,
+        image: item.id === 2 ? "/figma/home/onion.png" : null,
+        isPoc: false,
+        isDemo: true,
+        baseDate: item.baseDate,
+        currentPrice: item.currentPrice,
+        forecastDate: last.date,
+        forecastPrice: last.price,
+        ...(0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prices$2f$poc$2d$types$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["forecastMetrics"])(item.currentPrice, last.price),
+        factors: [],
+        priceHistory: item.history,
+        factorHistory: []
+    };
+});
+const priceCatalog = [
+    __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prices$2f$poc$2d$data$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["greenOnionPoc"],
+    ...demoItems
+];
+const featuredPrices = [
+    __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prices$2f$poc$2d$data$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["greenOnionPoc"],
+    ...demoItems.filter((item)=>item.id === "2" || item.id === "13")
+];
+function findPrice(id) {
+    return priceCatalog.find((item)=>item.id === (id === "1" ? __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prices$2f$poc$2d$data$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["greenOnionPoc"].id : id));
+}
+function filterPrices(keyword, category) {
+    const query = keyword.trim().toLocaleLowerCase("ko-KR");
+    return priceCatalog.filter((item)=>(category === "ALL" || item.categoryCode === category) && [
+            item.name,
+            ...item.aliases
+        ].some((name)=>name.toLocaleLowerCase("ko-KR").includes(query)));
+}
+if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
+    __turbopack_context__.k.registerExports(__turbopack_context__.m, globalThis.$RefreshHelpers$);
+}
+}),
+"[project]/lib/prices/data/green-onion-poc.json.[json].cjs [app-client] (ecmascript)", ((__turbopack_context__, module, exports) => {
+
+module.exports = JSON.parse("{\"id\":\"green-onion\",\"name\":\"대파\",\"category\":\"채소류\",\"unit\":\"1kg\",\"baseDate\":\"2026-10-06\",\"currentPrice\":3004,\"forecastDate\":\"2026-10-13\",\"forecastPrice\":2903,\"forecastDelta\":-101,\"forecastPercent\":-3.4,\"actualAfter7Days\":2997,\"priceHistory\":[{\"date\":\"2026-07-08\",\"price\":2867.0},{\"date\":\"2026-07-09\",\"price\":2913.0},{\"date\":\"2026-07-10\",\"price\":2570.0},{\"date\":\"2026-07-13\",\"price\":2893.0},{\"date\":\"2026-07-14\",\"price\":2910.0},{\"date\":\"2026-07-15\",\"price\":2881.0},{\"date\":\"2026-07-16\",\"price\":2793.0},{\"date\":\"2026-07-20\",\"price\":2731.0},{\"date\":\"2026-07-21\",\"price\":2747.0},{\"date\":\"2026-07-22\",\"price\":2779.0},{\"date\":\"2026-07-23\",\"price\":2797.0},{\"date\":\"2026-07-24\",\"price\":2807.0},{\"date\":\"2026-07-27\",\"price\":2790.0},{\"date\":\"2026-07-28\",\"price\":2799.0},{\"date\":\"2026-07-29\",\"price\":2796.0},{\"date\":\"2026-07-30\",\"price\":2752.0},{\"date\":\"2026-07-31\",\"price\":2773.0},{\"date\":\"2026-08-03\",\"price\":2960.0},{\"date\":\"2026-08-04\",\"price\":2975.0},{\"date\":\"2026-08-05\",\"price\":3009.0},{\"date\":\"2026-08-06\",\"price\":3113.0},{\"date\":\"2026-08-07\",\"price\":3129.0},{\"date\":\"2026-08-10\",\"price\":3097.0},{\"date\":\"2026-08-11\",\"price\":3092.0},{\"date\":\"2026-08-12\",\"price\":3125.0},{\"date\":\"2026-08-13\",\"price\":3119.0},{\"date\":\"2026-08-14\",\"price\":3088.0},{\"date\":\"2026-08-18\",\"price\":3093.0},{\"date\":\"2026-08-19\",\"price\":3119.0},{\"date\":\"2026-08-20\",\"price\":3056.0},{\"date\":\"2026-08-21\",\"price\":3050.0},{\"date\":\"2026-08-24\",\"price\":3046.0},{\"date\":\"2026-08-25\",\"price\":3054.0},{\"date\":\"2026-08-26\",\"price\":3044.0},{\"date\":\"2026-08-27\",\"price\":3011.0},{\"date\":\"2026-08-28\",\"price\":2990.0},{\"date\":\"2026-08-31\",\"price\":2994.0},{\"date\":\"2026-09-01\",\"price\":3007.0},{\"date\":\"2026-09-02\",\"price\":3002.0},{\"date\":\"2026-09-03\",\"price\":2648.0},{\"date\":\"2026-09-04\",\"price\":2655.0},{\"date\":\"2026-09-07\",\"price\":2642.0},{\"date\":\"2026-09-08\",\"price\":2650.0},{\"date\":\"2026-09-09\",\"price\":2649.0},{\"date\":\"2026-09-10\",\"price\":2644.0},{\"date\":\"2026-09-11\",\"price\":2640.0},{\"date\":\"2026-09-14\",\"price\":2635.0},{\"date\":\"2026-09-15\",\"price\":2629.0},{\"date\":\"2026-09-16\",\"price\":2619.0},{\"date\":\"2026-09-17\",\"price\":2857.0},{\"date\":\"2026-09-18\",\"price\":2875.0},{\"date\":\"2026-09-21\",\"price\":2879.0},{\"date\":\"2026-09-22\",\"price\":2878.0},{\"date\":\"2026-09-23\",\"price\":2878.0},{\"date\":\"2026-09-28\",\"price\":3015.0},{\"date\":\"2026-09-29\",\"price\":2963.0},{\"date\":\"2026-09-30\",\"price\":3047.0},{\"date\":\"2026-10-01\",\"price\":2999.0},{\"date\":\"2026-10-02\",\"price\":3026.0},{\"date\":\"2026-10-06\",\"price\":3004.0}],\"factors\":[{\"id\":\"temp_ma7\",\"category\":\"weather\",\"label\":\"최근 7일 평균기온\",\"value\":18.22,\"unit\":\"℃\",\"shapValue\":-31.1,\"direction\":\"down\"},{\"id\":\"price_ma3\",\"category\":\"price\",\"label\":\"최근 3일 가격 평균\",\"value\":3026,\"unit\":\"원\",\"shapValue\":27.7,\"direction\":\"up\"},{\"id\":\"price_std7\",\"category\":\"price\",\"label\":\"최근 가격 변동성\",\"value\":27.26,\"unit\":\"\",\"shapValue\":22.1,\"direction\":\"up\"},{\"id\":\"price_lag7\",\"category\":\"price\",\"label\":\"7일 전 가격\",\"value\":2963,\"unit\":\"원\",\"shapValue\":-18.6,\"direction\":\"down\"},{\"id\":\"price_now\",\"category\":\"price\",\"label\":\"현재 가격\",\"value\":3004,\"unit\":\"원\",\"shapValue\":14.6,\"direction\":\"up\"},{\"id\":\"humidity_ma7\",\"category\":\"weather\",\"label\":\"최근 평균습도\",\"value\":67.05,\"unit\":\"%\",\"shapValue\":-11.2,\"direction\":\"down\"}],\"factorHistory\":[{\"date\":\"2026-07-08\",\"temp_ma7\":24.33281940353461,\"humidity_ma7\":83.84696858124694,\"price_ma3\":2988.3333333333335,\"price_std7\":41.716731826511975,\"price_lag7\":2970.0,\"price_now\":2867.0},{\"date\":\"2026-07-09\",\"temp_ma7\":24.824130154639175,\"humidity_ma7\":84.29282032400589,\"price_ma3\":2953.6666666666665,\"price_std7\":59.82951970867585,\"price_lag7\":2979.0,\"price_now\":2913.0},{\"date\":\"2026-07-10\",\"temp_ma7\":25.078032952871872,\"humidity_ma7\":85.43214285714285,\"price_ma3\":2902.6666666666665,\"price_std7\":62.350392369020696,\"price_lag7\":2971.0,\"price_now\":2570.0},{\"date\":\"2026-07-11\",\"temp_ma7\":25.45446888807069,\"humidity_ma7\":85.7252209131075,\"price_ma3\":2783.3333333333335,\"price_std7\":157.34886928944252,\"price_lag7\":2971.0,\"price_now\":2570.0},{\"date\":\"2026-07-12\",\"temp_ma7\":25.950050625920472,\"humidity_ma7\":85.04583946980854,\"price_ma3\":2684.3333333333335,\"price_std7\":194.86552139506577,\"price_lag7\":2971.0,\"price_now\":2570.0},{\"date\":\"2026-07-13\",\"temp_ma7\":26.557290132547863,\"humidity_ma7\":83.21060382916053,\"price_ma3\":2570.0,\"price_std7\":208.63673145993525,\"price_lag7\":3066.0,\"price_now\":2893.0},{\"date\":\"2026-07-14\",\"temp_ma7\":26.984241531664217,\"humidity_ma7\":81.67054491899853,\"price_ma3\":2677.6666666666665,\"price_std7\":177.51029480541175,\"price_lag7\":2928.0,\"price_now\":2910.0},{\"date\":\"2026-07-15\",\"temp_ma7\":27.18718703976436,\"humidity_ma7\":80.89999999999999,\"price_ma3\":2791.0,\"price_std7\":174.75833654070874,\"price_lag7\":2867.0,\"price_now\":2881.0},{\"date\":\"2026-07-16\",\"temp_ma7\":27.460088365243003,\"humidity_ma7\":79.56435935198822,\"price_ma3\":2894.6666666666665,\"price_std7\":176.31168289086503,\"price_lag7\":2913.0,\"price_now\":2793.0},{\"date\":\"2026-07-17\",\"temp_ma7\":27.68659793814433,\"humidity_ma7\":77.99558173784978,\"price_ma3\":2861.3333333333335,\"price_std7\":164.16049057756285,\"price_lag7\":2570.0,\"price_now\":2793.0},{\"date\":\"2026-07-18\",\"temp_ma7\":27.70353460972018,\"humidity_ma7\":78.14197349042709,\"price_ma3\":2822.3333333333335,\"price_std7\":146.08836204095434,\"price_lag7\":2570.0,\"price_now\":2793.0},{\"date\":\"2026-07-19\",\"temp_ma7\":27.351546391752574,\"humidity_ma7\":80.04477172312224,\"price_ma3\":2793.0,\"price_std7\":115.61533099854968,\"price_lag7\":2570.0,\"price_now\":2793.0},{\"date\":\"2026-07-20\",\"temp_ma7\":26.916494845360827,\"humidity_ma7\":81.83902798232694,\"price_ma3\":2793.0,\"price_std7\":54.99047536575599,\"price_lag7\":2893.0,\"price_now\":2731.0},{\"date\":\"2026-07-21\",\"temp_ma7\":26.573932253313696,\"humidity_ma7\":83.48689248895434,\"price_ma3\":2772.3333333333335,\"price_std7\":61.04057978879156,\"price_lag7\":2910.0,\"price_now\":2747.0},{\"date\":\"2026-07-22\",\"temp_ma7\":26.485714285714288,\"humidity_ma7\":84.21575846833579,\"price_ma3\":2757.0,\"price_std7\":47.69146873892276,\"price_lag7\":2881.0,\"price_now\":2779.0},{\"date\":\"2026-07-23\",\"temp_ma7\":26.555522827687778,\"humidity_ma7\":85.08954344624446,\"price_ma3\":2752.3333333333335,\"price_std7\":25.915613973404273,\"price_lag7\":2793.0,\"price_now\":2797.0},{\"date\":\"2026-07-24\",\"temp_ma7\":26.756259204712816,\"humidity_ma7\":85.7677466863034,\"price_ma3\":2774.3333333333335,\"price_std7\":26.40346297632788,\"price_lag7\":2793.0,\"price_now\":2807.0},{\"date\":\"2026-07-25\",\"temp_ma7\":26.978350515463916,\"humidity_ma7\":84.98762886597936,\"price_ma3\":2794.3333333333335,\"price_std7\":28.351534769902404,\"price_lag7\":2793.0,\"price_now\":2807.0},{\"date\":\"2026-07-26\",\"temp_ma7\":27.39882179675994,\"humidity_ma7\":83.4979381443299,\"price_ma3\":2803.6666666666665,\"price_std7\":30.019041576011706,\"price_lag7\":2793.0,\"price_now\":2807.0},{\"date\":\"2026-07-27\",\"temp_ma7\":27.857142857142858,\"humidity_ma7\":82.02562592047127,\"price_ma3\":2807.0,\"price_std7\":31.45064160144147,\"price_lag7\":2731.0,\"price_now\":2790.0},{\"date\":\"2026-07-28\",\"temp_ma7\":28.185419734904276,\"humidity_ma7\":80.68777614138438,\"price_ma3\":2801.3333333333335,\"price_std7\":21.92302551242677,\"price_lag7\":2747.0,\"price_now\":2799.0},{\"date\":\"2026-07-29\",\"temp_ma7\":28.400441826215022,\"humidity_ma7\":79.53843888070693,\"price_ma3\":2798.6666666666665,\"price_std7\":10.567244989406534,\"price_lag7\":2779.0,\"price_now\":2796.0},{\"date\":\"2026-07-30\",\"temp_ma7\":28.59764359351988,\"humidity_ma7\":77.89882179675995,\"price_ma3\":2795.0,\"price_std7\":6.729466121854541,\"price_lag7\":2797.0,\"price_now\":2752.0},{\"date\":\"2026-07-31\",\"temp_ma7\":28.69882179675994,\"humidity_ma7\":76.54727540500735,\"price_ma3\":2782.3333333333335,\"price_std7\":19.646882704374946,\"price_lag7\":2807.0,\"price_now\":2773.0},{\"date\":\"2026-08-01\",\"temp_ma7\":28.83181148748159,\"humidity_ma7\":75.72577319587629,\"price_ma3\":2773.6666666666665,\"price_std7\":20.09501241126732,\"price_lag7\":2807.0,\"price_now\":2773.0},{\"date\":\"2026-08-02\",\"temp_ma7\":29.061119293078058,\"humidity_ma7\":74.73313696612665,\"price_ma3\":2766.0,\"price_std7\":19.146055169953172,\"price_lag7\":2807.0,\"price_now\":2773.0},{\"date\":\"2026-08-03\",\"temp_ma7\":29.218262150220912,\"humidity_ma7\":73.78512518409424,\"price_ma3\":2773.0,\"price_std7\":16.561573424200255,\"price_lag7\":2790.0,\"price_now\":2960.0},{\"date\":\"2026-08-04\",\"temp_ma7\":29.42017673048601,\"humidity_ma7\":73.02061855670102,\"price_ma3\":2835.3333333333335,\"price_std7\":70.7241455367558,\"price_lag7\":2799.0,\"price_now\":2975.0},{\"date\":\"2026-08-05\",\"temp_ma7\":29.528129602356405,\"humidity_ma7\":73.10382916053018,\"price_ma3\":2902.6666666666665,\"price_std7\":95.65812140365108,\"price_lag7\":2796.0,\"price_now\":3009.0},{\"date\":\"2026-08-06\",\"temp_ma7\":29.580826583210605,\"humidity_ma7\":73.63251564801178,\"price_ma3\":2981.3333333333335,\"price_std7\":115.32087738958732,\"price_lag7\":2752.0,\"price_now\":3113.0},{\"date\":\"2026-08-07\",\"temp_ma7\":29.713503313696613,\"humidity_ma7\":73.62664150711831,\"price_ma3\":3032.3333333333335,\"price_std7\":137.86276820498836,\"price_lag7\":2773.0,\"price_now\":3129.0},{\"date\":\"2026-08-08\",\"temp_ma7\":29.86806271477663,\"humidity_ma7\":72.95527736867943,\"price_ma3\":3083.6666666666665,\"price_std7\":144.05637124139153,\"price_lag7\":2773.0,\"price_now\":3129.0},{\"date\":\"2026-08-09\",\"temp_ma7\":29.63293292832597,\"humidity_ma7\":73.04270679921453,\"price_ma3\":3123.6666666666665,\"price_std7\":128.309336037115,\"price_lag7\":2773.0,\"price_now\":3129.0},{\"date\":\"2026-08-10\",\"temp_ma7\":29.22831676485027,\"humidity_ma7\":73.39805780559645,\"price_ma3\":3129.0,\"price_std7\":78.35359413763595,\"price_lag7\":2960.0,\"price_now\":3097.0},{\"date\":\"2026-08-11\",\"temp_ma7\":28.78192501227295,\"humidity_ma7\":72.98362481590574,\"price_ma3\":3118.3333333333335,\"price_std7\":64.01041581909179,\"price_lag7\":2975.0,\"price_now\":3092.0},{\"date\":\"2026-08-12\",\"temp_ma7\":28.157477295041726,\"humidity_ma7\":71.39098858615611,\"price_ma3\":3106.0,\"price_std7\":42.905766068262864,\"price_lag7\":3009.0,\"price_now\":3125.0},{\"date\":\"2026-08-13\",\"temp_ma7\":27.436495152184587,\"humidity_ma7\":70.1597984167894,\"price_ma3\":3104.6666666666665,\"price_std7\":15.986601532883732,\"price_lag7\":3113.0,\"price_now\":3119.0},{\"date\":\"2026-08-14\",\"temp_ma7\":26.88187438635248,\"humidity_ma7\":70.34991408934708,\"price_ma3\":3112.0,\"price_std7\":15.941858647680675,\"price_lag7\":3129.0,\"price_now\":3088.0},{\"date\":\"2026-08-15\",\"temp_ma7\":26.316269329896905,\"humidity_ma7\":71.51730179185076,\"price_ma3\":3110.6666666666665,\"price_std7\":18.227399574208363,\"price_lag7\":3129.0,\"price_now\":3088.0},{\"date\":\"2026-08-16\",\"temp_ma7\":25.894108983799704,\"humidity_ma7\":73.10822287677958,\"price_ma3\":3098.3333333333335,\"price_std7\":18.173764450037623,\"price_lag7\":3129.0,\"price_now\":3088.0},{\"date\":\"2026-08-17\",\"temp_ma7\":25.41418906480118,\"humidity_ma7\":75.6823269513991,\"price_ma3\":3088.0,\"price_std7\":15.757084574420338,\"price_lag7\":3097.0,\"price_now\":3088.0},{\"date\":\"2026-08-18\",\"temp_ma7\":25.130683910162,\"humidity_ma7\":78.62739322533137,\"price_ma3\":3088.0,\"price_std7\":16.357610723181622,\"price_lag7\":3092.0,\"price_now\":3093.0},{\"date\":\"2026-08-19\",\"temp_ma7\":25.350208640157096,\"humidity_ma7\":80.96118372606773,\"price_ma3\":3089.6666666666665,\"price_std7\":16.297823401263297,\"price_lag7\":3125.0,\"price_now\":3119.0},{\"date\":\"2026-08-20\",\"temp_ma7\":25.6253574496809,\"humidity_ma7\":83.32873197814122,\"price_ma3\":3100.0,\"price_std7\":14.751916743893396,\"price_lag7\":3119.0,\"price_now\":3056.0},{\"date\":\"2026-08-21\",\"temp_ma7\":25.787567501227297,\"humidity_ma7\":84.72675383691185,\"price_ma3\":3089.3333333333335,\"price_std7\":18.292595431450923,\"price_lag7\":3088.0,\"price_now\":3050.0},{\"date\":\"2026-08-22\",\"temp_ma7\":25.78576184339715,\"humidity_ma7\":86.26427684869388,\"price_ma3\":3075.0,\"price_std7\":23.412450899949334,\"price_lag7\":3088.0,\"price_now\":3050.0},{\"date\":\"2026-08-23\",\"temp_ma7\":25.918934094256254,\"humidity_ma7\":86.61814743043173,\"price_ma3\":3052.0,\"price_std7\":26.32308420197819,\"price_lag7\":3088.0,\"price_now\":3050.0},{\"date\":\"2026-08-24\",\"temp_ma7\":26.47712782277859,\"humidity_ma7\":85.07172192724077,\"price_ma3\":3050.0,\"price_std7\":27.72913200777159,\"price_lag7\":3088.0,\"price_now\":3046.0},{\"date\":\"2026-08-25\",\"temp_ma7\":26.982738095238098,\"humidity_ma7\":83.27092418546366,\"price_ma3\":3048.6666666666665,\"price_std7\":28.30026080983017,\"price_lag7\":3093.0,\"price_now\":3054.0},{\"date\":\"2026-08-26\",\"temp_ma7\":27.17440476190476,\"humidity_ma7\":82.68104323308272,\"price_ma3\":3050.0,\"price_std7\":25.901829315791513,\"price_lag7\":3119.0,\"price_now\":3044.0},{\"date\":\"2026-08-27\",\"temp_ma7\":27.404613095238098,\"humidity_ma7\":81.93888157894737,\"price_ma3\":3048.0,\"price_std7\":4.163331998885944,\"price_lag7\":3056.0,\"price_now\":3011.0},{\"date\":\"2026-08-28\",\"temp_ma7\":27.54479166666667,\"humidity_ma7\":81.6311011904762,\"price_ma3\":3036.3333333333335,\"price_std7\":14.717983816360558,\"price_lag7\":3050.0,\"price_now\":2990.0},{\"date\":\"2026-08-29\",\"temp_ma7\":27.472767857142856,\"humidity_ma7\":82.14940476190476,\"price_ma3\":3015.0,\"price_std7\":24.54248017892488,\"price_lag7\":3050.0,\"price_now\":2990.0},{\"date\":\"2026-08-30\",\"temp_ma7\":27.448137579774176,\"humidity_ma7\":82.50451797987236,\"price_ma3\":2997.0,\"price_std7\":28.576547160540912,\"price_lag7\":3050.0,\"price_now\":2990.0},{\"date\":\"2026-08-31\",\"temp_ma7\":27.18729289396171,\"humidity_ma7\":83.63194495581737,\"price_ma3\":2990.0,\"price_std7\":29.31682435864681,\"price_lag7\":3046.0,\"price_now\":2994.0},{\"date\":\"2026-09-01\",\"temp_ma7\":26.77387702503682,\"humidity_ma7\":85.39238923662249,\"price_ma3\":2991.3333333333335,\"price_std7\":27.53093498143367,\"price_lag7\":3054.0,\"price_now\":3007.0},{\"date\":\"2026-09-02\",\"temp_ma7\":26.39994630584192,\"humidity_ma7\":86.72521017427589,\"price_ma3\":2997.0,\"price_std7\":19.7713115878614,\"price_lag7\":3044.0,\"price_now\":3002.0},{\"date\":\"2026-09-03\",\"temp_ma7\":26.02063082965145,\"humidity_ma7\":87.81345422189494,\"price_ma3\":3001.0,\"price_std7\":8.88283524018638,\"price_lag7\":3011.0,\"price_now\":2648.0},{\"date\":\"2026-09-04\",\"temp_ma7\":25.688345299459993,\"humidity_ma7\":87.65104780314186,\"price_ma3\":2885.6666666666665,\"price_std7\":131.51226631183758,\"price_lag7\":2990.0,\"price_now\":2655.0},{\"date\":\"2026-09-05\",\"temp_ma7\":25.475724104074622,\"humidity_ma7\":84.1417602479136,\"price_ma3\":2768.3333333333335,\"price_std7\":168.51805046739898,\"price_lag7\":2990.0,\"price_now\":2655.0},{\"date\":\"2026-09-06\",\"temp_ma7\":25.051570937653416,\"humidity_ma7\":80.97121532891506,\"price_ma3\":2652.6666666666665,\"price_std7\":184.81651132174943,\"price_lag7\":2990.0,\"price_now\":2655.0},{\"date\":\"2026-09-07\",\"temp_ma7\":24.674398625429554,\"humidity_ma7\":77.92850546146293,\"price_ma3\":2655.0,\"price_std7\":185.93521657261223,\"price_lag7\":2994.0,\"price_now\":2642.0},{\"date\":\"2026-09-08\",\"temp_ma7\":24.28102601865488,\"humidity_ma7\":74.8800518532155,\"price_ma3\":2650.6666666666665,\"price_std7\":172.56303196223527,\"price_lag7\":3007.0,\"price_now\":2650.0},{\"date\":\"2026-09-09\",\"temp_ma7\":23.8393470790378,\"humidity_ma7\":72.43837291359843,\"price_ma3\":2649.0,\"price_std7\":132.8156617270696,\"price_lag7\":3002.0,\"price_now\":2649.0},{\"date\":\"2026-09-10\",\"temp_ma7\":23.18645066273932,\"humidity_ma7\":69.52091310751105,\"price_ma3\":2647.0,\"price_std7\":4.859943170283432,\"price_lag7\":2648.0,\"price_now\":2644.0},{\"date\":\"2026-09-11\",\"temp_ma7\":22.321265954835543,\"humidity_ma7\":67.90221833578792,\"price_ma3\":2647.6666666666665,\"price_std7\":5.416025603029436,\"price_lag7\":2655.0,\"price_now\":2640.0},{\"date\":\"2026-09-12\",\"temp_ma7\":21.80020557191949,\"humidity_ma7\":68.47261597938144,\"price_ma3\":2644.3333333333335,\"price_std7\":6.039552175081103,\"price_lag7\":2655.0,\"price_now\":2640.0},{\"date\":\"2026-09-13\",\"temp_ma7\":21.48164887088856,\"humidity_ma7\":69.52799153166421,\"price_ma3\":2641.3333333333335,\"price_std7\":5.736267244828974,\"price_lag7\":2655.0,\"price_now\":2640.0},{\"date\":\"2026-09-14\",\"temp_ma7\":21.288423539518902,\"humidity_ma7\":70.61856590574374,\"price_ma3\":2640.0,\"price_std7\":4.3149794458820425,\"price_lag7\":2642.0,\"price_now\":2635.0},{\"date\":\"2026-09-15\",\"temp_ma7\":21.130926300932742,\"humidity_ma7\":70.92785499509081,\"price_ma3\":2638.3333333333335,\"price_std7\":5.411627692760483,\"price_lag7\":2650.0,\"price_now\":2629.0},{\"date\":\"2026-09-16\",\"temp_ma7\":20.9008514359352,\"humidity_ma7\":70.9181118065783,\"price_ma3\":2634.6666666666665,\"price_std7\":6.347102826097518,\"price_lag7\":2649.0,\"price_now\":2619.0},{\"date\":\"2026-09-17\",\"temp_ma7\":20.91631535346097,\"humidity_ma7\":71.24668323514973,\"price_ma3\":2627.6666666666665,\"price_std7\":8.635475005509145,\"price_lag7\":2644.0,\"price_now\":2857.0},{\"date\":\"2026-09-18\",\"temp_ma7\":21.217877086401568,\"humidity_ma7\":70.81707167403043,\"price_ma3\":2701.6666666666665,\"price_std7\":84.70284191555048,\"price_lag7\":2640.0,\"price_now\":2875.0},{\"date\":\"2026-09-19\",\"temp_ma7\":21.472689617083947,\"humidity_ma7\":70.6952472999509,\"price_ma3\":2783.6666666666665,\"price_std7\":114.23472076637076,\"price_lag7\":2640.0,\"price_now\":2875.0},{\"date\":\"2026-09-20\",\"temp_ma7\":21.60199742268041,\"humidity_ma7\":70.57845790378006,\"price_ma3\":2869.0,\"price_std7\":127.65112425595308,\"price_lag7\":2640.0,\"price_now\":2875.0},{\"date\":\"2026-09-21\",\"temp_ma7\":21.54441273932253,\"humidity_ma7\":70.15769207167402,\"price_ma3\":2875.0,\"price_std7\":130.03955442204867,\"price_lag7\":2635.0,\"price_now\":2879.0},{\"date\":\"2026-09-22\",\"temp_ma7\":21.46244016936671,\"humidity_ma7\":70.07638530927835,\"price_ma3\":2876.3333333333335,\"price_std7\":121.3503389443309,\"price_lag7\":2629.0,\"price_now\":2878.0},{\"date\":\"2026-09-23\",\"temp_ma7\":21.584315169366715,\"humidity_ma7\":69.92965911880216,\"price_ma3\":2877.3333333333335,\"price_std7\":96.3507975601418,\"price_lag7\":2619.0,\"price_now\":2878.0},{\"date\":\"2026-09-24\",\"temp_ma7\":21.653890525282275,\"humidity_ma7\":70.73015463917525,\"price_ma3\":2878.3333333333335,\"price_std7\":7.625146368569404,\"price_lag7\":2857.0,\"price_now\":2878.0},{\"date\":\"2026-09-25\",\"temp_ma7\":21.711622484045165,\"humidity_ma7\":72.01837260677466,\"price_ma3\":2878.0,\"price_std7\":1.772810520644637,\"price_lag7\":2875.0,\"price_now\":2878.0},{\"date\":\"2026-09-26\",\"temp_ma7\":21.487148686794303,\"humidity_ma7\":73.95890095729013,\"price_ma3\":2878.0,\"price_std7\":1.6035674512411011,\"price_lag7\":2875.0,\"price_now\":2878.0},{\"date\":\"2026-09-27\",\"temp_ma7\":21.148562530682376,\"humidity_ma7\":76.03077135493372,\"price_ma3\":2878.0,\"price_std7\":1.2535663407574298,\"price_lag7\":2875.0,\"price_now\":2878.0},{\"date\":\"2026-09-28\",\"temp_ma7\":21.084939555719192,\"humidity_ma7\":77.92458578792342,\"price_ma3\":2878.0,\"price_std7\":0.37796447201871375,\"price_lag7\":2879.0,\"price_now\":3015.0},{\"date\":\"2026-09-29\",\"temp_ma7\":21.039284180166913,\"humidity_ma7\":79.17554307805597,\"price_ma3\":2923.6666666666665,\"price_std7\":51.78113280225693,\"price_lag7\":2878.0,\"price_now\":2963.0},{\"date\":\"2026-09-30\",\"temp_ma7\":20.818176239567993,\"humidity_ma7\":80.3364307191949,\"price_ma3\":2952.0,\"price_std7\":56.20413474028423,\"price_lag7\":2878.0,\"price_now\":3047.0},{\"date\":\"2026-10-01\",\"temp_ma7\":20.757879234167895,\"humidity_ma7\":80.56288659793815,\"price_ma3\":3008.3333333333335,\"price_std7\":73.8408842747395,\"price_lag7\":2878.0,\"price_now\":2999.0},{\"date\":\"2026-10-02\",\"temp_ma7\":20.2453117329406,\"humidity_ma7\":77.86514328669612,\"price_ma3\":3003.0,\"price_std7\":72.74024235003719,\"price_lag7\":2878.0,\"price_now\":3026.0},{\"date\":\"2026-10-03\",\"temp_ma7\":19.483456062837508,\"humidity_ma7\":74.22729350760923,\"price_ma3\":3024.0,\"price_std7\":69.36789431649241,\"price_lag7\":2878.0,\"price_now\":3026.0},{\"date\":\"2026-10-04\",\"temp_ma7\":18.997889052528222,\"humidity_ma7\":71.44157922189494,\"price_ma3\":3017.0,\"price_std7\":57.35520070245022,\"price_lag7\":2878.0,\"price_now\":3026.0},{\"date\":\"2026-10-05\",\"temp_ma7\":18.700245459008347,\"humidity_ma7\":69.2247898257241,\"price_ma3\":3026.0,\"price_std7\":26.912556814338597,\"price_lag7\":3015.0,\"price_now\":3026.0},{\"date\":\"2026-10-06\",\"temp_ma7\":18.22218949435444,\"humidity_ma7\":67.0489429921453,\"price_ma3\":3026.0,\"price_std7\":27.26064667505422,\"price_lag7\":2963.0,\"price_now\":3004.0}]}");
+if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
+    __turbopack_context__.k.registerExports(__turbopack_context__.m, globalThis.$RefreshHelpers$);
+}
+}),
+"[project]/lib/prices/forecast-chart.ts [app-client] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "forecastChart",
+    ()=>forecastChart
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prices$2f$history$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/lib/prices/history.ts [app-client] (ecmascript)");
+;
+function forecastChart(item, days, bounds) {
+    const past = (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prices$2f$history$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["historyForPeriod"])(item.priceHistory, item.baseDate, days);
+    const values = [
+        ...past.map((point)=>point.price),
+        item.currentPrice,
+        item.forecastPrice
+    ];
+    const low = Math.min(...values), high = Math.max(...values);
+    const padding = (high - low || 100) * .25;
+    const min = low - padding, max = high + padding;
+    const start = (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prices$2f$history$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["dateNumber"])(item.baseDate) - (days - 1) * 86_400_000;
+    const end = (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prices$2f$history$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["dateNumber"])(item.forecastDate);
+    const x = (date)=>bounds.left + ((0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prices$2f$history$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["dateNumber"])(date) - start) / Math.max(1, end - start) * (bounds.right - bounds.left);
+    const y = (price)=>bounds.bottom - (price - min) / (max - min) * (bounds.bottom - bounds.top);
+    const currentX = x(item.baseDate), forecastX = x(item.forecastDate);
+    const actualPath = past.map((point, index)=>`${index ? "L" : "M"}${x(point.date).toFixed(2)},${y(point.price).toFixed(2)}`).join(" ");
+    const forecastPath = `M${currentX.toFixed(2)},${y(item.currentPrice).toFixed(2)} L${forecastX.toFixed(2)},${y(item.forecastPrice).toFixed(2)}`;
+    return {
+        past,
+        min,
+        max,
+        x,
+        y,
+        currentX,
+        forecastX,
+        actualPath,
+        forecastPath
+    };
+}
+if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
+    __turbopack_context__.k.registerExports(__turbopack_context__.m, globalThis.$RefreshHelpers$);
+}
+}),
+"[project]/lib/prices/format.ts [app-client] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "changeRate",
+    ()=>changeRate,
+    "forecastRate",
+    ()=>forecastRate,
+    "formatDate",
+    ()=>formatDate,
+    "formatFactorValue",
+    ()=>formatFactorValue,
+    "formatNumber",
+    ()=>formatNumber,
+    "formatPercent",
+    ()=>formatPercent,
+    "formatWon",
+    ()=>formatWon,
+    "recommendationLabel",
+    ()=>recommendationLabel,
+    "won",
+    ()=>won
+]);
+function formatNumber(value, decimals = 0) {
+    const [integer, fraction] = value.toFixed(decimals).split(".");
+    return integer.replace(/\B(?=(\d{3})+(?!\d))/g, ",") + (fraction === undefined ? "" : `.${fraction}`);
+}
+const formatWon = (price)=>`${formatNumber(price)}원`;
+const won = formatWon;
+const formatPercent = (value)=>`${value > 0 ? "+" : ""}${formatNumber(value, 1)}%`;
+const formatDate = (date)=>date.replaceAll("-", ".");
+const formatFactorValue = (value, unit = "")=>`${formatNumber(value, Number.isInteger(value) ? 0 : 2)}${unit}`;
+const changeRate = (current, previous)=>previous > 0 ? (current - previous) / previous * 100 : 0;
+const forecastRate = (item)=>changeRate(item.forecast.at(-1)?.price ?? item.currentPrice, item.currentPrice);
+const recommendationLabel = (item)=>({
+        BUY_NOW: "지금 구매 추천",
+        BUY_LATER: `${item.buyAfterDays ?? 0}일 뒤 구매 추천`,
+        HOLD: "구매 보류",
+        STABLE: "가격 보합세"
+    })[item.recommendation];
+if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
+    __turbopack_context__.k.registerExports(__turbopack_context__.m, globalThis.$RefreshHelpers$);
+}
+}),
+"[project]/lib/prices/history.ts [app-client] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+// Date-only UTC arithmetic; never uses the current clock or host time zone.
+__turbopack_context__.s([
+    "compareFactorWeek",
+    ()=>compareFactorWeek,
+    "dateNumber",
+    ()=>dateNumber,
+    "historyForPeriod",
+    ()=>historyForPeriod
+]);
+const dateNumber = (date)=>Date.parse(`${date}T00:00:00Z`);
+function historyForPeriod(history, baseDate, days) {
+    const end = dateNumber(baseDate);
+    const start = end - (days - 1) * 86_400_000;
+    return history.filter((point)=>dateNumber(point.date) >= start && dateNumber(point.date) <= end).toSorted((a, b)=>a.date.localeCompare(b.date, "en"));
+}
+function compareFactorWeek(history, baseDate, key) {
+    const previousDate = new Date(dateNumber(baseDate) - 7 * 86_400_000).toISOString().slice(0, 10);
+    const current = history.find((point)=>point.date === baseDate)?.[key];
+    const previous = history.find((point)=>point.date === previousDate)?.[key];
+    if (current === undefined || previous === undefined || !Number.isFinite(current) || !Number.isFinite(previous)) return null;
+    return {
+        current,
+        previous,
+        previousDate,
+        difference: current - previous
+    };
+}
+if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
+    __turbopack_context__.k.registerExports(__turbopack_context__.m, globalThis.$RefreshHelpers$);
+}
+}),
+"[project]/lib/prices/mock.ts [app-client] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "MOCK_BASE_DATE",
+    ()=>MOCK_BASE_DATE,
+    "mockPriceItems",
+    ()=>mockPriceItems,
+    "mockPricesSource",
+    ()=>mockPricesSource
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prices$2f$format$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/lib/prices/format.ts [app-client] (ecmascript)");
+;
+const MOCK_BASE_DATE = "2026-10-06";
+const day = (offset)=>{
+    const date = new Date(`${MOCK_BASE_DATE}T00:00:00Z`);
+    date.setUTCDate(date.getUTCDate() + offset);
+    return date.toISOString().slice(0, 10);
+};
+const seeds = [
+    [
+        1,
+        "흙대파",
+        "VEGETABLE",
+        "1단 · 800g",
+        3250,
+        3004,
+        3450,
+        "BUY_LATER",
+        [
+            "대파",
+            "파",
+            "다진 파"
+        ]
+    ],
+    [
+        2,
+        "양파",
+        "VEGETABLE",
+        "1.5kg",
+        4200,
+        4795,
+        3800,
+        "BUY_LATER",
+        [
+            "깐양파"
+        ]
+    ],
+    [
+        3,
+        "시금치",
+        "VEGETABLE",
+        "1단",
+        5400,
+        5702,
+        4900,
+        "HOLD",
+        []
+    ],
+    [
+        4,
+        "삼겹살",
+        "MEAT",
+        "국산 냉장 · 100g",
+        2680,
+        2710,
+        2650,
+        "STABLE",
+        [
+            "돼지고기"
+        ]
+    ],
+    [
+        5,
+        "쌀",
+        "GRAIN",
+        "20kg",
+        58000,
+        58500,
+        59600,
+        "BUY_NOW",
+        [
+            "백미"
+        ]
+    ],
+    [
+        6,
+        "사과",
+        "FRUIT",
+        "10개",
+        22500,
+        23200,
+        21800,
+        "BUY_LATER",
+        []
+    ],
+    [
+        7,
+        "감자",
+        "VEGETABLE",
+        "1kg",
+        3100,
+        3500,
+        2950,
+        "BUY_LATER",
+        []
+    ],
+    [
+        8,
+        "배추",
+        "VEGETABLE",
+        "1포기",
+        6200,
+        5800,
+        6550,
+        "BUY_NOW",
+        []
+    ],
+    [
+        9,
+        "한우 등심",
+        "MEAT",
+        "1등급 · 100g",
+        9800,
+        9950,
+        9700,
+        "STABLE",
+        [
+            "소고기"
+        ]
+    ],
+    [
+        10,
+        "배",
+        "FRUIT",
+        "10개",
+        32000,
+        33000,
+        31000,
+        "HOLD",
+        []
+    ],
+    [
+        11,
+        "고구마",
+        "GRAIN",
+        "1kg",
+        4500,
+        4700,
+        4600,
+        "BUY_NOW",
+        []
+    ],
+    [
+        12,
+        "오이",
+        "VEGETABLE",
+        "10개",
+        7800,
+        8200,
+        7200,
+        "BUY_LATER",
+        []
+    ],
+    [
+        13,
+        "토마토",
+        "VEGETABLE",
+        "1kg",
+        6500,
+        6800,
+        6300,
+        "HOLD",
+        []
+    ]
+];
+const mockPriceItems = seeds.map(([id, name, category, unitLabel, currentPrice, previous, end, recommendation, aliases])=>{
+    const history = Array.from({
+        length: 91
+    }, (_, i)=>{
+        const offset = i - 90;
+        const price = offset === 0 ? currentPrice : offset === -7 ? previous : Math.round((currentPrice + (previous - currentPrice) * Math.min(-offset / 14, 1) + Math.sin(i * 0.7 + id) * currentPrice * 0.025) / 10) * 10;
+        return {
+            date: day(offset),
+            price
+        };
+    });
+    const forecast = Array.from({
+        length: 7
+    }, (_, i)=>{
+        const n = i + 1;
+        // Day-three dip supports the leek's purchase guide, then recovers.
+        const price = id === 1 ? [
+            3180,
+            2980,
+            2800,
+            3040,
+            3190,
+            3310,
+            3450
+        ][i] : Math.round((currentPrice + (end - currentPrice) * n / 7) / 10) * 10;
+        const width = Math.round(currentPrice * (0.025 + n * 0.005));
+        return {
+            date: day(n),
+            price,
+            lower: price - width,
+            upper: price + width
+        };
+    });
+    return {
+        id,
+        name,
+        category,
+        unitLabel,
+        aliases,
+        currentPrice,
+        history,
+        forecast,
+        recommendation,
+        baseDate: MOCK_BASE_DATE,
+        updatedAt: `${MOCK_BASE_DATE}T06:00:00+09:00`,
+        weeklyChangeRate: (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prices$2f$format$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["changeRate"])(currentPrice, previous),
+        buyAfterDays: recommendation === "BUY_LATER" ? id === 1 ? 3 : 7 : null,
+        expectedSaving: recommendation === "BUY_LATER" ? currentPrice - Math.min(...forecast.map((p)=>p.price)) : null,
+        mape: 3.8,
+        factors: [
+            {
+                kind: "WEATHER",
+                direction: "UP",
+                contribution: 34,
+                description: "전국 평균 강수량 증가"
+            },
+            {
+                kind: "PRODUCTION",
+                direction: "DOWN",
+                contribution: 28,
+                description: "출하량 회복"
+            },
+            {
+                kind: "SEASONAL",
+                direction: "UP",
+                contribution: 22,
+                description: "계절 수요 증가"
+            },
+            {
+                kind: "TREND",
+                direction: "DOWN",
+                contribution: 16,
+                description: "단기 이동평균 하락"
+            }
+        ],
+        inventory: id === 1 ? [
+            {
+                quantity: 0.2,
+                initialQuantity: 1,
+                unit: "단"
+            }
+        ] : [],
+        regions: [
+            {
+                code: "SEOUL",
+                name: "서울",
+                price: currentPrice + 30
+            },
+            {
+                code: "DAEGU",
+                name: "대구",
+                price: currentPrice - 100
+            },
+            {
+                code: "BUSAN",
+                name: "부산",
+                price: currentPrice + 60
+            },
+            {
+                code: "DAEJEON",
+                name: "대전",
+                price: currentPrice - 40
+            },
+            {
+                code: "GWANGJU",
+                name: "광주",
+                price: currentPrice + 10
+            }
+        ]
+    };
+});
+const mockPricesSource = {
+    async list (query) {
+        const keyword = query.keyword.trim().toLocaleLowerCase("ko-KR");
+        const filtered = mockPriceItems.filter((item)=>(query.category === "ALL" || item.category === query.category) && [
+                item.name,
+                ...item.aliases
+            ].some((name)=>name.toLocaleLowerCase("ko-KR").includes(keyword)));
+        filtered.sort((a, b)=>query.sort === "name" ? a.name.localeCompare(b.name, "ko") : query.sort === "forecast-drop" ? (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prices$2f$format$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["forecastRate"])(a) - (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prices$2f$format$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["forecastRate"])(b) : a.weeklyChangeRate - b.weeklyChangeRate);
+        const start = (query.page - 1) * query.size;
+        return {
+            items: filtered.slice(start, start + query.size),
+            total: filtered.length
+        };
+    },
+    async detail (id) {
+        return mockPriceItems.find((item)=>item.id === id) ?? null;
+    },
+    async chart (id, period) {
+        const item = await this.detail(id);
+        if (!item) throw new Error("품목을 찾을 수 없습니다.");
+        return {
+            history: item.history.slice(-(period + 1)),
+            forecast: item.forecast
+        };
+    },
+    async regions (id) {
+        return (await this.detail(id))?.regions ?? [];
+    }
+};
+if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
+    __turbopack_context__.k.registerExports(__turbopack_context__.m, globalThis.$RefreshHelpers$);
+}
+}),
+"[project]/lib/prices/poc-data.ts [app-client] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "factorSummary",
+    ()=>factorSummary,
+    "greenOnionPoc",
+    ()=>greenOnionPoc
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prices$2f$data$2f$green$2d$onion$2d$poc$2e$json$2e5b$json$5d2e$cjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/lib/prices/data/green-onion-poc.json.[json].cjs [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prices$2f$poc$2d$types$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/lib/prices/poc-types.ts [app-client] (ecmascript)");
+;
+;
+const factorKeys = [
+    "temp_ma7",
+    "humidity_ma7",
+    "price_ma3",
+    "price_std7",
+    "price_lag7",
+    "price_now"
+];
+const factors = __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prices$2f$data$2f$green$2d$onion$2d$poc$2e$json$2e5b$json$5d2e$cjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].factors.map((factor)=>{
+    if (!factorKeys.includes(factor.id) || factor.category !== "weather" && factor.category !== "price" || factor.direction !== "up" && factor.direction !== "down") {
+        throw new Error(`Unsupported PoC factor: ${factor.id}`);
+    }
+    return {
+        ...factor,
+        category: factor.category,
+        direction: factor.direction,
+        historyKey: factor.id
+    };
+});
+const factorHistory = __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prices$2f$data$2f$green$2d$onion$2d$poc$2e$json$2e5b$json$5d2e$cjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].factorHistory;
+const metrics = (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prices$2f$poc$2d$types$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["forecastMetrics"])(__TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prices$2f$data$2f$green$2d$onion$2d$poc$2e$json$2e5b$json$5d2e$cjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].currentPrice, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prices$2f$data$2f$green$2d$onion$2d$poc$2e$json$2e5b$json$5d2e$cjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].forecastPrice);
+if (metrics.forecastDelta !== __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prices$2f$data$2f$green$2d$onion$2d$poc$2e$json$2e5b$json$5d2e$cjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].forecastDelta || metrics.forecastPercent !== __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prices$2f$data$2f$green$2d$onion$2d$poc$2e$json$2e5b$json$5d2e$cjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].forecastPercent) {
+    throw new Error("PoC forecast totals do not match the JSON endpoints");
+}
+const greenOnionPoc = {
+    id: __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prices$2f$data$2f$green$2d$onion$2d$poc$2e$json$2e5b$json$5d2e$cjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].id,
+    name: __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prices$2f$data$2f$green$2d$onion$2d$poc$2e$json$2e5b$json$5d2e$cjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].name,
+    aliases: [
+        "흙대파",
+        "파",
+        "다진 파"
+    ],
+    category: __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prices$2f$data$2f$green$2d$onion$2d$poc$2e$json$2e5b$json$5d2e$cjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].category,
+    categoryCode: "VEGETABLE",
+    unit: __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prices$2f$data$2f$green$2d$onion$2d$poc$2e$json$2e5b$json$5d2e$cjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].unit,
+    image: "/figma/home/green-onion.png",
+    isPoc: true,
+    isDemo: false,
+    baseDate: __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prices$2f$data$2f$green$2d$onion$2d$poc$2e$json$2e5b$json$5d2e$cjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].baseDate,
+    currentPrice: __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prices$2f$data$2f$green$2d$onion$2d$poc$2e$json$2e5b$json$5d2e$cjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].currentPrice,
+    forecastDate: __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prices$2f$data$2f$green$2d$onion$2d$poc$2e$json$2e5b$json$5d2e$cjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].forecastDate,
+    forecastPrice: __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prices$2f$data$2f$green$2d$onion$2d$poc$2e$json$2e5b$json$5d2e$cjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].forecastPrice,
+    forecastDelta: __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prices$2f$data$2f$green$2d$onion$2d$poc$2e$json$2e5b$json$5d2e$cjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].forecastDelta,
+    forecastPercent: __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prices$2f$data$2f$green$2d$onion$2d$poc$2e$json$2e5b$json$5d2e$cjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].forecastPercent,
+    forecastDirection: metrics.forecastDirection,
+    factors,
+    priceHistory: __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prices$2f$data$2f$green$2d$onion$2d$poc$2e$json$2e5b$json$5d2e$cjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].priceHistory,
+    factorHistory
+};
+function factorSummary(item) {
+    return [
+        "weather",
+        "price"
+    ].flatMap((category)=>{
+        const factors = item.factors.filter((factor)=>factor.category === category);
+        if (!factors.length) return [];
+        const total = factors.reduce((sum, factor)=>sum + factor.shapValue, 0);
+        return [
+            {
+                category,
+                label: category === "weather" ? "기상 조건" : "최근 가격 흐름",
+                direction: total < 0 ? "down" : "up",
+                total
+            }
+        ];
+    });
+}
+if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
+    __turbopack_context__.k.registerExports(__turbopack_context__.m, globalThis.$RefreshHelpers$);
+}
+}),
+"[project]/lib/prices/poc-types.ts [app-client] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "forecastMetrics",
+    ()=>forecastMetrics
+]);
+function forecastMetrics(currentPrice, forecastPrice) {
+    const forecastDelta = forecastPrice - currentPrice;
+    return {
+        forecastDelta,
+        forecastPercent: Number((forecastDelta / currentPrice * 100).toFixed(1)),
+        forecastDirection: forecastDelta < 0 ? "down" : forecastDelta > 0 ? "up" : "flat"
+    };
+}
+if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
+    __turbopack_context__.k.registerExports(__turbopack_context__.m, globalThis.$RefreshHelpers$);
+}
+}),
+]);
+
+//# sourceMappingURL=_1bh6_bd._.js.map
