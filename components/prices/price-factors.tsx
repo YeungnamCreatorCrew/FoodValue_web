@@ -15,7 +15,7 @@ export function PriceFactorSummary({ item, compact = false }: { item: PriceRecor
     {groups.length ? <div className="factor-summary-grid">{groups.map(group => <article key={group.category} className="factor-category-card">
       <div className="flex flex-wrap items-center justify-between gap-2"><h3>{group.label}</h3><span className={`price-direction ${group.direction === "down" ? "price-down" : "price-up"}`}>{group.direction === "down" ? "하락" : "상승"} 방향</span></div>
       <p>{group.label}은 이번 모델 예측에서 가격을 {group.direction === "down" ? "낮추는" : "높이는"} 방향으로 작용했습니다.</p>
-    </article>)}</div> : <p className="mt-4 text-sm text-muted">이 DEMO 품목은 실제 AI 분석 요인이 연결되지 않았습니다.</p>}
+    </article>)}</div> : <p className="mt-4 text-sm text-muted">이 예시 품목은 실제 AI 분석 요인이 연결되지 않았습니다.</p>}
     <p className="factor-caveat">제공된 요인들의 SHAP 값을 범주별로 합산한 설명입니다. 인과관계를 뜻하지 않으며, 표시된 요인의 합은 현재가 대비 변동액과 다를 수 있습니다.</p>
   </section>;
 }

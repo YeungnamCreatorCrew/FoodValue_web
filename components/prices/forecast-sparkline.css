@@ -2,8 +2,8 @@
 .forecast-sparkline > svg { display: block; width: 100%; height: 100px; overflow: hidden; }
 .forecast-sparkline-legend { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 12px; margin-top: 3px; color: #647e6b; font-size: 10px; line-height: 1.4; }
 .forecast-sparkline-legend > span { display: inline-flex; align-items: center; gap: 5px; }
-.forecast-sparkline-legend i { width: 19px; border-top: 2px solid #23804d; }
-.forecast-sparkline-legend > span:last-child i { border-top: 2px dashed #14532d; }
+.forecast-sparkline-legend i { width: 19px; border-top: 2px solid var(--price-chart-color); }
+.forecast-sparkline-legend > span:last-child i { border-top: 2px dashed var(--price-chart-color); }
 .forecast-sparkline--hero { margin-top: 16px; }
 .forecast-sparkline--hero > svg { height: 160px; }
 .forecast-sparkline--hero .forecast-sparkline-legend { justify-content: space-between; font-size: 11px; }

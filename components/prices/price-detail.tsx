@@ -1,7 +1,8 @@
 ﻿import Link from "next/link";
 import type { PriceRecord } from "@/lib/prices/poc-types";
 import { formatDate, formatNumber, formatPercent, won } from "@/lib/prices/format";
-import { DataBadge, IngredientImage } from "./price-forecast-card";
+import { IngredientImage } from "./price-forecast-card";
+import { FavoriteStar } from "./favorite-star";
 import { PriceFactorAccordion } from "./price-factors";
 import { RecentPriceChart } from "./recent-price-chart";
 import "./price-detail.css";
@@ -14,7 +15,7 @@ export function PriceDetail({ item }: { item: PriceRecord }) {
     <section className="dashboard-summary" aria-label="상품 정보 및 가격 예측">
       <div className="dashboard-product-image"><IngredientImage item={item} /></div>
       <div className="dashboard-product">
-        <div className="dashboard-product-heading"><div><span className="ingredient-category">{item.category}</span><h2>{item.name}</h2><p>{item.unit} · 전국 평균</p></div><DataBadge item={item} /></div>
+        <div className="dashboard-product-heading"><div><span className="ingredient-category">{item.category}</span><h2>{item.name}</h2><p>{item.unit} · 전국 평균</p></div><FavoriteStar id={item.id} name={item.name} /></div>
         <div className="dashboard-metrics">
           <div className="dashboard-metric"><h3>현재 가격</h3><strong>{won(item.currentPrice)}</strong></div>
           <div className="dashboard-metric forecast-metric"><span className="metric-arrow" aria-hidden="true">→</span><h3>7일 뒤 예상가</h3><strong>{won(item.forecastPrice)}</strong></div>
@@ -25,8 +26,8 @@ export function PriceDetail({ item }: { item: PriceRecord }) {
       </div>
       <RecentPriceChart item={item} />
     </section>
-    <section className="dashboard-ai-summary" aria-labelledby="prediction-summary-title"><h2 id="prediction-summary-title"><span aria-hidden="true">✧</span> AI 예측 요약</h2><div className="dashboard-ai-body"><span className="dashboard-ai-icon" aria-hidden="true">AI</span><div><p>현재 <strong>{won(item.currentPrice)}</strong>인 {item.name} 가격은 7일 후 <strong>{won(item.forecastPrice)}</strong>으로 {item.forecastDirection === "flat" ? "보합을 유지할" : `약 ${formatNumber(Math.abs(item.forecastPercent), 1)}% ${down ? "낮아질" : "높아질"}`} 것으로 예측되었습니다.</p><p>{item.isPoc ? "이번 예측에서 기상 관련 변수는 하락 방향, 최근 가격 흐름 일부는 상승 방향으로 작용했습니다." : "이 품목은 실제 모델 결과가 아닌 화면 시연용 DEMO 데이터입니다."}</p></div></div></section>
+    <section className="dashboard-ai-summary" aria-labelledby="prediction-summary-title"><h2 id="prediction-summary-title"><span aria-hidden="true">✧</span> AI 예측 요약</h2><div className="dashboard-ai-body"><span className="dashboard-ai-icon" aria-hidden="true">AI</span><div><p>현재 <strong>{won(item.currentPrice)}</strong>인 {item.name} 가격은 7일 후 <strong>{won(item.forecastPrice)}</strong>으로 {item.forecastDirection === "flat" ? "보합을 유지할" : `약 ${formatNumber(Math.abs(item.forecastPercent), 1)}% ${down ? "낮아질" : "높아질"}`} 것으로 예측되었습니다.</p><p>{item.isPoc ? "이번 예측에서 기상 관련 변수는 하락 방향, 최근 가격 흐름 일부는 상승 방향으로 작용했습니다." : "이 품목은 화면 시연용 예시 데이터입니다."}</p></div></div></section>
     <PriceFactorAccordion item={item} />
-    <p className="dashboard-footnote">{item.isPoc ? "KAMIS 실제 가격 · Colab PoC" : "DEMO"} · AI 예측은 실제 가격과 다를 수 있으며, SHAP은 인과관계를 의미하지 않습니다.</p>
+    <p className="dashboard-footnote">{item.isPoc ? "KAMIS 실제 가격" : "화면 시연용 예시 데이터"} · AI 예측은 실제 가격과 다를 수 있으며, SHAP은 인과관계를 의미하지 않습니다.</p>
   </main>;
 }

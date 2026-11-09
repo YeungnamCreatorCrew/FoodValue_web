@@ -4,7 +4,6 @@ import Link from "next/link";
 import { featuredPrices } from "@/lib/prices/catalog";
 import { greenOnionPoc } from "@/lib/prices/poc-data";
 import { PriceForecastCard, ForecastChange } from "@/components/prices/price-forecast-card";
-import { PriceFactorSummary } from "@/components/prices/price-factors";
 import { won } from "@/lib/prices/format";
 import { ForecastSparkline } from "@/components/prices/forecast-sparkline";
 import { HomeSearch, PopularIngredientChips } from "./home-search";
@@ -30,7 +29,7 @@ function HeroSection() {
     <aside className="home-ai-card" aria-labelledby="ai-preview-title">
       <span className="ai-badge">✧ AI 가격 예측</span>
       <h2 id="ai-preview-title">7일 뒤 가격까지,<br />미리 확인하세요</h2>
-      <p>{greenOnionPoc.name} · {greenOnionPoc.unit} · Colab PoC<br />{greenOnionPoc.baseDate} 기준</p>
+      <p>{greenOnionPoc.name} · {greenOnionPoc.unit}<br />{greenOnionPoc.baseDate} 기준</p>
       <div className="hero-poc-values"><span>{won(greenOnionPoc.currentPrice)}</span><span aria-hidden="true">→</span><strong>{won(greenOnionPoc.forecastPrice)}</strong></div>
       <ForecastChange item={greenOnionPoc} />
       <ForecastSparkline item={item} variant="hero" />
@@ -42,7 +41,7 @@ function HeroSection() {
 function FeaturedPriceCards() {
   return <section aria-labelledby="featured-title">
     <div className="home-section-heading">
-      <div><h2 id="featured-title"><span className="text-amber-500" aria-hidden="true">✦</span> 주요 식재료 시세</h2><p>대파는 실제 PoC 결과, 나머지 품목은 DEMO 데이터입니다.</p></div>
+      <div><h2 id="featured-title"><span className="text-amber-500" aria-hidden="true">✦</span> 주요 식재료 시세</h2><p>대파는 실제 예측 결과, 나머지 품목은 예시 데이터입니다.</p></div>
       <Link href="/prices" className="home-more">전체 보기 <span aria-hidden="true">→</span></Link>
     </div>
     <div className="featured-price-grid">
@@ -57,8 +56,8 @@ export function PriceFocusedHome() {
     <HeroSection />
     <PopularIngredientChips />
     <FeaturedPriceCards />
-    <div className="home-analysis-grid"><PriceTrendSection /><PriceFactorSummary item={greenOnionPoc} compact /></div>
+    <PriceTrendSection />
     <Link href="/prices" className="home-mobile-cta">전체 시세 보기 <span aria-hidden="true">→</span></Link>
-    <p className="home-sample-note">대파는 KAMIS 실제 이력과 Colab PoC 결과 · {greenOnionPoc.baseDate} 기준 · 다른 품목은 DEMO입니다.</p>
+    <p className="home-sample-note">대파는 KAMIS 실제 이력과 예측 결과 · {greenOnionPoc.baseDate} 기준 · 다른 품목은 예시 데이터입니다.</p>
   </main>;
 }
