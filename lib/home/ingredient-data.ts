@@ -1,39 +1,38 @@
-import { findPrice } from "@/lib/prices/catalog";
+import { getPrice, resolveFavoriteId } from "@/lib/prices/service";
+import { PriceApiError } from "@/lib/prices/api";
+import { getMockPriceAnalysis } from "@/lib/prices/mock-analysis";
 import { factorSummary } from "@/lib/prices/poc-data";
-import type { PriceRecord } from "@/lib/prices/poc-types";
+import type { LivePrice } from "@/lib/prices/model";
+export { canonicalIngredientId } from "@/lib/prices/identity";
 
 export type InsightFactor = {
   title: string;
   direction: "up" | "down" | "neutral";
   description: string;
 };
-export type IngredientInsight = { ingredientId: string; factors: InsightFactor[] };
-export type IngredientHomeData = { item: PriceRecord; insight: IngredientInsight };
+export type IngredientInsight = { source: "mock"; ingredientId: string; factors: InsightFactor[] };
+export type IngredientHomeData = { item: LivePrice; insight: IngredientInsight };
 
-// Existing catalog IDs remain canonical; accept common persisted slug aliases too.
-const slugIds: Record<string, string> = { onion: "2", rice: "5", tomato: "13" };
-
-export function canonicalIngredientId(id: string) {
-  return slugIds[id] ?? (id === "1" ? "green-onion" : id);
-}
-
-/** Replace this async adapter with the backend integration once its contract exists. */
-export async function getIngredientHomeData(id: string): Promise<IngredientHomeData | null> {
-  const item = findPrice(canonicalIngredientId(id));
-  if (!item) return null;
+export async function getIngredientHomeData(id: string, signal?: AbortSignal): Promise<IngredientHomeData | null> {
+  const backendId = await resolveFavoriteId(id, signal);
+  if (!backendId) return null;
+  let item: LivePrice;
+  try { item = await getPrice(backendId, signal); }
+  catch (error) {
+    if (error instanceof PriceApiError && error.status === 404) return null;
+    throw error;
+  }
+  const mock = getMockPriceAnalysis(item.name);
   return {
     item,
     insight: {
-      ingredientId: item.id,
-      factors: factorSummary(item).map(group => {
+      source: "mock", ingredientId: item.id,
+      factors: mock ? factorSummary(mock).map(group => {
         const direction = group.total === 0 ? "neutral" : group.direction;
-        return {
-          title: group.label, direction,
-          description: direction === "neutral"
-            ? `${group.label}의 SHAP 기여 합계는 중립입니다.`
-            : `${group.label}은 이번 모델 예측에서 가격을 ${direction === "down" ? "낮추는" : "높이는"} 방향으로 작용했습니다.`,
-        };
-      }),
+        return { title: group.label, direction,
+          description: direction === "neutral" ? group.label + "의 SHAP mock 기여 합계는 중립입니다."
+            : group.label + "은 기존 mock 예측에서 가격을 " + (direction === "down" ? "낮추는" : "높이는") + " 방향으로 작용했습니다." };
+      }) : [],
     },
   };
 }

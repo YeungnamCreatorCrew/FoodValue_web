@@ -1,19 +1,20 @@
 "use client";
 
 import type { MouseEvent } from "react";
-import { canonicalIngredientId } from "@/lib/home/ingredient-data";
+import { canonicalIngredientId } from "@/lib/prices/identity";
 import { setFavoriteIngredients, useFavorites } from "@/lib/home/favorites";
 
-export function FavoriteStar({ id, name, className = "" }: { id: string; name: string; className?: string }) {
+export function FavoriteStar({ id, name, aliases = [], className = "" }: { id: string; name: string; aliases?: string[]; className?: string }) {
   const favorites = useFavorites();
   const canonicalId = canonicalIngredientId(id);
-  const active = favorites.some(favorite => canonicalIngredientId(favorite) === canonicalId);
+  const matches = (favorite: string) => [canonicalId, ...aliases].includes(canonicalIngredientId(favorite));
+  const active = favorites.some(matches);
 
   function toggle(event: MouseEvent<HTMLButtonElement>) {
     event.preventDefault();
     event.stopPropagation();
     setFavoriteIngredients(active
-      ? favorites.filter(favorite => canonicalIngredientId(favorite) !== canonicalId)
+      ? favorites.filter(favorite => !matches(favorite))
       : [...favorites, canonicalId]);
   }
 
