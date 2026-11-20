@@ -1,45 +1,70 @@
 import { dateNumber, historyForPeriod } from "./history";
-import type { PriceChartData, PricePoint } from "./model";
+import type { PriceChartData } from "./model";
 
-/** Null observations break the solid path; gapPath joins the observations on either side with a separate
- * auxiliary line (no price is created for the missing days). Daily WAS forecasts are never interpolated. */
+export type ChartPointKind = "actual" | "forecast";
+/** One slot on the x-axis. Only days with a value get a slot (like a stock chart skipping weekends). */
+export interface ChartPoint {
+  date: string;
+  price: number;
+  kind: ChartPointKind;
+  x: number;
+  y: number;
+  /** Previous slot (the last actual for the first forecast), for "vs previous" in tooltips. */
+  previous: { date: string; price: number } | null;
+}
+
+/**
+ * Trading-day axis: observed prices are placed in order with equal spacing and joined directly, so days without a KAMIS
+ * survey (weekends, holidays, gaps) take no space and are never drawn or labeled. No price is created for those days.
+ * Daily WAS forecasts follow the last observation, also one slot per day.
+ */
 export function forecastChart(item: PriceChartData, days: number, bounds: { left: number; right: number; top: number; bottom: number }) {
   const reference = item.historyEndDate ?? item.baseDate ?? item.priceDate ?? item.forecastDate;
   const past = reference ? historyForPeriod(item.priceHistory, reference, days) : [];
-  const actual = past.filter((point): point is { date: string; price: number } => point.price !== null);
+  const start = reference ? dateNumber(reference) - (days - 1) * 86_400_000 : 0;
+  const observed = past.filter((point): point is { date: string; price: number } => point.price !== null);
   // Only legacy fixtures lack forecastPoints. Live summaries explicitly contain [].
-  const forecast = item.forecastPoints ?? (item.forecastDate ? [{ date: item.forecastDate, price: item.forecastPrice }] : []);
-  const values = [...actual.map(point => point.price), ...forecast.flatMap(point => point.price === null ? [] : [point.price]),
-    ...(item.currentPrice === null ? [] : [item.currentPrice])];
+  const forecastRaw = item.forecastPoints ?? (item.forecastDate ? [{ date: item.forecastDate, price: item.forecastPrice }] : []);
+  const forecast = forecastRaw.flatMap(point => point.price === null ? [] : [{ date: point.date, price: point.price }]);
+  // The current price is a real observation; include it when the history window did not.
+  const currentDate = item.priceDate ?? item.baseDate ?? reference;
+  const anchorNeeded = !!currentDate && item.currentPrice !== null && dateNumber(currentDate) >= start
+    && !observed.some(point => point.date === currentDate) && (!forecast.length || currentDate < forecast[0].date);
+  const actual = anchorNeeded
+    ? [...observed, { date: currentDate!, price: item.currentPrice! }].toSorted((a, b) => a.date.localeCompare(b.date)) : observed;
+  const lastActual = actual.at(-1) ?? null;
+  const future = forecast.filter(point => !lastActual || point.date > lastActual.date);
+
+  const values = [...actual.map(point => point.price), ...future.map(point => point.price)];
   const low = values.length ? Math.min(...values) : 0, high = values.length ? Math.max(...values) : 100;
   const padding = (high - low || 100) * .25;
   const min = low - padding, max = high + padding;
-  const referenceTime = reference ? dateNumber(reference) : 0;
-  const start = referenceTime - (days - 1) * 86_400_000;
-  const end = Math.max(referenceTime, ...forecast.map(point => dateNumber(point.date)));
-  const x = (date: string) => bounds.left + (dateNumber(date) - start) / Math.max(1, end - start) * (bounds.right - bounds.left);
+  const slots = actual.length + future.length;
+  const xAt = (index: number) => slots <= 1 ? (bounds.left + bounds.right) / 2 : bounds.left + index / (slots - 1) * (bounds.right - bounds.left);
   const y = (price: number) => bounds.bottom - (price - min) / (max - min) * (bounds.bottom - bounds.top);
-  const currentDate = item.priceDate ?? item.baseDate ?? reference;
-  const currentX = currentDate ? x(currentDate) : bounds.left;
+
+  const points: ChartPoint[] = [
+    ...actual.map((point, index) => ({ ...point, kind: "actual" as const, x: xAt(index), y: y(point.price), previous: actual[index - 1] ?? null })),
+    ...future.map((point, index) => ({ ...point, kind: "forecast" as const, x: xAt(actual.length + index), y: y(point.price),
+      previous: index ? future[index - 1] : lastActual })),
+  ];
+  const slotOf = new Map(points.map(point => [point.date, point.x]));
+  /** x of a date with a slot; a date without a value falls back to the next slot. */
+  const x = (date: string) => slotOf.get(date) ?? points.find(point => point.date >= date)?.x ?? bounds.right;
+  const line = (list: ChartPoint[]) => list.map((point, index) => `${index ? "L" : "M"}${point.x.toFixed(2)},${point.y.toFixed(2)}`).join(" ");
+  const actualPoints = points.filter(point => point.kind === "actual");
+  const forecastPoints = points.filter(point => point.kind === "forecast");
+  // Nothing observed in the window → currentX < left, which hides the observation marker.
+  const currentX = lastActual ? x(lastActual.date) : bounds.left - 1;
   const forecastX = item.forecastDate ? x(item.forecastDate) : bounds.right;
-  function path(points: PricePoint[]) {
-    let connected = false;
-    return points.map(point => {
-      if (point.price === null) { connected = false; return ""; }
-      const command = `${connected ? "L" : "M"}${x(point.date).toFixed(2)},${y(point.price).toFixed(2)}`;
-      connected = true; return command;
-    }).join(" ");
-  }
-  const anchor = currentDate && dateNumber(currentDate) >= start && item.currentPrice !== null && forecast.length && currentDate < forecast[0].date
-    ? [{ date: currentDate, price: item.currentPrice }] : [];
-  // KAMIS does not survey weekends/holidays, so consecutive observations more than a day apart are bridged.
-  const gaps = actual.slice(1).flatMap((point, index) => {
-    const previous = actual[index];
-    const missing = Math.round((dateNumber(point.date) - dateNumber(previous.date)) / 86_400_000) - 1;
-    return missing > 0 ? [{ from: previous, to: point, missing }] : [];
-  });
-  const gapPath = gaps.map(gap => `M${x(gap.from.date).toFixed(2)},${y(gap.from.price).toFixed(2)} L${x(gap.to.date).toFixed(2)},${y(gap.to.price).toFixed(2)}`).join(" ");
-  return { past, actual, forecast, min, max, x, y, currentX, forecastX,
-    actualPath: path(past), forecastPath: path([...anchor, ...forecast]), gapPath,
-    missingDays: gaps.reduce((sum, gap) => sum + gap.missing, 0) };
+  return { past, actual, forecast: future, points, min, max, x, y, currentX, forecastX,
+    actualPath: line(actualPoints),
+    forecastPath: line(actualPoints.length && forecastPoints.length ? [actualPoints.at(-1)!, ...forecastPoints] : forecastPoints) };
+}
+
+/** Nearest slot to a pointer x (SVG units). */
+export function nearestPoint<T extends { x: number }>(points: T[], pointerX: number): T | null {
+  let best: T | null = null;
+  for (const point of points) if (!best || Math.abs(point.x - pointerX) < Math.abs(best.x - pointerX)) best = point;
+  return best;
 }
