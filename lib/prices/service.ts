@@ -2,6 +2,7 @@ import { pricesApi } from "./api";
 import { mapDetail, mapForecast, mapSummary } from "./mapper";
 import type { HistoryPeriod, PriceChartResult, PriceListPage, PriceListQuery } from "./model";
 import { legacyIngredient, sameIngredientName } from "./identity";
+import { mapFactorTrend, mapShapAnalysis } from "./shap";
 
 export async function listPrices(query: PriceListQuery = {}, signal?: AbortSignal): Promise<PriceListPage> {
   const page = await pricesApi.list(query, signal);
@@ -26,4 +27,8 @@ export async function resolveFavoriteId(id: string, signal?: AbortSignal): Promi
 export async function resolvePriceRoute(id: string, signal?: AbortSignal) {
   // Numeric routes now always mean the actual backend ID; old textual slugs can be resolved by name.
   return /^\d+$/.test(id) ? id : resolveFavoriteId(id, signal);
+}
+export async function getPriceFactors(id: string, signal?: AbortSignal) { return mapShapAnalysis(await pricesApi.factors(id, signal)); }
+export async function getFactorTrend(id: string, factorId: string, days: HistoryPeriod, signal?: AbortSignal) {
+  return mapFactorTrend(await pricesApi.factorHistory(id, factorId, days, signal));
 }

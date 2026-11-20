@@ -1,7 +1,8 @@
 import { dateNumber, historyForPeriod } from "./history";
 import type { PriceChartData, PricePoint } from "./model";
 
-/** Null observations break the path. Daily WAS forecasts are never interpolated. */
+/** Null observations break the solid path; gapPath joins the observations on either side with a separate
+ * auxiliary line (no price is created for the missing days). Daily WAS forecasts are never interpolated. */
 export function forecastChart(item: PriceChartData, days: number, bounds: { left: number; right: number; top: number; bottom: number }) {
   const reference = item.historyEndDate ?? item.baseDate ?? item.priceDate ?? item.forecastDate;
   const past = reference ? historyForPeriod(item.priceHistory, reference, days) : [];
@@ -31,6 +32,14 @@ export function forecastChart(item: PriceChartData, days: number, bounds: { left
   }
   const anchor = currentDate && dateNumber(currentDate) >= start && item.currentPrice !== null && forecast.length && currentDate < forecast[0].date
     ? [{ date: currentDate, price: item.currentPrice }] : [];
+  // KAMIS does not survey weekends/holidays, so consecutive observations more than a day apart are bridged.
+  const gaps = actual.slice(1).flatMap((point, index) => {
+    const previous = actual[index];
+    const missing = Math.round((dateNumber(point.date) - dateNumber(previous.date)) / 86_400_000) - 1;
+    return missing > 0 ? [{ from: previous, to: point, missing }] : [];
+  });
+  const gapPath = gaps.map(gap => `M${x(gap.from.date).toFixed(2)},${y(gap.from.price).toFixed(2)} L${x(gap.to.date).toFixed(2)},${y(gap.to.price).toFixed(2)}`).join(" ");
   return { past, actual, forecast, min, max, x, y, currentX, forecastX,
-    actualPath: path(past), forecastPath: path([...anchor, ...forecast]) };
+    actualPath: path(past), forecastPath: path([...anchor, ...forecast]), gapPath,
+    missingDays: gaps.reduce((sum, gap) => sum + gap.missing, 0) };
 }

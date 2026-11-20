@@ -5,7 +5,7 @@ import { missingForecastReason } from "@/lib/prices/status";
 import { formatDate, formatNumber, formatPercent, won } from "@/lib/prices/format";
 import { IngredientImage } from "./price-forecast-card";
 import { FavoriteStar } from "./favorite-star";
-import { DataFactorPanel } from "./data-factors";
+import { ShapFactorPanel } from "./shap-factors";
 import { PriceNotices } from "./price-notices";
 import { RecentPriceChart } from "./recent-price-chart";
 import "./price-detail.css";
@@ -32,9 +32,9 @@ export function PriceDetail({ item }: { item: LivePrice }) {
       <RecentPriceChart item={item} />
     </section>
     <section className="dashboard-ai-summary" aria-labelledby="prediction-summary-title"><h2 id="prediction-summary-title"><span aria-hidden="true">✧</span> AI 예측 요약</h2><div className="dashboard-ai-body"><span className="dashboard-ai-icon" aria-hidden="true">AI</span><div>
-      {item.forecastPrice === null ? <p>{missingForecastReason(item)}</p> : item.currentPrice === null ? <p>현재 가격 정보가 없습니다. 7일 후 예상가는 {won(item.forecastPrice)}입니다.</p> : <p>현재 <strong>{won(item.currentPrice)}</strong>인 {item.name} 가격은 7일 후 <strong>{won(item.forecastPrice)}</strong>으로 {item.forecastDirection === "flat" ? "보합을 유지할" : (item.forecastPercent === null ? "" : "약 " + formatNumber(Math.abs(item.forecastPercent), 1) + "% ") + (down ? "낮아질" : "높아질")} 것으로 예측되었습니다.</p>}
+      {item.forecastPrice !== null && item.aiSummary ? <><p>{item.aiSummary.headline}</p>{item.aiSummary.detail && <p className="mt-1 text-[15px] text-muted">{item.aiSummary.detail}</p>}</> : item.forecastPrice === null ? <p>{missingForecastReason(item)}</p> : item.currentPrice === null ? <p>현재 가격 정보가 없습니다. 7일 후 예상가는 {won(item.forecastPrice)}입니다.</p> : <p>현재 <strong>{won(item.currentPrice)}</strong>인 {item.name} 가격은 7일 후 <strong>{won(item.forecastPrice)}</strong>으로 {item.forecastDirection === "flat" ? "보합을 유지할" : (item.forecastPercent === null ? "" : "약 " + formatNumber(Math.abs(item.forecastPercent), 1) + "% ") + (down ? "낮아질" : "높아질")} 것으로 예측되었습니다.</p>}
     </div></div></section>
-    <DataFactorPanel item={item} variant="detail" />
-    <p className="dashboard-footnote">{item.source} · AI 예측은 실제 가격과 다를 수 있습니다.</p>
+    <ShapFactorPanel item={item} />
+    <p className="dashboard-footnote">{item.source} · AI 예측은 실제 가격과 다를 수 있으며, SHAP은 인과관계를 의미하지 않습니다.</p>
   </main>;
 }

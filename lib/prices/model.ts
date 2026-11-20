@@ -1,5 +1,6 @@
 import type { Category, Period, PriceSort } from "./types";
 import type { DataFactor } from "./factors";
+import type { AiSummary } from "./shap";
 
 export interface PricePoint { date: string; price: number | null }
 export interface ForecastPoint extends PricePoint { lower: number | null; upper: number | null }
@@ -40,6 +41,8 @@ export interface LivePrice extends PriceChartData {
   forecastStatus: string | null;
   /** Detail only: guide.factors observations/model info. Not SHAP. */
   dataFactors: DataFactor[];
+  /** Detail only: server-stored forecast sentences (headline template + optional Gemini-edited detail). */
+  aiSummary: AiSummary | null;
 }
 export interface PriceListQuery {
   category?: Category | "ALL";

@@ -23,6 +23,8 @@ const { priceChartStyle } = require("../lib/prices/chart-style.ts");
 const { won } = require("../lib/prices/format.ts");
 const { mapDataFactors } = require("../lib/prices/factors.ts");
 const { priceNotices, missingForecastReason } = require("../lib/prices/status.ts");
+const { mapShapAnalysis, mapAiSummary, unavailableText } = require("../lib/prices/shap.ts");
+const { getPriceFactors, getFactorTrend } = require("../lib/prices/service.ts");
 
 const summary = {
   id: 901, name: "대파", category: "VEGETABLE", market: "RETAIL", seriesId: 451,
@@ -168,6 +170,52 @@ try {
     globalThis.fetch = async (url, options) => { options.signal.throwIfAborted(); };
     await assert.rejects(pricesApi.detail("901", controller.signal), error => error.name === "AbortError");
     assert.equal(calls.some(call => call.url.pathname.includes("/factors")), false);
+  });
+  await test("factors: SHAP rows keep server order/values; category sentences come from the server summary", async () => {
+    const summaryText = { headline: "현재 3,000원인 대파 소매가격은 7일 후 2,800원으로 약 6.7% 낮아질 것으로 예측되었습니다.",
+      detail: "기상 조건은 하락 방향으로 작용했습니다.", categories: { WEATHER: "기상 조건은 가격을 낮추는 방향으로 작용했습니다." }, generator: "GEMINI" };
+    respond({ itemId: 901, market: "RETAIL", baseDate: "2026-11-09", status: "READY", explained: true, unavailableReason: null,
+      modelName: "XGBOOST_EXT", method: "XGBOOST_TREE_SHAP", horizonDays: 7, targetDate: "2026-11-16", currentPrice: 3000, basePrice: 2990, predictedPrice: 2800,
+      summary: summaryText,
+      categories: [{ category: "WEATHER", label: "기상 조건", contribution: -150, direction: "DOWN", description: null },
+        { category: "MACRO", label: "생산량·환율", contribution: 0, direction: "NEUTRAL", description: null }],
+      factors: [{ id: "tempMean7", label: "주산지 최근 7일 평균기온", category: "WEATHER", value: 18.2, unit: "℃", previousValue: 21, previousDate: "2026-11-02", contribution: -150, direction: "DOWN", hasHistory: true },
+        { id: "targetSeason", label: "예측 대상일의 계절", category: "CALENDAR", value: null, unit: "", previousValue: null, previousDate: null, contribution: -40, direction: "DOWN", hasHistory: false }] });
+    const analysis = await getPriceFactors("901");
+    assert.equal(calls.at(-1).url.pathname, "/api/v1/prices/items/901/factors");
+    assert.equal(calls.at(-1).url.searchParams.get("market"), "RETAIL");
+    assert.equal(analysis.explained, true);
+    assert.deepEqual(analysis.factors.map(f => [f.id, f.direction, f.categoryLabel]), [["tempMean7", "down", "날씨"], ["targetSeason", "down", "달력·계절"]]);
+    assert.equal(analysis.categories[0].description, summaryText.categories.WEATHER);
+    assert.match(analysis.categories[1].description, /중립/);
+    assert.equal(analysis.summary.generator, "GEMINI");
+  });
+  await test("factors: baseline runs are not explained and keep a reason", () => {
+    const analysis = mapShapAnalysis({ itemId: 60, market: "RETAIL", baseDate: "2026-11-05", status: "STALE", explained: false, unavailableReason: "BASELINE_MODEL",
+      modelName: "LAST_PRICE", method: null, horizonDays: null, targetDate: null, currentPrice: null, basePrice: null, predictedPrice: null, summary: null, categories: [], factors: [] });
+    assert.equal(analysis.explained, false); assert.match(unavailableText(analysis.unavailableReason), /기준 모델/);
+    assert.equal(mapAiSummary(null), null);
+  });
+  await test("factor history requests 90 days once and drops missing values without filling", async () => {
+    respond({ itemId: 901, market: "RETAIL", factorId: "tempMean7", label: "기온", unit: "℃", baseDate: "2026-11-09", days: 90,
+      points: [{ date: "2026-11-08", value: null }, { date: "2026-11-09", value: 18.2 }] });
+    const trend = await getFactorTrend("901", "tempMean7", 90);
+    assert.equal(calls.at(-1).url.pathname, "/api/v1/prices/items/901/factors/tempMean7/history");
+    assert.equal(calls.at(-1).url.searchParams.get("days"), "90");
+    assert.deepEqual(trend.points, [{ date: "2026-11-09", value: 18.2 }]);
+    assert.throws(() => pricesApi.factorHistory("901", "../x", 30), error => error.status === 404);
+  });
+  await test("detail maps the server summary; absent summary stays null", () => {
+    assert.equal(mapDetail({ ...detail, summary: { headline: "h", detail: "d", categories: {}, generator: "TEMPLATE" } }).aiSummary.headline, "h");
+    assert.equal(mapDetail(detail).aiSummary, null);
+  });
+  await test("chart: missing days keep the solid line broken and are bridged by a separate gap path", () => {
+    const history = [{ date: "2026-11-06", price: 1000 }, { date: "2026-11-07", price: null }, { date: "2026-11-08", price: null }, { date: "2026-11-09", price: 1100 }, { date: "2026-11-10", price: 1050 }];
+    const chart = forecastChart({ baseDate: "2026-11-10", priceDate: "2026-11-10", currentPrice: 1050, forecastDate: null, forecastPrice: null,
+      priceHistory: history, historyEndDate: "2026-11-10", forecastPoints: [] }, 5, bounds);
+    assert.equal(chart.actualPath.split("M").length - 1, 2); // solid line still breaks at the gap
+    assert.equal(chart.gapPath.split("M").length - 1, 1); assert.equal(chart.missingDays, 2);
+    assert.equal(chart.actual.length, 3); // no value is created for the missing days
   });
 } finally {
   globalThis.fetch = originalFetch;

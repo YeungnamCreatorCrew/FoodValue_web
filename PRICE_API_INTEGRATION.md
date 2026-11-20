@@ -13,6 +13,8 @@
 | `/api/v1/prices/items/{item_id}` | `market`. `{item,forecast,guide,fridge}` 중 가격·예측·가이드만 사용 |
 | `/api/v1/prices/items/{item_id}/history` | `days=14/30/90`, `market`. `{points:[{date,price}],startDate,endDate,...}` |
 | `/api/v1/prices/items/{item_id}/forecast` | `market`. `{points:[{targetDate,predictedPrice,lowerPrice,upperPrice}],...}` |
+| `/api/v1/prices/items/{item_id}/factors` | `market`. 7일 후 예측의 변수별 SHAP 기여(원)·분류 합계·서버 문장. `{explained,unavailableReason,factors,categories,summary,...}` |
+| `/api/v1/prices/items/{item_id}/factors/{factorId}/history` | `days=90`(한 번 받아 14/30일은 화면에서 자름), `market`. `{points:[{date,value}],unit,baseDate}` |
 
 카테고리: `VEGETABLE/GRAIN/FRUIT/MEAT/SEAFOOD/ETC`.
 UI의 `ALL`은 query에서 생략한다. 검색 `q`는 API에서 `keyword`로,
@@ -22,7 +24,18 @@ UI의 `ALL`은 query에서 생략한다. 검색 `q`는 API에서 `keyword`로,
 현재가·주간 변화율·예측 요약·가격 날짜·예측 기준일/목표일·단위·품질은 nullable이다.
 이력 `price: null`은 그대로 보존하고 차트의 실선을 끊는다. 예측 상하한도 null을 유지한다.
 상세 가이드는 서버의 `recommendation`, `buyAfterDays`, `expectedSaving`, `mape`를 변환하며
-가격 방향으로 구매 추천을 다시 계산하지 않는다. `guide.factors`와 `/factors`는 SHAP으로 쓰지 않는다.
+가격 방향으로 구매 추천을 다시 계산하지 않는다. `guide.factors`는 관측값 요약이라 SHAP으로 쓰지 않는다.
+
+## 예측 요인(SHAP)과 AI 요약
+
+- 상세 "예측에 영향을 준 요인"과 홈 AI INSIGHT는 `/factors`를 쓴다(`components/prices/shap-factors.tsx`, `lib/prices/shap.ts`).
+  요인은 서버 순서(기여 절댓값 순) 그대로, 상위 8개를 먼저 보이고 나머지는 "더 보기". 분류 필터는 응답에 있는 분류(가격·날씨·달력·계절·생산량·환율)만.
+- 요인을 펼치면 `/factors/{id}/history`를 한 번(90일) 받아 14/30/90일을 화면에서 자른다. 값이 없는 날은 선을 만들지 않는다.
+  `hasHistory=false`(예측 대상일의 계절)는 추이를 그리지 않는다.
+- `explained=false`(학습 모델이 기준 모델을 이기지 못해 기준 모델로 공개, 예측 없음 등)면 기존 `guide.factors` 관측값 카드를 보여준다.
+- AI 예측 요약은 상세 응답의 `summary.headline`(서버 고정 문장)과 `summary.detail`(Gemini가 다듬은 요인 요약, 숫자 없음)을 쓰고,
+  `summary`가 없을 때만 화면에서 숫자로 문장을 만든다. 분류별 설명은 `categories[].description` → `summary.categories` → 고정 문장 순.
+- SHAP은 모델 예측에 대한 기여이며 인과관계가 아니라는 안내를 유지한다.
 
 ## 프론트 구조
 
@@ -42,8 +55,6 @@ Home·Prices·Detail은 같은 계층을 사용한다. 예측 `points: []`는 �
 기존 품목이 미제공/모호하면 홈에 안내하며 나머지 즐겨찾기는 계속 표시한다.
 관심 식재료 탭 전환 시 선택한 14/30/90일 기간은 유지한다.
 
-SHAP / AI Insight는 기존 fixture를 별도 `mock-analysis.ts`에서 조회하고 화면에 mock으로 명시한다.
-실제 가격 모델에는 SHAP·기상·가중치·냉장고 데이터를 합치지 않는다.
 기존 PoC JSON과 demo/mock 파일은 보존한다. 인기 검색어도 기존 정적 목록이다.
 
 ## 실행
