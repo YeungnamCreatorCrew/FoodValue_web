@@ -1,16 +1,16 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
-
-import { featuredPrices } from "@/lib/prices/catalog";
-import { greenOnionPoc } from "@/lib/prices/poc-data";
+import type { LivePrice } from "@/lib/prices/model";
+import { usePriceList } from "@/lib/prices/use-prices";
 import { PriceForecastCard, ForecastChange } from "@/components/prices/price-forecast-card";
-import { won } from "@/lib/prices/format";
-import { ForecastSparkline } from "@/components/prices/forecast-sparkline";
+import { won, formatDate } from "@/lib/prices/format";
+import { PriceCardChart } from "@/components/prices/price-card-chart";
 import { HomeSearch, PopularIngredientChips } from "./home-search";
 import { PriceTrendSection } from "./price-trend-section";
 
-function HeroSection() {
-  const item = greenOnionPoc;
+function HeroSection({ item, loading, error }: { item?: LivePrice; loading: boolean; error?: string }) {
   return <div className="home-hero-grid">
     <section className="home-hero" aria-labelledby="hero-title">
       <div className="hero-copy">
@@ -29,35 +29,33 @@ function HeroSection() {
     <aside className="home-ai-card" aria-labelledby="ai-preview-title">
       <span className="ai-badge">✧ AI 가격 예측</span>
       <h2 id="ai-preview-title">7일 뒤 가격까지,<br />미리 확인하세요</h2>
-      <p>{greenOnionPoc.name} · {greenOnionPoc.unit}<br />{greenOnionPoc.baseDate} 기준</p>
-      <div className="hero-poc-values"><span>{won(greenOnionPoc.currentPrice)}</span><span aria-hidden="true">→</span><strong>{won(greenOnionPoc.forecastPrice)}</strong></div>
-      <ForecastChange item={greenOnionPoc} />
-      <ForecastSparkline item={item} variant="hero" />
-      <div className="flex justify-between text-xs text-primary/70"><span>KAMIS 실제 이력</span><span>{greenOnionPoc.forecastDate} 예측</span></div>
+      {loading ? <p role="status">가격 정보를 불러오는 중입니다.</p> : error ? <p role="alert">가격 정보를 불러오지 못했습니다.</p> : item ? <>
+        <p>{item.name} · {item.unit}<br />{formatDate(item.priceDate ?? null)} 기준</p>
+        <div className="hero-poc-values"><span>{won(item.currentPrice)}</span><span aria-hidden="true">→</span><strong>{won(item.forecastPrice)}</strong></div>
+        <ForecastChange item={item} />
+        <PriceCardChart item={item} variant="hero" />
+        <div className="flex justify-between text-xs text-primary/70"><span>전국 평균 소매 가격</span><span>{formatDate(item.forecastDate)} 예측</span></div>
+      </> : <p>가격 정보가 없습니다.</p>}
     </aside>
   </div>;
 }
 
-function FeaturedPriceCards() {
-  return <section aria-labelledby="featured-title">
-    <div className="home-section-heading">
-      <div><h2 id="featured-title"><span className="text-amber-500" aria-hidden="true">✦</span> 주요 식재료 시세</h2><p>대파는 실제 예측 결과, 나머지 품목은 예시 데이터입니다.</p></div>
-      <Link href="/prices" className="home-more">전체 보기 <span aria-hidden="true">→</span></Link>
-    </div>
-    <div className="featured-price-grid">
-      {featuredPrices.map(item => <PriceForecastCard key={item.id} item={item} />)}
-    </div>
-  </section>;
-}
-
 export function PriceFocusedHome() {
+  const { data, loading, error, reload } = usePriceList({ sort: "name", page: 1, size: 3 });
+  const items = data?.items ?? [];
   return <main id="home-content" className="price-home">
     <a href="#featured-title" className="sr-only focus:not-sr-only">주요 시세 바로가기</a>
-    <HeroSection />
+    <HeroSection item={items[0]} loading={loading} error={error} />
     <PopularIngredientChips />
-    <FeaturedPriceCards />
+    <section aria-labelledby="featured-title">
+      <div className="home-section-heading">
+        <div><h2 id="featured-title"><span className="text-amber-500" aria-hidden="true">✦</span> 주요 식재료 시세</h2><p>전국 평균 소매 가격과 서버의 7일 예측을 확인하세요.</p></div>
+        <Link href="/prices" className="home-more">전체 보기 <span aria-hidden="true">→</span></Link>
+      </div>
+      {loading ? <p role="status" className="py-10 text-muted">시세를 불러오는 중입니다.</p> : error ? <div role="alert" className="price-empty"><p>{error}</p><button type="button" onClick={reload}>다시 시도</button></div> : items.length ? <div className="featured-price-grid">{items.map(item => <PriceForecastCard key={item.id} item={item} />)}</div> : <p className="price-empty">등록된 시세 품목이 없습니다.</p>}
+    </section>
     <PriceTrendSection />
     <Link href="/prices" className="home-mobile-cta">전체 시세 보기 <span aria-hidden="true">→</span></Link>
-    <p className="home-sample-note">대파는 KAMIS 실제 이력과 예측 결과 · {greenOnionPoc.baseDate} 기준 · 다른 품목은 예시 데이터입니다.</p>
+    <p className="home-sample-note">실제 소매 가격 데이터 · AI 예측은 실제 가격과 다를 수 있습니다.</p>
   </main>;
 }

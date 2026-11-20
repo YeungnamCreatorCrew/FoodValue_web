@@ -1,13 +1,17 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useRef, useState } from "react";
 import { formatDate, formatNumber, won } from "@/lib/prices/format";
 import { forecastChart } from "@/lib/prices/forecast-chart";
 import { priceChartStyle } from "@/lib/prices/chart-style";
-import type { PriceRecord } from "@/lib/prices/poc-types";
+import type { LivePrice, HistoryPeriod } from "@/lib/prices/model";
+import { usePriceChart } from "@/lib/prices/use-prices";
+import { withForecast } from "@/lib/prices/mapper";
 
-export function PriceChart({ item, presentation = "detail" }: { item: PriceRecord; presentation?: "detail" | "home" }) {
-  const [period, setPeriod] = useState(30);
+export function PriceChart({ item: summary, presentation = "detail" }: { item: LivePrice; presentation?: "detail" | "home" }) {
+  const [period, setPeriod] = useState<HistoryPeriod>(30);
+  const { data, loading, error, reload } = usePriceChart(summary.id, period);
+  const item = data ? withForecast({ ...summary, priceHistory: data.priceHistory, historyEndDate: data.historyEndDate }, data.forecast, data.forecastBaseDate) : summary;
   const container = useRef<HTMLElement>(null);
   const [wide, setWide] = useState(false);
   useEffect(() => {
@@ -17,32 +21,39 @@ export function PriceChart({ item, presentation = "detail" }: { item: PriceRecor
   }, []);
   const width = wide ? 760 : 360;
   const left = 52, right = width - 14;
-  const { past, min, max, x, y, currentX: todayX, actualPath, forecastPath } = forecastChart(item, period, { left, right, top: 45, bottom: 205 });
-  const chartLabel = `${item.name} 가격 흐름 및 7일 예측`;
-  const description = `${item.isPoc ? "KAMIS 실제 가격 이력" : "예시 가격 이력"} ${past.length}개. ${formatDate(item.baseDate)} 현재 ${won(item.currentPrice)}, ${formatDate(item.forecastDate)} 예상 ${won(item.forecastPrice)}. 점선은 두 기준점을 연결하며 중간 날짜의 예측값을 의미하지 않습니다.`;
+  const chart = forecastChart(item, period, { left, right, top: 45, bottom: 205 });
+  const { past, actual, forecast, min, max, x, y, currentX, forecastX, actualPath, forecastPath } = chart;
+  const chartLabel = item.name + " 가격 흐름 및 7일 예측";
   return <section ref={container} className="price-chart-section" style={priceChartStyle(item)} aria-label={chartLabel}>
     <div className="price-chart-heading">
       {presentation === "detail" ? <h2>가격 흐름 및 7일 예측</h2> : <span className="text-sm text-muted">조회 기간</span>}
-      <div className="chart-periods" role="group" aria-label="과거 가격 조회 기간">{[14, 30, 90].map(value => <button type="button" key={value} aria-pressed={period === value} onClick={() => setPeriod(value)}>{`${value}일`}</button>)}</div>
+      <div className="chart-periods" role="group" aria-label="과거 가격 조회 기간">{([14, 30, 90] as const).map(value => <button type="button" key={value} aria-pressed={period === value} onClick={() => setPeriod(value)}>{value}일</button>)}</div>
     </div>
-    <p className={item.isPoc ? "chart-source-notice" : "chart-demo-notice"}>{item.isPoc ? "실제 KAMIS 가격 이력과 7일 후 예측입니다." : "이 품목의 가격과 그래프는 모두 예시 데이터입니다."}</p>
-    <div className="chart-legend"><span><i className="legend-actual" />{item.isPoc ? "실제 가격" : "예시 가격 이력"}</span><span><i className="legend-dashed" />7일 예측</span></div>
-    <svg viewBox={`0 0 ${width} 260`} className="price-trend-svg" role="img" aria-label={chartLabel}>
-      <title>{chartLabel}</title>
-      <desc>{description}</desc>
-      <rect x={todayX} y="28" width={right - todayX} height="184" fill="#eef7f0" rx="5" />
-      {[max, (max + min) / 2, min].map(value => <g key={value}><line x1={left} x2={right} y1={y(value)} y2={y(value)} stroke="#e8eee8" /><text x={left - 8} y={y(value) + 4} textAnchor="end" fill="#65776b" fontSize="11">{formatNumber(value)}</text></g>)}
-      <text x={left - 8} y="19" textAnchor="end" fontSize="10" fill="#65776b">원</text>
-      <path data-series="history" data-point-count={past.length} d={actualPath} fill="none" stroke="var(--price-chart-color)" strokeWidth="2" strokeLinejoin="round" />
-      <path data-series="forecast" data-point-count="2" d={forecastPath} fill="none" stroke="var(--price-chart-color)" strokeWidth="2.5" strokeDasharray="6 5" />
-      <line x1={todayX} x2={todayX} y1="28" y2="212" stroke="#6b8c72" strokeDasharray="4 4" />
-      <circle cx={todayX} cy={y(item.currentPrice)} r="5" fill="var(--price-chart-color)" stroke="white" strokeWidth="2" />
-      <circle cx={right} cy={y(item.forecastPrice)} r="5" fill="var(--price-chart-color)" stroke="white" strokeWidth="2" />
-      {past[0] && <text x={x(past[0].date)} y="231" fontSize="11" fill="#65776b">{past[0].date.slice(5)}</text>}
-      <text x={todayX - 4} y="231" textAnchor="end" fontSize="11" fill="#334c3c">{`기준 ${item.baseDate.slice(5)}`}</text>
-      <text x={right} y="251" textAnchor="end" fontSize="11" fill="#14532d">{`예측 ${item.forecastDate.slice(5)}`}</text>
-    </svg>
-    <dl className="chart-endpoints"><div><dt>현재 · {formatDate(item.baseDate)}</dt><dd>{won(item.currentPrice)}</dd></div><div><dt>7일 후 · {formatDate(item.forecastDate)}</dt><dd>{won(item.forecastPrice)}</dd></div></dl>
-    <p className="chart-footnote">기준일 포함 최근 {period}일 · 관측 {past.length}건. 미제공 날짜의 가격은 생성하지 않습니다. 점선은 현재가와 7일 후 예측값의 연결선입니다.</p>
+    <p className="chart-source-notice">실제 소매 가격 이력과 일별 7일 예측입니다.</p>
+    {loading ? <p role="status" className="py-10 text-sm text-muted">가격 추이를 불러오는 중입니다.</p> : error ? <div role="alert" className="py-10 text-sm text-muted"><p>{error}</p><button type="button" onClick={reload}>다시 시도</button></div> : <>
+      {!actual.length && <p className="text-sm text-muted">선택한 기간의 가격 이력이 없습니다.</p>}
+      {!forecast.length && <p className="text-sm text-muted">아직 예측 정보가 없습니다.</p>}
+      {(actual.length > 0 || forecast.length > 0) && <>
+        <div className="chart-legend"><span><i className="legend-actual" />실제 가격</span><span><i className="legend-dashed" />7일 예측</span></div>
+        <svg viewBox={"0 0 " + width + " 260"} className="price-trend-svg" role="img" aria-label={chartLabel}>
+          <title>{chartLabel}</title>
+          <desc>실선은 실제 관측 {actual.length}개, 점선은 서버의 일별 예측 {forecast.length}개입니다. 결측 가격은 연결하지 않습니다.</desc>
+          <rect x={Math.max(left, currentX)} y="28" width={Math.max(0, right - Math.max(left, currentX))} height="184" fill="#eef7f0" rx="5" />
+          {[max, (max + min) / 2, min].map(value => <g key={value}><line x1={left} x2={right} y1={y(value)} y2={y(value)} stroke="#e8eee8" /><text x={left - 8} y={y(value) + 4} textAnchor="end" fill="#65776b" fontSize="11">{formatNumber(value)}</text></g>)}
+          <text x={left - 8} y="19" textAnchor="end" fontSize="10" fill="#65776b">원</text>
+          <path data-series="history" data-point-count={actual.length} d={actualPath} fill="none" stroke="var(--price-chart-color)" strokeWidth="2" strokeLinejoin="round" />
+          <path data-series="forecast" data-point-count={forecast.length} d={forecastPath} fill="none" stroke="var(--price-chart-color)" strokeWidth="2.5" strokeDasharray="6 5" />
+          {actual.map(point => <circle key={point.date} cx={x(point.date)} cy={y(point.price)} r="1.5" fill="var(--price-chart-color)" />)}
+          {currentX >= left && <line x1={currentX} x2={currentX} y1="28" y2="212" stroke="#6b8c72" strokeDasharray="4 4" />}
+          {item.currentPrice !== null && currentX >= left && <circle cx={currentX} cy={y(item.currentPrice)} r="5" fill="var(--price-chart-color)" stroke="white" strokeWidth="2" />}
+          {item.forecastPrice !== null && <circle cx={forecastX} cy={y(item.forecastPrice)} r="5" fill="var(--price-chart-color)" stroke="white" strokeWidth="2" />}
+          {past[0] && <text x={x(past[0].date)} y="231" fontSize="11" fill="#65776b">{past[0].date.slice(5)}</text>}
+          {currentX >= left && <text x={currentX - 4} y="231" textAnchor="end" fontSize="11" fill="#334c3c">관측 {item.priceDate?.slice(5) ?? "-"}</text>}
+          <text x={right} y="251" textAnchor="end" fontSize="11" fill="#14532d">예측 {item.forecastDate?.slice(5) ?? "-"}</text>
+        </svg>
+      </>}
+      <dl className="chart-endpoints"><div><dt>현재 · {formatDate(item.priceDate ?? null)}</dt><dd>{won(item.currentPrice)}</dd></div><div><dt>7일 후 · {formatDate(item.forecastDate)}</dt><dd>{won(item.forecastPrice)}</dd></div></dl>
+      <p className="chart-footnote">최근 {period}일 · 관측 {actual.length}건. 미제공 날짜의 가격은 생성하지 않습니다. 점선은 서버에서 제공한 일별 예측입니다.</p>
+    </>}
   </section>;
 }
