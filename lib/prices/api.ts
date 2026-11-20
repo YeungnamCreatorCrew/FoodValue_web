@@ -1,4 +1,4 @@
-import type { PriceDetailDto, PriceForecastDto, PriceHistoryDto, PricePageDto, PriceSortDto } from "./dto";
+import type { FactorHistoryDto, PriceDetailDto, PriceFactorsDto, PriceForecastDto, PriceHistoryDto, PricePageDto, PriceSortDto } from "./dto";
 import type { PriceListQuery, HistoryPeriod } from "./model";
 
 // Uvicorn's default port; override before next dev/build for another WAS host.
@@ -43,4 +43,10 @@ export const pricesApi = {
     return get<PriceHistoryDto>(`${itemPath(id)}/history`, params, signal);
   },
   forecast(id: string, signal?: AbortSignal) { return get<PriceForecastDto>(`${itemPath(id)}/forecast`, marketParams(), signal); },
+  factors(id: string, signal?: AbortSignal) { return get<PriceFactorsDto>(`${itemPath(id)}/factors`, marketParams(), signal); },
+  factorHistory(id: string, factorId: string, days: HistoryPeriod, signal?: AbortSignal) {
+    if (!/^[A-Za-z0-9]{1,40}$/.test(factorId)) throw new PriceApiError(404, "올바른 요인 ID가 아닙니다.");
+    const params = marketParams(); params.set("days", String(days));
+    return get<FactorHistoryDto>(`${itemPath(id)}/factors/${factorId}/history`, params, signal);
+  },
 };

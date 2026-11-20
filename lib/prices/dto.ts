@@ -53,9 +53,66 @@ export interface PriceGuideDto {
   mape: number | null;
   factors: Record<string, unknown>[];
 }
+/** Server-stored sentences. headline is always a fixed template; detail/categories may be Gemini-edited (generator). */
+export interface PriceSummaryTextDto {
+  headline: string;
+  detail: string;
+  categories: Record<string, string>;
+  generator: string | null;
+}
 export interface PriceDetailDto {
   item: PriceSummaryDto;
   forecast: PriceForecastDto;
   guide: PriceGuideDto | null;
+  summary?: PriceSummaryTextDto | null;
   fridge: { ingredientCount: number; quantities: Record<string, string> } | null;
+}
+export type FactorDirectionDto = "UP" | "DOWN" | "NEUTRAL";
+/** GET /prices/items/{id}/factors — TreeSHAP contributions (won) of the published 7-day forecast. */
+export interface PriceFactorDto {
+  id: string;
+  label: string;
+  category: string;
+  value: number | null;
+  unit: string;
+  previousValue: number | null;
+  previousDate: string | null;
+  contribution: number;
+  direction: FactorDirectionDto;
+  hasHistory: boolean;
+}
+export interface FactorCategoryDto {
+  category: string;
+  label: string;
+  contribution: number;
+  direction: FactorDirectionDto;
+  description: string | null;
+}
+export interface PriceFactorsDto {
+  itemId: number;
+  market: PriceMarketDto;
+  baseDate: string | null;
+  status: string;
+  explained: boolean;
+  unavailableReason: string | null;
+  modelName: string | null;
+  method: string | null;
+  horizonDays: number | null;
+  targetDate: string | null;
+  currentPrice: number | null;
+  basePrice: number | null;
+  predictedPrice: number | null;
+  summary: PriceSummaryTextDto | null;
+  categories: FactorCategoryDto[];
+  factors: PriceFactorDto[];
+}
+export interface FactorHistoryDto {
+  itemId: number;
+  market: PriceMarketDto;
+  factorId: string;
+  label: string;
+  unit: string;
+  baseDate: string;
+  days: number;
+  points: { date: string; value: number | null }[];
 }

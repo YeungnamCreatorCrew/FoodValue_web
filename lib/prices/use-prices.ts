@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { getPrice, getPriceChart, listPrices } from "./service";
+import { getFactorTrend, getPrice, getPriceChart, getPriceFactors, listPrices } from "./service";
 import type { HistoryPeriod, PriceListQuery } from "./model";
 
 /** Keyed results prevent a late response from showing another item's data. */
@@ -32,4 +32,13 @@ export function usePriceDetail(id: string) {
 export function usePriceChart(id: string, days: HistoryPeriod) {
   const load = useCallback((signal: AbortSignal) => getPriceChart(id, days, signal), [id, days]);
   return usePriceResource(`${id}:${days}`, load);
+}
+export function usePriceFactors(id: string) {
+  const load = useCallback((signal: AbortSignal) => getPriceFactors(id, signal), [id]);
+  return usePriceResource(`factors:${id}`, load);
+}
+/** Loads 90 days once; shorter periods are sliced on the client. */
+export function useFactorTrend(id: string, factorId: string) {
+  const load = useCallback((signal: AbortSignal) => getFactorTrend(id, factorId, 90, signal), [id, factorId]);
+  return usePriceResource(`factor:${id}:${factorId}`, load);
 }
