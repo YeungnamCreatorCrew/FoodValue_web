@@ -133,7 +133,7 @@ try {
       assert.equal(request.pathname, "/api/v1/prices/items/901/history"); assert.equal(request.searchParams.get("days"), String(days));
       const item = withForecast({ ...mapSummary(summary), priceHistory: data.priceHistory, historyEndDate: data.historyEndDate }, data.forecast, data.forecastBaseDate);
       const chart = forecastChart(item, days, bounds);
-      assert.equal((chart.actualPath.match(/M/g) ?? []).length, 2); // Gap breaks the solid line.
+      assert.equal((chart.actualPath.match(/M/g) ?? []).length, 1); // Trading-day axis: days with a price are joined; the null day takes no slot.
       assert.equal(chart.actual.length, 2); assert.equal(chart.forecast.length, 7);
       assert.equal((chart.forecastPath.match(/L/g) ?? []).length, 7);
       assert.equal(/NaN|Infinity/.test(chart.actualPath + chart.forecastPath), false);
@@ -209,13 +209,17 @@ try {
     assert.equal(mapDetail({ ...detail, summary: { headline: "h", detail: "d", categories: {}, generator: "TEMPLATE" } }).aiSummary.headline, "h");
     assert.equal(mapDetail(detail).aiSummary, null);
   });
-  await test("chart: missing days keep the solid line broken and are bridged by a separate gap path", () => {
+  await test("chart: trading-day axis — only days with a price get a slot, joined directly; tooltip previous skips the gap", () => {
     const history = [{ date: "2026-11-06", price: 1000 }, { date: "2026-11-07", price: null }, { date: "2026-11-08", price: null }, { date: "2026-11-09", price: 1100 }, { date: "2026-11-10", price: 1050 }];
-    const chart = forecastChart({ baseDate: "2026-11-10", priceDate: "2026-11-10", currentPrice: 1050, forecastDate: null, forecastPrice: null,
-      priceHistory: history, historyEndDate: "2026-11-10", forecastPoints: [] }, 5, bounds);
-    assert.equal(chart.actualPath.split("M").length - 1, 2); // solid line still breaks at the gap
-    assert.equal(chart.gapPath.split("M").length - 1, 1); assert.equal(chart.missingDays, 2);
-    assert.equal(chart.actual.length, 3); // no value is created for the missing days
+    const chart = forecastChart({ baseDate: "2026-11-10", priceDate: "2026-11-10", currentPrice: 1050, forecastDate: "2026-11-11", forecastPrice: 1040,
+      priceHistory: history, historyEndDate: "2026-11-10", forecastPoints: [{ date: "2026-11-11", price: 1040, lower: null, upper: null }] }, 5, bounds);
+    assert.deepEqual(chart.points.map(p => [p.date, p.kind]), [["2026-11-06", "actual"], ["2026-11-09", "actual"], ["2026-11-10", "actual"], ["2026-11-11", "forecast"]]);
+    assert.equal(chart.actualPath.split("M").length - 1, 1); // one continuous line, no break
+    const gaps = chart.points.slice(1).map((p, i) => +(p.x - chart.points[i].x).toFixed(6));
+    assert.equal(new Set(gaps).size, 1); // equal spacing: the weekend takes no space
+    assert.equal(chart.points[1].previous.date, "2026-11-06"); // 11/09 compares with 11/06
+    assert.equal(chart.points[3].previous.date, "2026-11-10"); // first forecast compares with the last actual
+    assert.equal(chart.forecastPath.split("M").length - 1, 1);
   });
 } finally {
   globalThis.fetch = originalFetch;
