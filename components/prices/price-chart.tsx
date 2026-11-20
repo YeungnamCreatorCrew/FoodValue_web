@@ -22,7 +22,7 @@ export function PriceChart({ item: summary, presentation = "detail" }: { item: L
   const width = wide ? 760 : 360;
   const left = 52, right = width - 14;
   const chart = forecastChart(item, period, { left, right, top: 45, bottom: 205 });
-  const { past, actual, forecast, min, max, x, y, currentX, forecastX, actualPath, forecastPath } = chart;
+  const { past, actual, forecast, min, max, x, y, currentX, forecastX, actualPath, forecastPath, gapPath, missingDays } = chart;
   const chartLabel = item.name + " 가격 흐름 및 7일 예측";
   return <section ref={container} className="price-chart-section" style={priceChartStyle(item)} aria-label={chartLabel}>
     <div className="price-chart-heading">
@@ -34,14 +34,15 @@ export function PriceChart({ item: summary, presentation = "detail" }: { item: L
       {!actual.length && <p className="text-sm text-muted">선택한 기간의 가격 이력이 없습니다.</p>}
       {!forecast.length && <p className="text-sm text-muted">아직 예측 정보가 없습니다.</p>}
       {(actual.length > 0 || forecast.length > 0) && <>
-        <div className="chart-legend"><span><i className="legend-actual" />실제 가격</span><span><i className="legend-dashed" />7일 예측</span></div>
+        <div className="chart-legend"><span><i className="legend-actual" />실제 가격</span>{gapPath && <span><i className="legend-gap" />미조사일 연결</span>}<span><i className="legend-dashed" />7일 예측</span></div>
         <svg viewBox={"0 0 " + width + " 260"} className="price-trend-svg" role="img" aria-label={chartLabel}>
           <title>{chartLabel}</title>
-          <desc>실선은 실제 관측 {actual.length}개, 점선은 서버의 일별 예측 {forecast.length}개입니다. 결측 가격은 연결하지 않습니다.</desc>
+          <desc>실선은 실제 관측 {actual.length}개, 굵은 점선은 서버의 일별 예측 {forecast.length}개입니다. 가격이 없는 날 {missingDays}일은 앞뒤 관측을 옅은 점선으로만 잇습니다.</desc>
           <rect x={Math.max(left, currentX)} y="28" width={Math.max(0, right - Math.max(left, currentX))} height="184" fill="#eef7f0" rx="5" />
           {[max, (max + min) / 2, min].map(value => <g key={value}><line x1={left} x2={right} y1={y(value)} y2={y(value)} stroke="#e8eee8" /><text x={left - 8} y={y(value) + 4} textAnchor="end" fill="#65776b" fontSize="11">{formatNumber(value)}</text></g>)}
           <text x={left - 8} y="19" textAnchor="end" fontSize="10" fill="#65776b">원</text>
           <path data-series="history" data-point-count={actual.length} d={actualPath} fill="none" stroke="var(--price-chart-color)" strokeWidth="2" strokeLinejoin="round" />
+          {gapPath && <path data-series="gap" d={gapPath} fill="none" stroke="var(--price-chart-color)" strokeOpacity="0.45" strokeWidth="1.5" strokeDasharray="2 3" strokeLinecap="round" />}
           <path data-series="forecast" data-point-count={forecast.length} d={forecastPath} fill="none" stroke="var(--price-chart-color)" strokeWidth="2.5" strokeDasharray="6 5" />
           {actual.map(point => <circle key={point.date} cx={x(point.date)} cy={y(point.price)} r="1.5" fill="var(--price-chart-color)" />)}
           {currentX >= left && <line x1={currentX} x2={currentX} y1="28" y2="212" stroke="#6b8c72" strokeDasharray="4 4" />}
@@ -53,7 +54,7 @@ export function PriceChart({ item: summary, presentation = "detail" }: { item: L
         </svg>
       </>}
       <dl className="chart-endpoints"><div><dt>현재 · {formatDate(item.priceDate ?? null)}</dt><dd>{won(item.currentPrice)}</dd></div><div><dt>7일 후 · {formatDate(item.forecastDate)}</dt><dd>{won(item.forecastPrice)}</dd></div></dl>
-      <p className="chart-footnote">최근 {period}일 · 관측 {actual.length}건. 미제공 날짜의 가격은 생성하지 않습니다. 점선은 서버에서 제공한 일별 예측입니다.</p>
+      <p className="chart-footnote">최근 {period}일 · 관측 {actual.length}건{missingDays > 0 ? ` · 가격 미조사일 ${missingDays}일(주말·공휴일 등)은 옅은 점선으로 이었고 값은 만들지 않았습니다` : ""}. 굵은 점선은 서버에서 제공한 일별 예측입니다.</p>
     </>}
   </section>;
 }

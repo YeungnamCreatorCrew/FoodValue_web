@@ -209,6 +209,14 @@ try {
     assert.equal(mapDetail({ ...detail, summary: { headline: "h", detail: "d", categories: {}, generator: "TEMPLATE" } }).aiSummary.headline, "h");
     assert.equal(mapDetail(detail).aiSummary, null);
   });
+  await test("chart: missing days keep the solid line broken and are bridged by a separate gap path", () => {
+    const history = [{ date: "2026-11-06", price: 1000 }, { date: "2026-11-07", price: null }, { date: "2026-11-08", price: null }, { date: "2026-11-09", price: 1100 }, { date: "2026-11-10", price: 1050 }];
+    const chart = forecastChart({ baseDate: "2026-11-10", priceDate: "2026-11-10", currentPrice: 1050, forecastDate: null, forecastPrice: null,
+      priceHistory: history, historyEndDate: "2026-11-10", forecastPoints: [] }, 5, bounds);
+    assert.equal(chart.actualPath.split("M").length - 1, 2); // solid line still breaks at the gap
+    assert.equal(chart.gapPath.split("M").length - 1, 1); assert.equal(chart.missingDays, 2);
+    assert.equal(chart.actual.length, 3); // no value is created for the missing days
+  });
 } finally {
   globalThis.fetch = originalFetch;
 }

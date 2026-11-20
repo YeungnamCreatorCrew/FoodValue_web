@@ -45,7 +45,11 @@ function FactorTrendChart({ itemId, factor }: { itemId: string; factor: ShapFact
   const right = width - 16;
   const x = (date: string) => 58 + (dateNumber(date) - start) / Math.max(1, end - start) * (right - 58);
   const y = (value: number) => 152 - (value - min) / (max - min) * 116;
-  const path = points.map((point, index) => `${index ? "L" : "M"}${x(point.date).toFixed(2)},${y(point.value).toFixed(2)}`).join(" ");
+  // Consecutive days are solid; a day without a value is bridged with a faint dotted line (no value is created).
+  const coord = (point: { date: string; value: number }) => `${x(point.date).toFixed(2)},${y(point.value).toFixed(2)}`;
+  const isGap = (index: number) => index > 0 && dateNumber(points[index].date) - dateNumber(points[index - 1].date) > 86_400_000;
+  const path = points.map((point, index) => `${index && !isGap(index) ? "L" : "M"}${coord(point)}`).join(" ");
+  const gapPath = points.flatMap((point, index) => isGap(index) ? [`M${coord(points[index - 1])} L${coord(point)}`] : []).join(" ");
   const last = points.at(-1)!;
   const tick = (value: number) => formatNumber(value, data.unit === "원" ? 0 : 1);
   return <div className="factor-history-chart" ref={container}>
@@ -55,11 +59,12 @@ function FactorTrendChart({ itemId, factor }: { itemId: string; factor: ShapFact
       <desc>{`${formatDate(points[0].date)}부터 ${formatDate(last.date)}까지 ${points.length}개 값. 마지막 값 ${factorValue(last.value, data.unit)}.`}</desc>
       <text x="50" y="17" textAnchor="end" fontSize="10" fill="#65776b">{data.unit || "지표값"}</text>
       {[max, (min + max) / 2, min].map(value => <g key={value}><line x1="58" x2={right} y1={y(value)} y2={y(value)} stroke="#e4ece2" /><text x="50" y={y(value) + 4} textAnchor="end" fill="#65776b" fontSize="10">{tick(value)}</text></g>)}
+      {gapPath && <path data-series="gap" d={gapPath} fill="none" stroke="#23804d" strokeOpacity="0.45" strokeWidth="1.5" strokeDasharray="2 3" strokeLinecap="round" />}
       <path d={path} fill="none" stroke="#23804d" strokeWidth="2" strokeLinejoin="round" />
       <circle cx={x(last.date)} cy={y(last.value)} r="4" fill="#14532d" stroke="white" strokeWidth="2" />
       <text x="58" y="178" fontSize="10" fill="#65776b">{points[0].date.slice(5)}</text><text x={right} y="178" textAnchor="end" fontSize="10" fill="#65776b">{last.date.slice(5)}</text>
     </svg>
-    <p className="chart-footnote">{formatDate(last.date)} · 마지막 값 {factorValue(last.value, data.unit)} · 값 {points.length}건 · 예측 시점에 모델이 받은 값</p>
+    <p className="chart-footnote">{formatDate(last.date)} · 마지막 값 {factorValue(last.value, data.unit)} · 값 {points.length}건{gapPath ? " · 값이 없는 날은 옅은 점선으로 이음" : ""} · 예측 시점에 모델이 받은 값</p>
   </div>;
 }
 
