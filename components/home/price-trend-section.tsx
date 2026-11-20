@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { PriceChart } from "@/components/prices/price-chart";
 import { ForecastChange } from "@/components/prices/price-forecast-card";
+import { PriceNotices } from "@/components/prices/price-notices";
 import { useFavorites } from "@/lib/home/favorites";
 import { getIngredientHomeData, type IngredientHomeData } from "@/lib/home/ingredient-data";
 import { IngredientInsight } from "./ingredient-insight";
@@ -37,6 +38,7 @@ export function PriceTrendSection() {
         <div className="home-ingredient-selector" role="group" aria-label="관심 식재료">{entries.map(({ item }) => <button type="button" key={item.id} aria-pressed={selected.item.id === item.id} onClick={() => setSelectedIngredientId(item.id)}>{item.name}</button>)}</div>
         <PriceChart item={selected.item} presentation="home" />
         <div className="mt-3 flex flex-wrap items-center justify-end gap-2"><span className="text-sm text-muted">현재가 대비 7일 후 변화</span><ForecastChange item={selected.item} /></div>
+        <PriceNotices item={selected.item} className="mt-2 items-end text-right" />
       </> : <div className="py-10 text-center">
         <h3 className="text-lg font-semibold">{loaded?.errors && favorites.length ? "관심 식재료를 불러오지 못했어요" : favorites.length ? "시세 제공 품목을 찾을 수 없어요" : "관심 식재료를 추가해보세요"}</h3>
         <p className="mt-3 text-sm text-muted">{favorites.length ? "기존 즐겨찾기는 보존됩니다. 시세 목록에서 현재 제공되는 품목을 확인해주세요." : "즐겨찾기한 식재료의 가격 흐름과 AI 예측을 홈에서 바로 확인할 수 있어요."}</p>

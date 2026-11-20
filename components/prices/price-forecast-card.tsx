@@ -6,6 +6,7 @@ import { favoriteIdentity } from "@/lib/prices/identity";
 import { formatPercent, won } from "@/lib/prices/format";
 import { PriceCardChart } from "./price-card-chart";
 import { FavoriteStar } from "./favorite-star";
+import { PriceNotices } from "./price-notices";
 export function ForecastChange({ item }: { item: LivePrice }) {
   if (item.forecastDelta === null) return <span className="price-direction bg-slate-100 text-slate-600">예측 정보 없음</span>;
   return <span className={`price-direction ${item.forecastDirection === "up" ? "price-up" : item.forecastDirection === "down" ? "price-down" : "bg-slate-100 text-slate-600"}`}>
@@ -33,7 +34,7 @@ export function PriceForecastCard({ item }: { item: LivePrice }) {
       <div className="flex justify-end"><ForecastChange item={item} /></div>
       <PriceCardChart item={item} />
       <p className="forecast-card-dates"><span>가격 기준 <time dateTime={item.priceDate ?? undefined}>{item.priceDate?.slice(5).replace("-", "/") ?? "-"}</time></span><span><time dateTime={item.forecastDate ?? undefined}>{item.forecastDate?.slice(5).replace("-", "/") ?? "-"}</time> 예측</span></p>
-      {(item.status === "STALE" || item.quality === "BASELINE") && <p className="text-xs text-muted">{item.status === "STALE" ? "이전 기준일의 정보입니다." : "기준 모델 예측입니다."}</p>}
+      <PriceNotices item={item} />
     </Link>
   </article>;
 }

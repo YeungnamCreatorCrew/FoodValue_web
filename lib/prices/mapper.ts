@@ -1,5 +1,6 @@
 import type { PriceDetailDto, PriceForecastDto, PriceGuideDto, PriceSummaryDto } from "./dto";
 import type { BuyingGuide, ForecastPoint, LivePrice } from "./model";
+import { mapDataFactors } from "./factors";
 
 const categories = { VEGETABLE: "채소류", GRAIN: "곡류", FRUIT: "과일류", MEAT: "육류", SEAFOOD: "수산물", ETC: "기타" };
 export function priceChanges(current: number | null, forecast: number | null, percent?: number | null) {
@@ -20,7 +21,7 @@ export function mapSummary(dto: PriceSummaryDto): LivePrice {
     currentPrice: dto.currentPrice, weeklyChangeRate: dto.weeklyChangePercent,
     forecastDate: dto.forecastTargetDate, forecastPrice: dto.forecastPrice,
     ...priceChanges(dto.currentPrice, dto.forecastPrice, dto.forecastChangePercent),
-    priceHistory: [], forecastPoints: [], guide: null,
+    priceHistory: [], forecastPoints: [], guide: null, forecastStatus: null, dataFactors: [],
   };
 }
 export function mapForecast(dto: PriceForecastDto): ForecastPoint[] {
@@ -42,5 +43,6 @@ export function withForecast(item: LivePrice, points: ForecastPoint[], baseDate:
     ...priceChanges(item.currentPrice, last?.price ?? null) };
 }
 export function mapDetail(dto: PriceDetailDto): LivePrice {
-  return { ...withForecast(mapSummary(dto.item), mapForecast(dto.forecast), dto.forecast.baseDate), guide: mapGuide(dto.guide) };
+  return { ...withForecast(mapSummary(dto.item), mapForecast(dto.forecast), dto.forecast.baseDate), guide: mapGuide(dto.guide),
+    forecastStatus: dto.forecast.status, dataFactors: mapDataFactors(dto.guide?.factors) };
 }

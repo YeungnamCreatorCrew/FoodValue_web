@@ -1,4 +1,5 @@
 import type { Category, Period, PriceSort } from "./types";
+import type { DataFactor } from "./factors";
 
 export interface PricePoint { date: string; price: number | null }
 export interface ForecastPoint extends PricePoint { lower: number | null; upper: number | null }
@@ -35,6 +36,10 @@ export interface LivePrice extends PriceChartData {
   forecastPercent: number | null;
   forecastDirection: "up" | "down" | "flat" | null;
   guide: BuyingGuide | null;
+  /** Detail only: forecast.status from WAS (null on list summaries). */
+  forecastStatus: string | null;
+  /** Detail only: guide.factors observations/model info. Not SHAP. */
+  dataFactors: DataFactor[];
 }
 export interface PriceListQuery {
   category?: Category | "ALL";

@@ -21,6 +21,8 @@ const { forecastChart } = require("../lib/prices/forecast-chart.ts");
 const { favoriteIdentity } = require("../lib/prices/identity.ts");
 const { priceChartStyle } = require("../lib/prices/chart-style.ts");
 const { won } = require("../lib/prices/format.ts");
+const { mapDataFactors } = require("../lib/prices/factors.ts");
+const { priceNotices, missingForecastReason } = require("../lib/prices/status.ts");
 
 const summary = {
   id: 901, name: "대파", category: "VEGETABLE", market: "RETAIL", seriesId: 451,
@@ -33,7 +35,7 @@ const points = Array.from({ length: 7 }, (_, index) => ({
   lowerPrice: index === 0 ? null : 2700, upperPrice: 3200,
 }));
 const forecast = { itemId: 901, market: "RETAIL", seriesId: 451, status: "READY", baseDate: "2026-11-09", points };
-const detail = { item: summary, forecast, guide: { recommendation: "BUY_NOW", buyAfterDays: null, expectedSaving: 0, mape: 2.5, factors: [{ kind: "OBSERVATION", latestPrice: 3000 }] }, fridge: null };
+const detail = { item: summary, forecast, guide: { recommendation: "BUY_NOW", buyAfterDays: null, expectedSaving: 0, mape: 2.5, factors: [{ name: "최근 가격", kind: "OBSERVATION", latestPrice: 3000 }] }, fridge: null };
 const bounds = { left: 50, right: 350, top: 30, bottom: 200 };
 const originalFetch = globalThis.fetch;
 const calls = [];
@@ -65,12 +67,14 @@ try {
     assert.equal(item.baseDate, null); assert.equal(won(item.currentPrice), "-");
     assert.deepEqual(priceChartStyle(item), { "--price-chart-color": "var(--color-price-flat)" });
   });
-  await test("nested detail uses seven daily points and the server guide, excluding factors/fridge", () => {
+  await test("nested detail uses seven daily points and the server guide; factors stay observations, fridge excluded", () => {
     const item = mapDetail(detail);
     assert.equal(item.id, "901"); assert.equal(item.forecastPoints.length, 7);
     assert.equal(item.forecastPoints[1].price, 2910); assert.equal(item.forecastPoints[0].lower, null);
     assert.equal(item.guide.title, "지금 구매 추천"); // Downward prices must not replace the server's guide.
     assert.equal("factors" in item, false); assert.equal("fridge" in item, false);
+    assert.equal(item.forecastStatus, "READY"); assert.equal(item.dataFactors.length, 1);
+    assert.deepEqual(item.dataFactors[0].facts, [{ label: "최근 가격", value: "3,000원" }]);
     assert.equal(item.forecastDirection, "down");
     assert.deepEqual(priceChartStyle(item), { "--price-chart-color": "var(--color-price-down)" });
   });
@@ -78,6 +82,39 @@ try {
     const item = mapDetail({ ...detail, forecast: { ...forecast, points: [] }, guide: null });
     assert.equal(item.forecastPrice, null); assert.equal(item.forecastDate, null); assert.equal(item.guide, null);
     assert.deepEqual(item.forecastPoints, []); assert.equal(forecastChart(item, 30, bounds).forecastPath, "");
+  });
+  await test("WAS guide.factors map to observation cards without SHAP or direction", () => {
+    const factors = mapDataFactors([
+      { name: "최근 가격", kind: "OBSERVATION", latestPrice: 3004, dataDate: "2026-11-09", mean7Observed: 3051.43, description: "관측된 최근 가격 통계입니다." },
+      { name: "도매가격", kind: "OBSERVATION", source: "KAMIS", market: "WHOLESALE", latestPrice: 2100, dataDate: "2026-11-08", usedByModel: true, modelWeight: 0.3123, description: "d" },
+      { name: "주산지 기상", kind: "OBSERVATION", source: "KMA", days: 7, dataDate: "2026-11-08", meanTemperature7: 8.4, precipitationSum7: null, usedByModel: false },
+      { name: "공휴일", kind: "CALENDAR", source: "KASI", usedByModel: true, holidays: [{ date: "2026-11-11", name: "테스트휴일" }] },
+      { name: "외부변수 가중치", kind: "MODEL", method: "constrained_ridge_stacking", weights: [{ block: "MARKET", label: "상대 시장 가격", weight: 0.31 }, { block: "X", weight: 1.7 }, { block: "Y" }] },
+      { kind: "OBSERVATION" }, null, "bad",
+    ]);
+    assert.equal(factors.length, 5);
+    assert.deepEqual(factors[0].facts.map(fact => fact.value), ["3,004원", "3,051원"]);
+    assert.equal(factors[1].usedByModel, true); assert.equal(factors[1].modelWeight, 0.3123);
+    assert.deepEqual(factors[1].facts.find(fact => fact.label === "시장"), { label: "시장", value: "도매" });
+    assert.deepEqual(factors[2].facts.map(fact => fact.label), ["7일 평균기온", "관측 일수"]); // null rain is omitted, not 0
+    assert.equal(factors[3].facts[0].value, "11/11 테스트휴일");
+    assert.deepEqual(factors[4].weights, [{ label: "상대 시장 가격", weight: 0.31 }, { label: "X", weight: 1 }]);
+    for (const factor of factors) assert.equal("shapValue" in factor || "direction" in factor, false);
+    assert.deepEqual(mapDataFactors(undefined), []); assert.deepEqual(mapDataFactors({}), []);
+  });
+  await test("status notices explain missing, stale, insufficient and baseline data", () => {
+    assert.deepEqual(priceNotices({ status: "READY", quality: "VALIDATED", forecastStatus: "READY" }), []);
+    assert.deepEqual(priceNotices({ status: "NO_DATA", quality: null, forecastStatus: "NO_FORECAST" }).length, 1);
+    assert.equal(priceNotices({ status: "NO_FORECAST", quality: null, forecastStatus: null })[0], "아직 이 품목의 AI 예측이 없습니다.");
+    const insufficient = priceNotices({ status: "NO_FORECAST", quality: null, forecastStatus: "INSUFFICIENT_DATA" });
+    assert.deepEqual(insufficient, ["가격 데이터가 부족해 AI 예측을 만들지 못했습니다."]);
+    assert.equal(priceNotices({ status: "STALE", quality: "BASELINE", forecastStatus: "STALE" }).length, 2);
+    assert.equal(priceNotices({ status: "BASELINE", quality: "BASELINE" }).length, 1);
+    assert.equal(missingForecastReason({ status: "NO_FORECAST", quality: null, forecastStatus: "INSUFFICIENT_DATA" }), insufficient[0]);
+    assert.match(missingForecastReason({ status: "NO_DATA", quality: null }), /관측된 가격이 없어/);
+    const item = mapDetail({ ...detail, item: { ...summary, status: "NO_FORECAST", currentPrice: 3000, forecastPrice: null },
+      forecast: { ...forecast, status: "INSUFFICIENT_DATA", points: [] }, guide: null });
+    assert.deepEqual(item.dataFactors, []); assert.deepEqual(priceNotices(item), insufficient);
   });
   await test("history preserves nulls and passes each supported days value with the actual item ID", async () => {
     globalThis.fetch = async (url, options) => {

@@ -1,16 +1,16 @@
 import Link from "next/link";
 import type { LivePrice } from "@/lib/prices/model";
 import { favoriteIdentity } from "@/lib/prices/identity";
-import { getMockPriceAnalysis } from "@/lib/prices/mock-analysis";
+import { missingForecastReason } from "@/lib/prices/status";
 import { formatDate, formatNumber, formatPercent, won } from "@/lib/prices/format";
 import { IngredientImage } from "./price-forecast-card";
 import { FavoriteStar } from "./favorite-star";
-import { PriceFactorAccordion } from "./price-factors";
+import { DataFactorPanel } from "./data-factors";
+import { PriceNotices } from "./price-notices";
 import { RecentPriceChart } from "./recent-price-chart";
 import "./price-detail.css";
 
 export function PriceDetail({ item }: { item: LivePrice }) {
-  const mockAnalysis = getMockPriceAnalysis(item.name);
   const down = item.forecastDirection === "down";
   const direction = down ? "하락" : item.forecastDirection === "up" ? "상승" : item.forecastDirection === "flat" ? "보합" : "예측 정보 없음";
   return <main id="main-content" className="price-page price-detail-page price-dashboard">
@@ -26,14 +26,15 @@ export function PriceDetail({ item }: { item: LivePrice }) {
           <div className="dashboard-metric guide-metric"><h3>구매 가이드</h3><strong><span aria-hidden="true">◷ </span>{item.guide?.title ?? "구매 가이드 없음"}</strong><p>{item.guide?.description ?? "아직 구매 가이드가 없습니다."}</p></div>
         </div>
         <p className="dashboard-dates">가격 기준일 {formatDate(item.priceDate ?? null)} · 예측 기준일 <time dateTime={item.baseDate ?? undefined}>{formatDate(item.baseDate)}</time> · 예측 대상일 <time dateTime={item.forecastDate ?? undefined}>{formatDate(item.forecastDate)}</time></p>
-        <p className="dashboard-dates">주간 변화 {formatPercent(item.weeklyChangeRate)}{item.status === "STALE" ? " · 이전 기준일의 정보입니다." : ""}{item.quality === "BASELINE" ? " · 기준 모델 예측입니다." : ""}</p>
+        <p className="dashboard-dates">주간 변화 {formatPercent(item.weeklyChangeRate)}</p>
+        <PriceNotices item={item} className="mt-2" />
       </div>
       <RecentPriceChart item={item} />
     </section>
     <section className="dashboard-ai-summary" aria-labelledby="prediction-summary-title"><h2 id="prediction-summary-title"><span aria-hidden="true">✧</span> AI 예측 요약</h2><div className="dashboard-ai-body"><span className="dashboard-ai-icon" aria-hidden="true">AI</span><div>
-      {item.forecastPrice === null ? <p>아직 예측 정보가 없습니다.</p> : item.currentPrice === null ? <p>현재 가격 정보가 없습니다. 7일 후 예상가는 {won(item.forecastPrice)}입니다.</p> : <p>현재 <strong>{won(item.currentPrice)}</strong>인 {item.name} 가격은 7일 후 <strong>{won(item.forecastPrice)}</strong>으로 {item.forecastDirection === "flat" ? "보합을 유지할" : (item.forecastPercent === null ? "" : "약 " + formatNumber(Math.abs(item.forecastPercent), 1) + "% ") + (down ? "낮아질" : "높아질")} 것으로 예측되었습니다.</p>}
+      {item.forecastPrice === null ? <p>{missingForecastReason(item)}</p> : item.currentPrice === null ? <p>현재 가격 정보가 없습니다. 7일 후 예상가는 {won(item.forecastPrice)}입니다.</p> : <p>현재 <strong>{won(item.currentPrice)}</strong>인 {item.name} 가격은 7일 후 <strong>{won(item.forecastPrice)}</strong>으로 {item.forecastDirection === "flat" ? "보합을 유지할" : (item.forecastPercent === null ? "" : "약 " + formatNumber(Math.abs(item.forecastPercent), 1) + "% ") + (down ? "낮아질" : "높아질")} 것으로 예측되었습니다.</p>}
     </div></div></section>
-    <section aria-label="SHAP mock 예시"><p className="dashboard-footnote">AI Insight / SHAP은 기존 mock 예시입니다. 실제 가격 API의 예측 요인 설명이 아닙니다.</p>{mockAnalysis ? <PriceFactorAccordion item={mockAnalysis} /> : <p className="dashboard-footnote">이 품목의 SHAP mock 예시가 없습니다.</p>}</section>
-    <p className="dashboard-footnote">{item.source} · AI 예측은 실제 가격과 다를 수 있으며, SHAP은 인과관계를 의미하지 않습니다.</p>
+    <DataFactorPanel item={item} variant="detail" />
+    <p className="dashboard-footnote">{item.source} · AI 예측은 실제 가격과 다를 수 있습니다.</p>
   </main>;
 }
