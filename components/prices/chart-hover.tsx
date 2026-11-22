@@ -20,10 +20,13 @@ const dayLabel = (date: string) => `${date.slice(5).replace("-", "/")} (${WEEKDA
  * Stock-chart style crosshair: pointer/touch over the plot snaps to the nearest slot and shows its date and value.
  * Only slots with a value exist, so days without data are never shown.
  */
-export function ChartHover({ points, left, right, top, bottom, unit = "원", digits = 0, color = "var(--price-chart-color)" }: {
-  points: HoverPoint[]; left: number; right: number; top: number; bottom: number; unit?: string; digits?: number; color?: string;
+/** Optional custom tooltip body (e.g. week-of-year charts or two series); default is date + value + change. */
+export interface HoverTooltip { title: string; lines: { text: string; color?: string; bold?: boolean }[]; markers?: { y: number; color: string }[] }
+
+export function ChartHover<T extends HoverPoint>({ points, left, right, top, bottom, unit = "원", digits = 0, color = "var(--price-chart-color)", tooltip }: {
+  points: T[]; left: number; right: number; top: number; bottom: number; unit?: string; digits?: number; color?: string; tooltip?: (point: T) => HoverTooltip;
 }) {
-  const [active, setActive] = useState<HoverPoint | null>(null);
+  const [active, setActive] = useState<T | null>(null);
   // SVG units per screen pixel, so the tooltip keeps a readable on-screen size however much the chart is scaled.
   const [scale, setScale] = useState(1);
   if (!points.length) return null;
@@ -38,7 +41,20 @@ export function ChartHover({ points, left, right, top, bottom, unit = "원", dig
   }
   const value = (number: number) => `${formatNumber(number, digits)}${unit}`;
   let box = null;
-  if (active) {
+  if (active && tooltip) {
+    const content = tooltip(active);
+    const k = scale, width = 168 * k, height = (28 + content.lines.length * 19) * k, gap = 12 * k;
+    const boxX = Math.max(left - 8, active.x + gap + width > right ? active.x - gap - width : active.x + gap);
+    const boxY = Math.max(top - 20, Math.min(active.y - height / 2, bottom - height));
+    box = <g pointerEvents="none" aria-hidden="true">
+      <line x1={active.x} x2={active.x} y1={top - 12} y2={bottom + 6} stroke="#5f7466" strokeWidth={k} strokeDasharray={`${3 * k} ${3 * k}`} />
+      {(content.markers ?? [{ y: active.y, color }]).map(marker => <circle key={`${marker.color}${marker.y}`} cx={active.x} cy={marker.y} r={4.5 * k} fill={marker.color} stroke="white" strokeWidth={2 * k} />)}
+      <rect x={boxX} y={boxY} width={width} height={height} rx={8 * k} fill="#1f2a24" fillOpacity="0.92" />
+      <text x={boxX + 10 * k} y={boxY + 18 * k} fontSize={12 * k} fill="#cfdcd3">{content.title}</text>
+      {content.lines.map((line, index) => <text key={line.text} x={boxX + 10 * k} y={boxY + (38 + index * 19) * k} fontSize={(line.bold ? 14 : 12) * k}
+        fontWeight={line.bold ? 700 : 500} fill={line.color ?? "white"}>{line.text}</text>)}
+    </g>;
+  } else if (active) {
     const forecast = active.kind === "forecast";
     const title = `${dayLabel(active.date)}${forecast ? " · 예측" : ""}`;
     const change = active.previous ? active.value - active.previous.value : null;

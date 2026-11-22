@@ -1,8 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { getFactorTrend, getPrice, getPriceChart, getPriceFactors, listPrices } from "./service";
-import type { HistoryPeriod, PriceListQuery } from "./model";
+import { getFactorTrend, getPrice, getPriceChart, getPriceFactors, getPriceIndicators, listPrices } from "./service";
+import type { PriceHistoryPeriod, PriceListQuery } from "./model";
 
 /** Keyed results prevent a late response from showing another item's data. */
 export function usePriceResource<T>(key: string, load: (signal: AbortSignal) => Promise<T>) {
@@ -29,7 +29,7 @@ export function usePriceDetail(id: string) {
   const load = useCallback((signal: AbortSignal) => getPrice(id, signal), [id]);
   return usePriceResource(id, load);
 }
-export function usePriceChart(id: string, days: HistoryPeriod) {
+export function usePriceChart(id: string, days: PriceHistoryPeriod) {
   const load = useCallback((signal: AbortSignal) => getPriceChart(id, days, signal), [id, days]);
   return usePriceResource(`${id}:${days}`, load);
 }
@@ -41,4 +41,9 @@ export function usePriceFactors(id: string) {
 export function useFactorTrend(id: string, factorId: string) {
   const load = useCallback((signal: AbortSignal) => getFactorTrend(id, factorId, 90, signal), [id, factorId]);
   return usePriceResource(`factor:${id}:${factorId}`, load);
+}
+/** Judgement-aid indicator cards (mock until WAS /indicators exists). */
+export function usePriceIndicators(id: string) {
+  const load = useCallback((signal: AbortSignal) => getPriceIndicators(id, signal), [id]);
+  return usePriceResource(`indicators:${id}`, load);
 }

@@ -11,7 +11,7 @@
 | --- | --- |
 | `/api/v1/prices/items` | `keyword`(최대 50자), `category`, `sort`, `page`(1부터), `size`(최대 50), `market`. `{items,page,size,total}` |
 | `/api/v1/prices/items/{item_id}` | `market`. `{item,forecast,guide,fridge}` 중 가격·예측·가이드만 사용 |
-| `/api/v1/prices/items/{item_id}/history` | `days=14/30/90`, `market`. `{points:[{date,price}],startDate,endDate,...}` |
+| `/api/v1/prices/items/{item_id}/history` | `days=14/30/90/180/365`(180·365는 WAS `feature/history-long-periods`에서 추가), `market`. `{points:[{date,price}],startDate,endDate,...}` |
 | `/api/v1/prices/items/{item_id}/forecast` | `market`. `{points:[{targetDate,predictedPrice,lowerPrice,upperPrice}],...}` |
 | `/api/v1/prices/items/{item_id}/factors` | `market`. 7일 후 예측의 변수별 SHAP 기여(원)·분류 합계·서버 문장. `{explained,unavailableReason,factors,categories,summary,...}` |
 | `/api/v1/prices/items/{item_id}/factors/{factorId}/history` | `days=90`(한 번 받아 14/30일은 화면에서 자름), `market`. `{points:[{date,value}],unit,baseDate}` |
@@ -36,6 +36,66 @@ UI의 `ALL`은 query에서 생략한다. 검색 `q`는 API에서 `keyword`로,
 - AI 예측 요약은 상세 응답의 `summary.headline`(서버 고정 문장)과 `summary.detail`(Gemini가 다듬은 요인 요약, 숫자 없음)을 쓰고,
   `summary`가 없을 때만 화면에서 숫자로 문장을 만든다. 분류별 설명은 `categories[].description` → `summary.categories` → 고정 문장 순.
 - SHAP은 모델 예측에 대한 기여이며 인과관계가 아니라는 안내를 유지한다.
+
+## 판단 보조 지표 카드 (프로토타입, 계약 초안)
+
+가격 예측이 직전 가격 유지(naive)를 안정적으로 이기지 못해, 상세 화면의 메인을 "데이터로 검증된 근거"로 바꿨다.
+기존 7일 예측(`/forecast`)과 요인(`/factors`)은 아래 "모델 의견"으로 그대로 둔다.
+디자인 참고: 대파 프로토타입(https://claude.ai/artifact/WaxwFErFMB83aUWeggUcWr). 구성과 문구만 따르고 스타일은 기존 가격 화면에 맞췄다.
+
+### 계약 초안 (팀 합의 전, 필드 이름 바뀔 수 있음)
+
+`GET /api/v1/prices/items/{item_id}/indicators?market=RETAIL` (camelCase)
+
+| 필드 | 의미 |
+| --- | --- |
+| `asOfDate` | 지표 기준일. 화면 제목 옆에 표시(현재가 기준일과 다를 수 있다) |
+| `unavailableReason` | 카드가 없을 때 보여줄 서버 문장. `cards: []`와 함께 온다 |
+| `summary.headline` / `summary.signals[]` | 한 줄 요약과 칩. 칩 문구(`stateLabel`)는 카드 머리 칩에도 같은 `key`로 쓴다 |
+| `cards[].key` | `SEASONAL` / `WHOLESALE_LEAD` / `HARVEST_WEATHER` / `ARRIVALS`. 모르는 key는 건너뛴다 |
+| `cards[].state` | `UP`(상승 압력, Red) / `NEUTRAL`(Gray) / `DOWN`(하락 압력·싼 편, Blue) / `null`(방향 없음) |
+| `cards[].verdict` | `FACT`(사실) / `PASS`(검증된 근거) / `CONDITIONAL`(조건부 · 추가 확인 필요) / `WEAK`(참고 사실, 방향 없음 — state가 와도 무시) |
+| `cards[].fact` / `evidence` | 숫자 근거. 비율은 소수(`-0.149` = -14.9%) |
+| `cards[].chart` | `SEASONAL_OVERLAY`(연도별 주차 1~52 소매가) / `INDEXED_LINES`(최근 26주 도매·소매 지수, 기준일=100). 모르는 type이면 차트 없이 카드만 |
+
+- 계층: `dto.ts`(`PriceIndicatorsDto`, key·state·type은 string) → `mapper.ts`의 `mapIndicators`(필드 이름은 여기서만 읽는다) → `model.ts`(`PriceIndicators`) → `service.getPriceIndicators` → `usePriceIndicators`.
+- 실제 API가 생기면 `api.ts`의 `pricesApi.indicators` 본문만 `get<PriceIndicatorsDto>(`${itemPath(id)}/indicators`, marketParams(), signal)`로 바꾼다.
+  mock은 함수 안에서 동적 import 하므로 서버 번들과 `scripts/check-prices.mjs`에 섞이지 않는다.
+
+### mock 사용법
+
+- `mocks/priceIndicatorsServer.ts`가 응답을 만든다. 대파(id 60)는 위 계약의 숫자, 차트 원자료는 `mocks/priceIndicatorsData.ts`(프로토타입 스냅샷, 비어 있는 주차는 비워 둠).
+- 대파 외 품목: `unavailableReason: "이 품목은 아직 지표를 준비 중입니다"`, `cards: []`.
+- `?mock=empty`: `cards: []` + unavailableReason. `?mock=error`: 호출 실패 → 기존 가격 화면의 오류 + "다시 시도".
+- 예: `http://localhost:3000/prices/60?mock=empty`
+
+### 화면 규칙
+
+- 상세 순서(결론 먼저): 상단 히어로 카드에 상품·현재가와 한 줄 요약·칩을 함께 둔다 → 바로 아래 탭으로 "판단 근거"(기본) / "모델 의견"을 전환한다.
+  탭은 `role="tablist"`이고 좌우 화살표·Home·End로 옮겨 다닌다. 칩은 해당 카드가 있으면 판단 근거 탭으로 바꾼 뒤 그 카드로 이동한다.
+  모델 의견 탭은 참고용 안내와 기준값 안내, 그 아래 예상가·방향·구매 가이드, 예측 차트, AI 예측 요약, 요인 패널을 펼쳐 보여주며,
+  처음 선택할 때 그린다(그때 차트·`/factors` 요청).
+- 요약 아래 고정 안내: "예측이 아니라 지금 상황을 정리한 것입니다. 판단은 직접 내려 주세요."
+- 칩 색과 문장은 서버 state를 그대로 쓴다. 화면에서 가격으로 방향을 다시 계산하지 않는다. 근거 문장은 숫자 필드로만 만든다
+  (예: "도매가가 2주 새 5% 넘게 오른 뒤 2주 안에 소매가가 오른 경우 72% (평소 44%, 193번)").
+- 차트 선 색은 상승/하락색(Red/Blue)을 피해 브랜드 초록(올해·소매)과 갈색(도매)·회색(평균·지난 해)을 쓴다.
+  SEASONAL: 올해 굵은 선, 직전 5년(`fact.normalYears`) 범위 띠와 평균 점선, 그 이전 해 옅은 선, 커서 툴팁(주차·올해 가격·직전 5년 평균).
+  WHOLESALE_LEAD: 도매·소매 지수 두 선, 끝점 이름 라벨, 커서 툴팁. 툴팁은 `ChartHover`의 `tooltip` prop으로 재사용한다.
+- 모델 의견: `/factors`가 `explained=false` + `BASELINE_MODEL`이면 탭 맨 위 안내 아래 "모델이 직전 가격 유지보다 낫지 않아 기준값을 보여줍니다."를 표시한다.
+  탭을 숨길지는 팀 결정 전이라 둔다. `/factors`는 탭에서 한 번만 요청해 요인 패널과 공유한다.
+- 모바일(375px)은 카드 한 열, 가로 스크롤 없음. 1024px 미만부터 한 열.
+
+### 확인 시 주의 (포트)
+
+WAS 기본 CORS는 `localhost:3000`, `localhost:5173`만 허용한다. 다른 포트(예: 8080)로 띄우면 서버에서 받는 상세는 보이지만
+브라우저에서 부르는 가격 차트(`/history`)와 `/factors`는 CORS로 실패한다. 다른 포트에서 보려면 WAS를 `CORS_ORIGINS`에 그 주소를 넣어 실행한다.
+
+### 가격 흐름 차트 기간
+
+상세 모델 의견 탭과 홈의 "가격 흐름 및 7일 예측" 차트는 90일(기본) / 180일 / 1년을 고른다(`PRICE_CHART_PERIODS`).
+14·30일은 짧아 미조사일이 많을 때 선이 거의 없어 뺐다. 180일·1년은 날짜 점을 그리지 않고 첫 날짜 라벨에 연도를 붙인다.
+WAS `/history`가 180·365를 받아야 하므로, 그 변경이 머지되기 전 WAS로는 180일·1년이 400 오류가 난다.
+요인 과거 추이(`/factors/{id}/history`)는 그대로 14/30/90일이다.
 
 ## 프론트 구조
 

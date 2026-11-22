@@ -116,3 +116,37 @@ export interface FactorHistoryDto {
   days: number;
   points: { date: string; value: number | null }[];
 }
+
+/**
+ * DRAFT contract (팀 합의 전): GET /prices/items/{id}/indicators?market=RETAIL.
+ * key / state / verdict / chart.type stay strings so unknown values reach the mapper and are skipped there.
+ * Rates are fractions (-0.149 = -14.9%).
+ */
+export interface IndicatorSignalDto { key: string; label: string; state: string | null; stateLabel: string | null }
+export interface SeasonalOverlayChartDto {
+  type: "SEASONAL_OVERLAY";
+  currentYear: number;
+  years: { year: number; points: { week: number; price: number | null }[] }[];
+}
+export interface IndexedLinesChartDto {
+  type: "INDEXED_LINES";
+  baseDate: string;
+  points: { date: string; wholesale: number | null; retail: number | null }[];
+}
+export interface IndicatorCardDto {
+  key: string;
+  verdict: string;
+  state: string | null;
+  available?: boolean | null;
+  fact: Record<string, unknown> | null;
+  evidence?: Record<string, unknown> | null;
+  chart?: ({ type: string } & Record<string, unknown>) | null;
+}
+export interface PriceIndicatorsDto {
+  itemId: number;
+  market: PriceMarketDto;
+  asOfDate: string | null;
+  unavailableReason: string | null;
+  summary: { headline: string; signals: IndicatorSignalDto[] } | null;
+  cards: IndicatorCardDto[];
+}

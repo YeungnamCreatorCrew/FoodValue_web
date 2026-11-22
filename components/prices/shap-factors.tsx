@@ -116,11 +116,15 @@ function ShapTable({ item, analysis }: { item: LivePrice; analysis: ShapAnalysis
 /** Detail page: SHAP table when the published run is explained; otherwise the observation cards from guide.factors.
  * The reason note is skipped when the server summary (shown above) already says why. */
 export function ShapFactorPanel({ item }: { item: LivePrice }) {
-  const { data, error, loading } = usePriceFactors(item.id);
+  return <ShapFactorView item={item} {...usePriceFactors(item.id)} />;
+}
+
+/** Same panel with the /factors result loaded by the caller (the detail page's model-opinion section shares one request). */
+export function ShapFactorView({ item, data, error, loading, hideReason = false }: { item: LivePrice; data?: ShapAnalysis; error?: string; loading: boolean; hideReason?: boolean }) {
   if (loading) return <section className="dashboard-factors"><div className="dashboard-factor-heading"><h2>예측에 영향을 준 요인</h2></div><p className="dashboard-factor-empty">요인을 불러오는 중입니다.</p></section>;
   if (data?.explained) return <ShapTable item={item} analysis={data} />;
   return <>
-    {!error && data && !item.aiSummary && <p className="mb-3 rounded-xl border border-[var(--color-brand-border)] bg-white px-5 py-4 text-sm text-muted">{unavailableText(data.unavailableReason)}</p>}
+    {!error && data && !item.aiSummary && !hideReason && <p className="mb-3 rounded-xl border border-[var(--color-brand-border)] bg-white px-5 py-4 text-sm text-muted">{unavailableText(data.unavailableReason)}</p>}
     <DataFactorPanel item={item} variant="detail" />
   </>;
 }

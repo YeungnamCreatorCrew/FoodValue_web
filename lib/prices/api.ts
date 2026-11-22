@@ -1,5 +1,5 @@
-import type { FactorHistoryDto, PriceDetailDto, PriceFactorsDto, PriceForecastDto, PriceHistoryDto, PricePageDto, PriceSortDto } from "./dto";
-import type { PriceListQuery, HistoryPeriod } from "./model";
+import type { FactorHistoryDto, PriceDetailDto, PriceFactorsDto, PriceForecastDto, PriceHistoryDto, PriceIndicatorsDto, PricePageDto, PriceSortDto } from "./dto";
+import type { PriceListQuery, HistoryPeriod, PriceHistoryPeriod } from "./model";
 
 // Uvicorn's default port; override before next dev/build for another WAS host.
 const baseUrl = (process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000").replace(/\/+$/, "");
@@ -38,7 +38,7 @@ export const pricesApi = {
     return get<PricePageDto>("", params, signal);
   },
   detail(id: string, signal?: AbortSignal) { return get<PriceDetailDto>(itemPath(id), marketParams(), signal); },
-  history(id: string, days: HistoryPeriod, signal?: AbortSignal) {
+  history(id: string, days: PriceHistoryPeriod, signal?: AbortSignal) {
     const params = marketParams(); params.set("days", String(days));
     return get<PriceHistoryDto>(`${itemPath(id)}/history`, params, signal);
   },
@@ -48,5 +48,17 @@ export const pricesApi = {
     if (!/^[A-Za-z0-9]{1,40}$/.test(factorId)) throw new PriceApiError(404, "올바른 요인 ID가 아닙니다.");
     const params = marketParams(); params.set("days", String(days));
     return get<FactorHistoryDto>(`${itemPath(id)}/factors/${factorId}/history`, params, signal);
+  },
+  /**
+   * DRAFT contract; WAS has no /indicators yet, so this reads the mock server.
+   * When the API ships, replace the body with: return get<PriceIndicatorsDto>(`${itemPath(id)}/indicators`, marketParams(), signal);
+   * The lazy import keeps the mock (and its @/ imports) out of server bundles and out of scripts/check-prices.mjs.
+   */
+  async indicators(id: string, signal?: AbortSignal): Promise<PriceIndicatorsDto> {
+    const path = itemPath(id);
+    const { fetchMockIndicators } = await import("@/mocks/priceIndicatorsServer");
+    const dto = await fetchMockIndicators(Number(path.slice(1)));
+    if (signal?.aborted) throw new PriceApiError(0, "요청이 취소되었습니다.");
+    return dto;
   },
 };
