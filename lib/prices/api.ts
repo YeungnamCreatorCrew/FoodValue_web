@@ -1,4 +1,5 @@
 import type { FactorHistoryDto, PriceDetailDto, PriceFactorsDto, PriceForecastDto, PriceHistoryDto, PriceIndicatorsDto, PricePageDto, PriceSortDto } from "./dto";
+import { fillDetail, fillFactors, fillSummary, sampleFillEnabled, sampleForecast, baseOf } from "./sample-fill";
 import type { PriceListQuery, HistoryPeriod, PriceHistoryPeriod } from "./model";
 
 // Uvicorn's default port; override before next dev/build for another WAS host.
@@ -35,15 +36,24 @@ export const pricesApi = {
     params.set("sort", sorts[query.sort ?? "name"]);
     params.set("page", String(query.page ?? 1));
     params.set("size", String(Math.min(50, Math.max(1, query.size ?? 12))));
-    return get<PricePageDto>("", params, signal);
+    return get<PricePageDto>("", params, signal).then(page => sampleFillEnabled() ? { ...page, items: page.items.map(fillSummary) } : page);
   },
-  detail(id: string, signal?: AbortSignal) { return get<PriceDetailDto>(itemPath(id), marketParams(), signal); },
+  detail(id: string, signal?: AbortSignal) { return get<PriceDetailDto>(itemPath(id), marketParams(), signal).then(fillDetail); },
   history(id: string, days: PriceHistoryPeriod, signal?: AbortSignal) {
     const params = marketParams(); params.set("days", String(days));
     return get<PriceHistoryDto>(`${itemPath(id)}/history`, params, signal);
   },
-  forecast(id: string, signal?: AbortSignal) { return get<PriceForecastDto>(`${itemPath(id)}/forecast`, marketParams(), signal); },
-  factors(id: string, signal?: AbortSignal) { return get<PriceFactorsDto>(`${itemPath(id)}/factors`, marketParams(), signal); },
+  async forecast(id: string, signal?: AbortSignal) {
+    const dto = await get<PriceForecastDto>(`${itemPath(id)}/forecast`, marketParams(), signal);
+    if (!sampleFillEnabled() || dto.status !== "NO_FORECAST") return dto;
+    const base = baseOf((await get<PriceDetailDto>(itemPath(id), marketParams(), signal)).item); // 샘플 채우기 전용: 실제 최근 가격이 필요하다
+    return base ? sampleForecast(base, { market: dto.market, seriesId: dto.seriesId }) : dto;
+  },
+  async factors(id: string, signal?: AbortSignal) {
+    const dto = await get<PriceFactorsDto>(`${itemPath(id)}/factors`, marketParams(), signal);
+    if (!sampleFillEnabled() || dto.status !== "NO_FORECAST") return dto;
+    return fillFactors(dto, (await get<PriceDetailDto>(itemPath(id), marketParams(), signal)).item);
+  },
   factorHistory(id: string, factorId: string, days: HistoryPeriod, signal?: AbortSignal) {
     if (!/^[A-Za-z0-9]{1,40}$/.test(factorId)) throw new PriceApiError(404, "올바른 요인 ID가 아닙니다.");
     const params = marketParams(); params.set("days", String(days));
