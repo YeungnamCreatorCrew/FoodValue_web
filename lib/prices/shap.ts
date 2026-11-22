@@ -22,6 +22,9 @@ export interface ShapAnalysis {
   /** Why factors are missing when explained=false (BASELINE_MODEL / NO_FORECAST / NOT_EXPLAINED). */
   unavailableReason: string | null;
   baseDate: string | null;
+  /** 과거 검증(최종 평가) 구간. 기준 모델 안내 문구에 쓴다. */
+  evaluationStart: string | null;
+  evaluationEnd: string | null;
   targetDate: string | null;
   basePrice: number | null;
   predictedPrice: number | null;
@@ -49,7 +52,7 @@ export function mapShapAnalysis(dto: PriceFactorsDto): ShapAnalysis {
   const summary = mapAiSummary(dto.summary);
   return {
     explained: dto.explained && dto.factors.length > 0, unavailableReason: dto.unavailableReason,
-    baseDate: dto.baseDate, targetDate: dto.targetDate, basePrice: dto.basePrice, predictedPrice: dto.predictedPrice, summary,
+    baseDate: dto.baseDate, evaluationStart: dto.evaluationStart ?? null, evaluationEnd: dto.evaluationEnd ?? null, targetDate: dto.targetDate, basePrice: dto.basePrice, predictedPrice: dto.predictedPrice, summary,
     categories: dto.categories.map(row => ({ category: row.category, label: row.label, contribution: row.contribution,
       direction: direction(row.direction), description: row.description ?? summary?.categories[row.category] ?? categoryText(row.label, direction(row.direction)) })),
     factors: dto.factors.map(row => ({ ...row, categoryLabel: categoryLabels[row.category] ?? row.category, direction: direction(row.direction) })),
@@ -63,7 +66,7 @@ export function mapFactorTrend(dto: FactorHistoryDto): FactorTrend {
 }
 
 export function unavailableText(reason: string | null) {
-  if (reason === "BASELINE_MODEL") return "이번 예측은 학습 모델이 기준 모델(직전 가격 유지)을 이기지 못해 기준 모델로 만들어졌습니다. 그래서 변수별 영향은 제공되지 않습니다.";
+  if (reason === "BASELINE_MODEL") return "과거 검증에서 학습 모델이 기준 모델(직전 가격 유지)보다 정확하지 않아, 이번 예측은 기준 모델로 만들어졌습니다. 그래서 변수별 영향은 제공되지 않습니다.";
   if (reason === "NO_FORECAST") return "아직 이 품목의 AI 예측이 없어 변수별 영향을 표시할 수 없습니다.";
   return "이번 예측의 변수별 영향 정보가 없습니다.";
 }

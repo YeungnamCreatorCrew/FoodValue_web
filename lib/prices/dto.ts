@@ -96,6 +96,9 @@ export interface PriceFactorsDto {
   explained: boolean;
   unavailableReason: string | null;
   modelName: string | null;
+  /** 모델 채택을 정한 최종 평가(과거 검증) 구간. 없을 수 있다. */
+  evaluationStart?: string | null;
+  evaluationEnd?: string | null;
   method: string | null;
   horizonDays: number | null;
   targetDate: string | null;

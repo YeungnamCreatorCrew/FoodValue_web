@@ -192,8 +192,9 @@ try {
   });
   await test("factors: baseline runs are not explained and keep a reason", () => {
     const analysis = mapShapAnalysis({ itemId: 60, market: "RETAIL", baseDate: "2026-11-05", status: "STALE", explained: false, unavailableReason: "BASELINE_MODEL",
-      modelName: "LAST_PRICE", method: null, horizonDays: null, targetDate: null, currentPrice: null, basePrice: null, predictedPrice: null, summary: null, categories: [], factors: [] });
+      modelName: "LAST_PRICE", evaluationStart: "2026-09-07", evaluationEnd: "2026-10-29", method: null, horizonDays: null, targetDate: null, currentPrice: null, basePrice: null, predictedPrice: null, summary: null, categories: [], factors: [] });
     assert.equal(analysis.explained, false); assert.match(unavailableText(analysis.unavailableReason), /기준 모델/);
+    assert.equal(analysis.evaluationStart, "2026-09-07"); assert.equal(analysis.evaluationEnd, "2026-10-29");
     assert.equal(mapAiSummary(null), null);
   });
   await test("factor history requests 90 days once and drops missing values without filling", async () => {
