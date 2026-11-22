@@ -116,6 +116,7 @@ export interface VolatilityCard extends IndicatorCardBase {
   evidenceText: string | null;
 }
 export type IndicatorCard = SeasonalCard | WholesaleLeadCard | HarvestWeatherCard | ArrivalsCard | PricePositionCard | RetailWholesaleGapCard | VolatilityCard;
+export interface IndicatorNotice { key: string; text: string }
 export interface PriceIndicators {
   asOfDate: string | null;
   /** 서버 status가 STALE이면 지표 기준일이 오래됐다(카드는 그 기준일 값). */
@@ -124,4 +125,6 @@ export interface PriceIndicators {
   headline: string | null;
   signals: IndicatorSignal[];
   cards: IndicatorCard[];
+  /** 카드를 만들지 않은 이유(작형 전환 직후 등). 서버가 쓴 문장을 그대로 보여준다. */
+  notices: IndicatorNotice[];
 }

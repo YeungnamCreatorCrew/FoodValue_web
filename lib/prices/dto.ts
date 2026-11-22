@@ -145,6 +145,8 @@ export interface IndicatorCardDto {
   evidence?: Record<string, unknown> | null;
   chart?: ({ type: string } & Record<string, unknown>) | null;
 }
+/** 카드를 만들지 않은 이유(예: 작형 전환 직후). text는 서버가 쓴 사용자용 문장. */
+export interface IndicatorNoticeDto { key: string; reason: string; text: string }
 export interface PriceIndicatorsDto {
   itemId: number;
   market: PriceMarketDto;
@@ -155,4 +157,5 @@ export interface PriceIndicatorsDto {
   unavailableReason: string | null;
   summary: { headline: string; signals: IndicatorSignalDto[] } | null;
   cards: IndicatorCardDto[];
+  notices?: IndicatorNoticeDto[];
 }

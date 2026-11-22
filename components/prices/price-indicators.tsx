@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext, useEffect, useRef, useState, type MouseEvent, type ReactNode } from "react";
-import type { ArrivalsCard, HarvestWeatherCard, IndicatorCard, IndicatorState, IndicatorVerdict, LevelEvidence, LivePrice, PricePositionCard, RetailWholesaleGapCard, SeasonalCard, VolatilityCard, WholesaleLeadCard } from "@/lib/prices/model";
+import type { ArrivalsCard, HarvestWeatherCard, IndicatorCard, IndicatorNotice, IndicatorState, IndicatorVerdict, LevelEvidence, LivePrice, PricePositionCard, RetailWholesaleGapCard, SeasonalCard, VolatilityCard, WholesaleLeadCard } from "@/lib/prices/model";
 import { formatDate, formatNumber, formatPercent, won } from "@/lib/prices/format";
 import { usePriceIndicators } from "@/lib/prices/use-prices";
 import { ChartHover } from "./chart-hover";
@@ -327,6 +327,15 @@ const SECTIONS: { id: string; title: string; lead: string; keys: string[]; cols:
   { id: "other", title: "그 밖의 근거", lead: "날씨·물량 등 다른 자료로 본 근거입니다.", keys: ["HARVEST_WEATHER", "ARRIVALS"], cols: "is-7-5" },
 ];
 
+/** 카드를 만들지 않은 이유(작형 전환 직후 등). 빈자리 대신 이유를 보여줘서 다른 품목과 비교해 헷갈리지 않게 한다. */
+const NOTICE_TITLE: Record<string, string> = { WHOLESALE_LEAD: "도매가가 먼저 움직였나", VOLATILITY: "최근 가격이 얼마나 출렁였나" };
+function NoticeCard({ notice }: { notice: IndicatorNotice }) {
+  return <article id={cardAnchor(notice.key)} className="indicator-card is-notice" aria-label={NOTICE_TITLE[notice.key] ?? "잠시 쉬는 지표"}>
+    <div className="indicator-card-head"><h3>{NOTICE_TITLE[notice.key] ?? "잠시 쉬는 지표"}</h3><span className="indicator-chip is-neutral">잠시 쉬어요</span></div>
+    <p className="indicator-fact">{notice.text}</p>
+  </article>;
+}
+
 function Card({ card, unit }: { card: IndicatorCard; unit: string }) {
   switch (card.key) {
     case "PRICE_POSITION": return <PricePosition card={card} unit={unit} />;
@@ -397,10 +406,11 @@ export function PriceIndicators({ item, product, opinion }: { item: LivePrice; p
       <p>카드마다 &ldquo;근거·읽는 법 보기&rdquo;를 눌러 펼칠 수도 있어요.</p></div>
     {SECTIONS.map(section => {
     const cards = section.keys.flatMap(key => data.cards.find(card => card.key === key) ?? []);
-    if (!cards.length) return null;
+    const notices = section.keys.flatMap(key => data.notices.find(notice => notice.key === key && !cards.some(card => card.key === key)) ?? []);
+    if (!cards.length && !notices.length) return null;
     return <section key={section.id} className="indicator-section" aria-labelledby={`indicator-section-${section.id}`}>
       <div className="indicator-section-head"><h3 id={`indicator-section-${section.id}`}>{section.title}</h3><p>{section.lead}</p></div>
-      <div className={`indicator-grid ${section.cols}`}>{cards.map(card => <Card key={card.key} card={card} unit={item.unit} />)}</div>
+      <div className={`indicator-grid ${section.cols}`}>{cards.map(card => <Card key={card.key} card={card} unit={item.unit} />)}{notices.map(notice => <NoticeCard key={notice.key} notice={notice} />)}</div>
     </section>;
   })}</div></DetailContext.Provider>;
   return <>

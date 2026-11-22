@@ -129,5 +129,6 @@ export function mapIndicators(dto: PriceIndicatorsDto): PriceIndicators {
   });
   const labels = new Map(signals.map(signal => [signal.key, signal.stateLabel]));
   return { asOfDate: text(dto.asOfDate), stale: dto.status === "STALE", unavailableReason: text(dto.unavailableReason), headline: text(dto.summary?.headline), signals,
-    cards: (dto.cards ?? []).flatMap(card => mapIndicatorCard(card, labels) ?? []) };
+    cards: (dto.cards ?? []).flatMap(card => mapIndicatorCard(card, labels) ?? []),
+    notices: (dto.notices ?? []).flatMap(notice => { const body = text(notice.text); return notice.key && body ? [{ key: notice.key, text: body }] : []; }) };
 }
