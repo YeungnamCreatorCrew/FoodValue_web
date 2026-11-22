@@ -50,15 +50,19 @@ export const pricesApi = {
     return get<FactorHistoryDto>(`${itemPath(id)}/factors/${factorId}/history`, params, signal);
   },
   /**
-   * DRAFT contract; WAS has no /indicators yet, so this reads the mock server.
-   * When the API ships, replace the body with: return get<PriceIndicatorsDto>(`${itemPath(id)}/indicators`, marketParams(), signal);
-   * The lazy import keeps the mock (and its @/ imports) out of server bundles and out of scripts/check-prices.mjs.
+   * WAS GET /prices/items/{id}/indicators. 브라우저 주소에 ?mock=indicators|empty|error 가 있으면 프로토타입 mock을 쓴다
+   * (WAS 없이 화면을 볼 때, 빈/오류 화면 확인용). 그 밖에는 실제 API다.
+   * mock은 동적 import라 서버 번들과 scripts/check-prices.mjs에 섞이지 않는다.
    */
   async indicators(id: string, signal?: AbortSignal): Promise<PriceIndicatorsDto> {
     const path = itemPath(id);
-    const { fetchMockIndicators } = await import("@/mocks/priceIndicatorsServer");
-    const dto = await fetchMockIndicators(Number(path.slice(1)));
-    if (signal?.aborted) throw new PriceApiError(0, "요청이 취소되었습니다.");
-    return dto;
+    const mock = typeof window === "undefined" ? null : new URLSearchParams(window.location.search).get("mock");
+    if (mock === "indicators" || mock === "empty" || mock === "error") {
+      const { fetchMockIndicators } = await import("@/mocks/priceIndicatorsServer");
+      const dto = await fetchMockIndicators(Number(path.slice(1)));
+      if (signal?.aborted) throw new PriceApiError(0, "요청이 취소되었습니다.");
+      return dto;
+    }
+    return get<PriceIndicatorsDto>(`${path}/indicators`, marketParams(), signal);
   },
 };

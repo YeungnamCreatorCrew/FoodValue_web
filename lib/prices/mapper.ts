@@ -1,5 +1,5 @@
 import type { IndicatorCardDto, PriceDetailDto, PriceForecastDto, PriceGuideDto, PriceIndicatorsDto, PriceSummaryDto } from "./dto";
-import type { BuyingGuide, ForecastPoint, IndicatorCard, IndicatorSignal, IndicatorState, IndicatorVerdict, LivePrice, PriceIndicators } from "./model";
+import type { BuyingGuide, ForecastPoint, IndicatorCard, IndicatorSignal, IndicatorState, IndicatorVerdict, LevelEvidence, LivePrice, PriceIndicators } from "./model";
 import { mapDataFactors } from "./factors";
 import { mapAiSummary } from "./shap";
 
@@ -53,6 +53,11 @@ const num = (value: unknown) => typeof value === "number" && Number.isFinite(val
 const text = (value: unknown) => typeof value === "string" && value.trim() ? value : null;
 const record = (value: unknown) => value && typeof value === "object" ? value as Record<string, unknown> : {};
 const indicatorState = (value: string | null | undefined): IndicatorState | null => value === "UP" ? "up" : value === "DOWN" ? "down" : value === "NEUTRAL" ? "neutral" : null;
+const levelEvidence = (evidence: Record<string, unknown> | null): LevelEvidence | null => evidence && evidence.lowAfterRate !== undefined ? {
+  lowAfterRate: num(evidence.lowAfterRate), lowBaseRate: num(evidence.lowBaseRate), sampleLow: num(evidence.sampleLow),
+  highAfterRate: num(evidence.highAfterRate), highBaseRate: num(evidence.highBaseRate), sampleHigh: num(evidence.sampleHigh),
+  aheadWeeks: num(evidence.aheadWeeks), weakSide: evidence.weakSide === "low" || evidence.weakSide === "high" ? evidence.weakSide : null,
+  periodStart: text(evidence.periodStart), periodEnd: text(evidence.periodEnd) } : null;
 const verdicts: IndicatorVerdict[] = ["FACT", "PASS", "CONDITIONAL", "WEAK"];
 /** Used only when the summary has no signal for a card; never derived from prices. */
 const fallbackStateLabels: Record<IndicatorState, string> = { up: "상승 압력", neutral: "신호 없음", down: "하락 압력" };
@@ -74,7 +79,7 @@ function mapIndicatorCard(dto: IndicatorCardDto, labels: Map<string, string>): I
       }).filter(row => row.year > 0 && row.points.length > 0) : [];
       const currentYear = num(chart?.currentYear);
       return { ...base, key: "SEASONAL", evidenceText: text(evidence?.text),
-        fact: { currentPrice: num(fact.currentPrice), month: num(fact.month), monthAvg: num(fact.monthAvg), normalAvg: num(fact.normalAvg),
+        fact: { currentPrice: num(fact.currentPrice), windowDays: num(fact.windowDays), recentAvg: num(fact.recentAvg), normalAvg: num(fact.normalAvg),
           normalYears: Array.isArray(fact.normalYears) ? fact.normalYears.flatMap(year => num(year) ?? []) : [],
           diffRate: num(fact.diffRate), cheaperThanCount: num(fact.cheaperThanCount), historyYears: num(fact.historyYears) },
         chart: currentYear !== null && years.length ? { currentYear, years } : null };
@@ -91,6 +96,20 @@ function mapIndicatorCard(dto: IndicatorCardDto, labels: Map<string, string>): I
           periodStart: text(evidence.periodStart), periodEnd: text(evidence.periodEnd) },
         chart: points.length > 1 ? { baseDate: text(chart?.baseDate) ?? points[0].date, points } : null };
     }
+    case "PRICE_POSITION":
+      return { ...base, key: "PRICE_POSITION", evidenceText: text(evidence?.text),
+        fact: { currentPrice: num(fact.currentPrice), low: num(fact.low), lowDate: text(fact.lowDate), high: num(fact.high), highDate: text(fact.highDate),
+          avg: num(fact.avg), diffFromAvg: num(fact.diffFromAvg), percentile: num(fact.percentile), windowDays: num(fact.windowDays) },
+        evidence: levelEvidence(evidence) };
+    case "RETAIL_WHOLESALE_GAP":
+      return { ...base, key: "RETAIL_WHOLESALE_GAP", state: null, stateLabel: null, evidenceText: text(evidence?.text),
+        fact: { retailPrice: num(fact.retailPrice), wholesalePrice: num(fact.wholesalePrice), ratio: num(fact.ratio), normalRatio: num(fact.normalRatio),
+          low: num(fact.low), high: num(fact.high), percentile: num(fact.percentile), windowDays: num(fact.windowDays) },
+        evidence: (() => { const base = levelEvidence(evidence); return base && evidence ? { ...base, overlapsLead: evidence.overlapsLead === true,
+          corrWithWholesaleChange: num(evidence.corrWithWholesaleChange), passed: evidence.validationVerdict === "PASS" } : null; })() };
+    case "VOLATILITY":
+      return { ...base, key: "VOLATILITY", state: null, stateLabel: null, evidenceText: text(evidence?.text),
+        fact: { windowDays: num(fact.windowDays), recentRange: num(fact.recentRange), normalRange: num(fact.normalRange), percentile: num(fact.percentile) } };
     case "HARVEST_WEATHER":
       return { ...base, key: "HARVEST_WEATHER", available: dto.available !== false,
         fact: { region: text(fact.region), rain4w: num(fact.rain4w), normalRain4w: num(fact.normalRain4w) },
@@ -109,6 +128,6 @@ export function mapIndicators(dto: PriceIndicatorsDto): PriceIndicators {
     return label && stateLabel ? [{ key: signal.key, label, state: indicatorState(signal.state), stateLabel }] : [];
   });
   const labels = new Map(signals.map(signal => [signal.key, signal.stateLabel]));
-  return { asOfDate: text(dto.asOfDate), unavailableReason: text(dto.unavailableReason), headline: text(dto.summary?.headline), signals,
+  return { asOfDate: text(dto.asOfDate), stale: dto.status === "STALE", unavailableReason: text(dto.unavailableReason), headline: text(dto.summary?.headline), signals,
     cards: (dto.cards ?? []).flatMap(card => mapIndicatorCard(card, labels) ?? []) };
 }

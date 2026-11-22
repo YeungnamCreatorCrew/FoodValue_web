@@ -54,7 +54,7 @@ export interface PriceListQuery {
 export interface PriceListPage { items: LivePrice[]; page: number; size: number; total: number }
 export interface PriceChartResult { priceHistory: PricePoint[]; historyEndDate: string; forecast: ForecastPoint[]; forecastBaseDate: string | null }
 export type HistoryPeriod = Period;
-/** Price history windows for the 가격 흐름 chart. WAS /history accepts 14·30·90·180·365 (180·365 added on feature/history-long-periods). */
+/** Price history windows for the 가격 흐름 chart. WAS /history accepts 14·30·90·180·365 (180·365 added on feature/service-view). */
 export type PriceHistoryPeriod = 14 | 30 | 90 | 180 | 365;
 export const PRICE_CHART_PERIODS: { days: PriceHistoryPeriod; label: string }[] = [
   { days: 90, label: "90일" }, { days: 180, label: "180일" }, { days: 365, label: "1년" },
@@ -67,7 +67,7 @@ export interface IndicatorSignal { key: string; label: string; state: IndicatorS
 interface IndicatorCardBase { verdict: IndicatorVerdict; state: IndicatorState | null; stateLabel: string | null }
 export interface SeasonalCard extends IndicatorCardBase {
   key: "SEASONAL";
-  fact: { currentPrice: number | null; month: number | null; monthAvg: number | null; normalAvg: number | null; normalYears: number[];
+  fact: { currentPrice: number | null; windowDays: number | null; recentAvg: number | null; normalAvg: number | null; normalYears: number[];
     diffRate: number | null; cheaperThanCount: number | null; historyYears: number | null };
   evidenceText: string | null;
   chart: { currentYear: number; years: { year: number; points: { week: number; price: number }[] }[] } | null;
@@ -89,9 +89,37 @@ export interface ArrivalsCard extends IndicatorCardBase {
   key: "ARRIVALS";
   fact: { market: string | null; avgTon4w: number | null; normalTon: number | null; diffRate: number | null };
 }
-export type IndicatorCard = SeasonalCard | WholesaleLeadCard | HarvestWeatherCard | ArrivalsCard;
+export interface LevelEvidence {
+  lowAfterRate: number | null; lowBaseRate: number | null; sampleLow: number | null;
+  highAfterRate: number | null; highBaseRate: number | null; sampleHigh: number | null;
+  aheadWeeks: number | null; weakSide: "low" | "high" | null; periodStart: string | null; periodEnd: string | null;
+}
+/** 가격 이력만으로 만든 사실 카드. 예측 모델·외부변수와 무관하고 percentile은 0~1(그 값보다 낮았던 날의 비율). */
+export interface PricePositionCard extends IndicatorCardBase {
+  key: "PRICE_POSITION";
+  fact: { currentPrice: number | null; low: number | null; lowDate: string | null; high: number | null; highDate: string | null; avg: number | null;
+    diffFromAvg: number | null; percentile: number | null; windowDays: number | null };
+  evidenceText: string | null;
+  /** 과거 기록 검증(있을 때). lowAfterRate: 하위 25%였던 주 이후 소매가 오른 비율, highAfterRate: 상위 25% 이후 내린 비율. */
+  evidence: LevelEvidence | null;
+}
+export interface RetailWholesaleGapCard extends IndicatorCardBase {
+  key: "RETAIL_WHOLESALE_GAP";
+  fact: { retailPrice: number | null; wholesalePrice: number | null; ratio: number | null; normalRatio: number | null; low: number | null; high: number | null;
+    percentile: number | null; windowDays: number | null };
+  evidenceText: string | null;
+  evidence: (LevelEvidence & { overlapsLead: boolean; corrWithWholesaleChange: number | null; passed: boolean }) | null;
+}
+export interface VolatilityCard extends IndicatorCardBase {
+  key: "VOLATILITY";
+  fact: { windowDays: number | null; recentRange: number | null; normalRange: number | null; percentile: number | null };
+  evidenceText: string | null;
+}
+export type IndicatorCard = SeasonalCard | WholesaleLeadCard | HarvestWeatherCard | ArrivalsCard | PricePositionCard | RetailWholesaleGapCard | VolatilityCard;
 export interface PriceIndicators {
   asOfDate: string | null;
+  /** 서버 status가 STALE이면 지표 기준일이 오래됐다(카드는 그 기준일 값). */
+  stale: boolean;
   unavailableReason: string | null;
   headline: string | null;
   signals: IndicatorSignal[];

@@ -1,10 +1,11 @@
 "use client";
 
 import { useEffect, useRef, useState, type MouseEvent, type ReactNode } from "react";
-import type { ArrivalsCard, HarvestWeatherCard, IndicatorCard, IndicatorState, IndicatorVerdict, LivePrice, SeasonalCard, WholesaleLeadCard } from "@/lib/prices/model";
+import type { ArrivalsCard, HarvestWeatherCard, IndicatorCard, IndicatorState, IndicatorVerdict, LevelEvidence, LivePrice, PricePositionCard, RetailWholesaleGapCard, SeasonalCard, VolatilityCard, WholesaleLeadCard } from "@/lib/prices/model";
 import { formatDate, formatNumber, formatPercent, won } from "@/lib/prices/format";
 import { usePriceIndicators } from "@/lib/prices/use-prices";
 import { ChartHover } from "./chart-hover";
+import { INDICATOR_HELP } from "./indicator-help";
 
 // Judgement-aid cards. Chip color and wording come from the server's state; nothing here recomputes a direction from prices.
 const DISCLAIMER = "예측이 아니라 지금 상황을 정리한 것입니다. 판단은 직접 내려 주세요.";
@@ -170,10 +171,15 @@ function IndexedChart({ card }: { card: WholesaleLeadCard }) {
   </div>;
 }
 
-function CardShell({ title, card, children }: { title: string; card: IndicatorCard; children: ReactNode }) {
+/** 카드 공통 틀. 읽는 법(부제)·보통 흐름·알아둘 점을 접지 않고 카드 안에 항상 보여준다. */
+function CardShell({ title, card, children, caution }: { title: string; card: IndicatorCard; children: ReactNode; caution?: string }) {
+  const help = INDICATOR_HELP[card.key];
   return <article id={cardAnchor(card.key)} className={`indicator-card ${card.key === "SEASONAL" || card.key === "WHOLESALE_LEAD" ? "has-chart" : ""}`} aria-label={title}>
     <div className="indicator-card-head"><h3>{title}</h3><StateChip state={card.state} label={card.stateLabel} /></div>
+    {help && <p className="indicator-sub">{help.read}</p>}
     {children}
+    {help && <div className="indicator-flow"><b>보통 이런 흐름이에요</b><p>{help.flow}</p></div>}
+    {help && <p className="indicator-caution">※ {caution ?? help.caution}</p>}
     <span className="indicator-tag">{verdictTags[card.verdict]}</span>
   </article>;
 }
@@ -182,12 +188,12 @@ function Seasonal({ card, unit }: { card: SeasonalCard; unit: string }) {
   const { fact } = card;
   const diff = fact.diffRate;
   const years = fact.normalYears.length ? `직전 ${fact.normalYears.length}년, ${fact.normalYears[0]}~${fact.normalYears.at(-1)}` : "평년";
-  return <CardShell title="같은 달, 다른 해에는 얼마였나" card={card}>
+  return <CardShell title="같은 시기, 다른 해에는 얼마였나" card={card}>
     {fact.currentPrice !== null && <p className="indicator-price"><strong>{won(fact.currentPrice)}</strong><span>이번 주 소매 · {unit}</span></p>}
-    {fact.month !== null && fact.monthAvg !== null && fact.normalAvg !== null && <p className="indicator-fact">
-      {fact.month}월 평균 <b>{won(fact.monthAvg)}</b>, 평년({years}) {won(fact.normalAvg)}
+    {fact.windowDays !== null && fact.recentAvg !== null && fact.normalAvg !== null && <p className="indicator-fact">
+      최근 {Math.round(fact.windowDays / 7)}주 평균 <b>{won(fact.recentAvg)}</b>, 평년({years}) 같은 시기 {won(fact.normalAvg)}
       {diff === null ? "과 비교합니다." : diff === 0 ? "과 같습니다." : <>보다 <b>{formatNumber(Math.abs(diff * 100), 1)}% {diff < 0 ? "쌉니다" : "비쌉니다"}</b>.</>}
-      {fact.cheaperThanCount !== null && fact.historyYears !== null && <> 지난 {fact.historyYears}년의 {fact.month}월 중 {fact.cheaperThanCount}번보다 쌉니다.</>}
+      {fact.cheaperThanCount !== null && fact.historyYears !== null && <> 지난 {fact.historyYears}년의 같은 시기 중 {fact.cheaperThanCount}번보다 쌉니다.</>}
     </p>}
     {card.chart ? <SeasonalChart card={card} /> : null}
     {card.evidenceText && <p className="indicator-why">근거: {card.evidenceText}</p>}
@@ -230,8 +236,81 @@ function Arrivals({ card }: { card: ArrivalsCard }) {
   </CardShell>;
 }
 
+/** 한 줄 막대: low~high 범위에서 현재 위치(굵은 점)와 평소 값(세로 눈금). 색은 방향이 아니라 위치만 나타낸다. */
+function RangeBar({ low, high, current, mark, lowLabel, highLabel, label }: { low: number; high: number; current: number; mark: number | null;
+  lowLabel: string; highLabel: string; label: string }) {
+  const at = (value: number) => `${Math.min(100, Math.max(0, (value - low) / Math.max(1e-9, high - low) * 100))}%`;
+  return <div className="indicator-range" role="img" aria-label={label}>
+    <div className="range-track">{mark !== null && <i className="range-mark" style={{ left: at(mark) }} />}<b className="range-dot" style={{ left: at(current) }} /></div>
+    <div className="range-labels"><span>{lowLabel}</span><span>{highLabel}</span></div>
+  </div>;
+}
+const pct = (value: number | null) => value === null ? "-" : `${Math.round(value * 100)}%`;
+const md = (date: string | null) => date ? date.slice(5).replace("-", "/") : "";
+const periodText = (evidence: LevelEvidence) => evidence.periodStart && evidence.periodEnd
+  ? `${evidence.periodStart.slice(0, 7).replace("-", ".")}~${evidence.periodEnd.slice(0, 7).replace("-", ".")}` : null;
+
+/** 과거 기록: 하위·상위 25%였던 주 이후 소매가가 어느 쪽으로 움직였는지(평소 비율과 함께). */
+function LevelRecord({ evidence, lowWord, highWord }: { evidence: LevelEvidence; lowWord: string; highWord: string }) {
+  const period = periodText(evidence);
+  return <p className="indicator-why">과거 기록{period ? `(${period})` : ""}: {lowWord}이던 주는 이후 {evidence.aheadWeeks ?? "-"}주 안에 소매가가 오른 경우 <b>{share(evidence.lowAfterRate)}</b> (평소 {share(evidence.lowBaseRate)}
+    {evidence.sampleLow !== null ? `, ${evidence.sampleLow}번` : ""}). {highWord}이던 주는 내린 경우 <b>{share(evidence.highAfterRate)}</b> (평소 {share(evidence.highBaseRate)}
+    {evidence.sampleHigh !== null ? `, ${evidence.sampleHigh}번` : ""}).{evidence.weakSide === "high" ? " 비싼 쪽은 차이가 작아 근거가 약합니다." : evidence.weakSide === "low" ? " 싼 쪽은 차이가 작아 근거가 약합니다." : ""}</p>;
+}
+
+function PricePosition({ card, unit }: { card: PricePositionCard; unit: string }) {
+  const { fact, evidence } = card;
+  const ready = fact.low !== null && fact.high !== null && fact.currentPrice !== null;
+  return <CardShell title="지금 가격은 1년 중 어디쯤인가" card={card}>
+    {fact.currentPrice !== null && <p className="indicator-price"><strong>{won(fact.currentPrice)}</strong><span>최근 가격 · {unit}</span></p>}
+    {ready && <RangeBar low={fact.low!} high={fact.high!} current={fact.currentPrice!} mark={fact.avg} label="최근 1년 최저·최고 가격 범위에서 현재 위치"
+      lowLabel={`최저 ${won(fact.low!)} (${md(fact.lowDate)})`} highLabel={`최고 ${won(fact.high!)} (${md(fact.highDate)})`} />}
+    <p className="indicator-fact">최근 1년 평균 {fact.avg === null ? "-" : won(fact.avg)}보다 {fact.diffFromAvg === null ? "" : <><b>{formatNumber(Math.abs(fact.diffFromAvg * 100), 1)}% {fact.diffFromAvg < 0 ? "낮고" : fact.diffFromAvg > 0 ? "높고" : "같고"}</b>, </>}
+      최근 1년 중 지금보다 가격이 낮았던 날은 <b>{pct(fact.percentile)}</b>입니다.</p>
+    {card.verdict === "CONDITIONAL" && evidence && <LevelRecord evidence={evidence} lowWord="최근 1년 중 싼 쪽(하위 25%)" highWord="비싼 쪽(상위 25%)" />}
+  </CardShell>;
+}
+
+function RetailWholesaleGap({ card }: { card: RetailWholesaleGapCard }) {
+  const { fact, evidence } = card;
+  const ready = fact.low !== null && fact.high !== null && fact.ratio !== null;
+  const showRecord = evidence?.passed === true;
+  return <CardShell title="소매가는 도매가의 몇 배인가" card={card}
+    caution={evidence?.overlapsLead ? "이 배수는 도매가 변화와 함께 움직여서, 도매 흐름 카드와 같은 이야기를 다르게 보여주는 면이 큽니다(도매가가 오르면 배수는 내려갑니다). 그래서 따로 믿을 근거로는 세우지 않았습니다." : undefined}>
+    {fact.ratio !== null && <p className="indicator-price"><strong>{formatNumber(fact.ratio, 2)}배</strong>
+      <span>{fact.retailPrice !== null && fact.wholesalePrice !== null ? `소매 ${won(fact.retailPrice)} ÷ 도매 ${won(fact.wholesalePrice)}` : "소매 ÷ 도매"}</span></p>}
+    {ready && <RangeBar low={fact.low!} high={fact.high!} current={fact.ratio!} mark={fact.normalRatio} label="최근 1년 소매÷도매 배수 범위에서 현재 위치"
+      lowLabel={`${formatNumber(fact.low!, 2)}배`} highLabel={`${formatNumber(fact.high!, 2)}배`} />}
+    <p className="indicator-fact">최근 1년 평소는 <b>{fact.normalRatio === null ? "-" : `${formatNumber(fact.normalRatio, 2)}배`}</b>입니다.
+      최근 1년 중 지금보다 배수가 낮았던 날은 <b>{pct(fact.percentile)}</b>입니다.</p>
+    {showRecord && evidence && <LevelRecord evidence={evidence} lowWord="배수가 낮은 쪽(하위 25%)" highWord="높은 쪽(상위 25%)" />}
+  </CardShell>;
+}
+
+function Volatility({ card }: { card: VolatilityCard }) {
+  const { fact } = card;
+  const weeks = fact.windowDays === null ? null : Math.round(fact.windowDays / 7);
+  return <CardShell title="최근 가격이 얼마나 출렁였나" card={card}>
+    {fact.recentRange !== null && <p className="indicator-price"><strong>{formatNumber(fact.recentRange * 100, 1)}%</strong>
+      <span>최근 {weeks ?? "-"}주 최고와 최저의 차이 ÷ 평균</span></p>}
+    <p className="indicator-fact">최근 1년 평소는 <b>{fact.normalRange === null ? "-" : `${formatNumber(fact.normalRange * 100, 1)}%`}</b>입니다.
+      최근 1년 중 이보다 덜 출렁인 날은 <b>{pct(fact.percentile)}</b>입니다.</p>
+  </CardShell>;
+}
+
+/** 사용자가 던질 질문별로 묶어 보여준다. cols는 카드 폭 배분(차트가 있는 카드를 넓게). */
+const SECTIONS: { id: string; title: string; lead: string; keys: string[]; cols: string }[] = [
+  { id: "level", title: "지금 가격은 싼 편인가요?", lead: "최근 1년, 그리고 지난 해 같은 시기와 견줘 지금 가격의 수준을 봅니다.", keys: ["PRICE_POSITION", "SEASONAL"], cols: "is-5-7" },
+  { id: "signal", title: "가격이 움직일 신호가 있나요?", lead: "도매가와 소매가의 관계에서 앞으로의 방향 단서를 찾아봅니다.", keys: ["WHOLESALE_LEAD", "RETAIL_WHOLESALE_GAP"], cols: "is-7-5" },
+  { id: "stability", title: "가격이 안정적인 때인가요?", lead: "최근 4주 동안 가격이 얼마나 흔들렸는지 봅니다.", keys: ["VOLATILITY"], cols: "is-1" },
+  { id: "other", title: "그 밖의 근거", lead: "날씨·물량 등 다른 자료로 본 근거입니다.", keys: ["HARVEST_WEATHER", "ARRIVALS"], cols: "is-7-5" },
+];
+
 function Card({ card, unit }: { card: IndicatorCard; unit: string }) {
   switch (card.key) {
+    case "PRICE_POSITION": return <PricePosition card={card} unit={unit} />;
+    case "RETAIL_WHOLESALE_GAP": return <RetailWholesaleGap card={card} />;
+    case "VOLATILITY": return <Volatility card={card} />;
     case "SEASONAL": return <Seasonal card={card} unit={unit} />;
     case "WHOLESALE_LEAD": return <WholesaleLead card={card} />;
     case "HARVEST_WEATHER": return <HarvestWeather card={card} />;
@@ -289,13 +368,20 @@ export function PriceIndicators({ item, product, opinion }: { item: LivePrice; p
   if (loading) evidence = <p role="status" className="detail-view-empty">근거를 불러오는 중입니다.</p>;
   else if (error || !data) evidence = <p className="detail-view-empty">근거를 불러오지 못했습니다. 위 요약의 ‘다시 시도’를 눌러 주세요.</p>;
   else if (!data.cards.length) evidence = <p className="detail-view-empty">{data.unavailableReason ?? "아직 보여줄 근거가 없습니다."}</p>;
-  else evidence = <div className="indicator-grid">{data.cards.map(card => <Card key={card.key} card={card} unit={item.unit} />)}</div>;
+  else evidence = <div className="indicator-sections">{SECTIONS.map(section => {
+    const cards = section.keys.flatMap(key => data.cards.find(card => card.key === key) ?? []);
+    if (!cards.length) return null;
+    return <section key={section.id} className="indicator-section" aria-labelledby={`indicator-section-${section.id}`}>
+      <div className="indicator-section-head"><h3 id={`indicator-section-${section.id}`}>{section.title}</h3><p>{section.lead}</p></div>
+      <div className={`indicator-grid ${section.cols}`}>{cards.map(card => <Card key={card.key} card={card} unit={item.unit} />)}</div>
+    </section>;
+  })}</div>;
   return <>
     <section className="price-hero" aria-labelledby="hero-conclusion-title">
       {product}
       <div className="hero-conclusion">
         <div className="hero-conclusion-head"><h2 id="hero-conclusion-title" className="indicator-eyebrow">지금 상황 한 줄 요약</h2>
-          {data?.asOfDate && <span>지표 기준일 <time dateTime={data.asOfDate}>{formatDate(data.asOfDate)}</time></span>}</div>
+          {data?.asOfDate && <span>지표 기준일 <time dateTime={data.asOfDate}>{formatDate(data.asOfDate)}</time>{data.stale && <b className="indicator-stale"> · 오래된 기준일</b>}</span>}</div>
         {conclusion}
       </div>
     </section>

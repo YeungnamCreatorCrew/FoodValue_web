@@ -145,6 +145,9 @@ export interface IndicatorCardDto {
 export interface PriceIndicatorsDto {
   itemId: number;
   market: PriceMarketDto;
+  /** READY | STALE | NO_DATA | INSUFFICIENT_HISTORY (mock에는 없음) */
+  status?: string;
+  specVersion?: string | null;
   asOfDate: string | null;
   unavailableReason: string | null;
   summary: { headline: string; signals: IndicatorSignalDto[] } | null;

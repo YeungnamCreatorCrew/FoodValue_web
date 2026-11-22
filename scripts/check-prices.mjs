@@ -223,7 +223,7 @@ try {
   });
   await test("indicators (draft): unknown keys skipped, server state kept, WEAK has no direction, chart points sorted", () => {
     const result = mapIndicators({ itemId: 60, market: "RETAIL", asOfDate: "2026-10-30", unavailableReason: null,
-      summary: { headline: "h", signals: [{ key: "SEASONAL", label: "같은 달 대비", state: "DOWN", stateLabel: "싼 편" }] },
+      summary: { headline: "h", signals: [{ key: "SEASONAL", label: "같은 시기 대비", state: "DOWN", stateLabel: "싼 편" }] },
       cards: [
         { key: "NEW_THING", verdict: "PASS", state: "UP", fact: {} },
         { key: "SEASONAL", verdict: "FACT", state: "DOWN", fact: { currentPrice: 2658, diffRate: -0.149, normalYears: [2021] },

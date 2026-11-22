@@ -15,7 +15,7 @@ function daepa(): PriceIndicatorsDto {
     summary: {
       headline: "대파는 지금 평년보다 싼 편이고, 당장 가격을 움직일 신호는 보이지 않습니다.",
       signals: [
-        { key: "SEASONAL", label: "같은 달 대비", state: "DOWN", stateLabel: "싼 편" },
+        { key: "SEASONAL", label: "같은 시기 대비", state: "DOWN", stateLabel: "싼 편" },
         { key: "WHOLESALE_LEAD", label: "도매 흐름", state: "NEUTRAL", stateLabel: "신호 없음" },
         { key: "HARVEST_WEATHER", label: "수확지 날씨", state: "NEUTRAL", stateLabel: "문제 없음" },
       ],
@@ -23,7 +23,7 @@ function daepa(): PriceIndicatorsDto {
     cards: [
       {
         key: "SEASONAL", verdict: "FACT", state: "DOWN",
-        fact: { currentPrice: 2658, month: 10, monthAvg: 2838, normalAvg: 3334, normalYears: [2021, 2022, 2023, 2024, 2025],
+        fact: { currentPrice: 2658, windowDays: 28, recentAvg: 2838, normalAvg: 3334, normalYears: [2021, 2022, 2023, 2024, 2025],
           diffRate: -0.149, cheaperThanCount: 9, historyYears: 10 },
         evidence: { text: "대파는 계절마다 가격 수준이 달라서 같은 시기끼리 비교합니다." },
         chart: { type: "SEASONAL_OVERLAY", currentYear: 2026,

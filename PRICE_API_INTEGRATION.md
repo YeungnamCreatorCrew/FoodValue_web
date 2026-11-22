@@ -11,7 +11,7 @@
 | --- | --- |
 | `/api/v1/prices/items` | `keyword`(최대 50자), `category`, `sort`, `page`(1부터), `size`(최대 50), `market`. `{items,page,size,total}` |
 | `/api/v1/prices/items/{item_id}` | `market`. `{item,forecast,guide,fridge}` 중 가격·예측·가이드만 사용 |
-| `/api/v1/prices/items/{item_id}/history` | `days=14/30/90/180/365`(180·365는 WAS `feature/history-long-periods`에서 추가), `market`. `{points:[{date,price}],startDate,endDate,...}` |
+| `/api/v1/prices/items/{item_id}/history` | `days=14/30/90/180/365`(180·365는 WAS `feature/service-view`에서 추가), `market`. `{points:[{date,price}],startDate,endDate,...}` |
 | `/api/v1/prices/items/{item_id}/forecast` | `market`. `{points:[{targetDate,predictedPrice,lowerPrice,upperPrice}],...}` |
 | `/api/v1/prices/items/{item_id}/factors` | `market`. 7일 후 예측의 변수별 SHAP 기여(원)·분류 합계·서버 문장. `{explained,unavailableReason,factors,categories,summary,...}` |
 | `/api/v1/prices/items/{item_id}/factors/{factorId}/history` | `days=90`(한 번 받아 14/30일은 화면에서 자름), `market`. `{points:[{date,value}],unit,baseDate}` |
@@ -37,7 +37,16 @@ UI의 `ALL`은 query에서 생략한다. 검색 `q`는 API에서 `keyword`로,
   `summary`가 없을 때만 화면에서 숫자로 문장을 만든다. 분류별 설명은 `categories[].description` → `summary.categories` → 고정 문장 순.
 - SHAP은 모델 예측에 대한 기여이며 인과관계가 아니라는 안내를 유지한다.
 
-## 판단 보조 지표 카드 (프로토타입, 계약 초안)
+## 판단 보조 지표 카드
+
+**현재 상태**: WAS `GET /prices/items/{id}/indicators`에 실제로 연결되어 있다(WAS `docs/INDICATORS_API_DESIGN.md`, 별도 DB에서 `python -m app.indicator_batch --item-id 60`으로 생성).
+주소에 `?mock=indicators|empty|error`를 붙이면 프로토타입 mock을 쓴다(WAS 없이 화면 확인용). 아래 계약 표는 초안이며 실제와 다른 점은 이 박스가 우선한다.
+- 응답에 `status`(READY·STALE·NO_DATA·INSUFFICIENT_HISTORY)와 `specVersion`이 있다. STALE이면 화면 기준일 옆에 "오래된 기준일"을 붙인다.
+- 카드 key: `PRICE_POSITION`(1년 중 위치), `SEASONAL`(같은 시기 대비: 최근 28일 vs 과거 5년 같은 구간), `WHOLESALE_LEAD`, `RETAIL_WHOLESALE_GAP`(소매÷도매 배수), `VOLATILITY`(최근 4주 변동폭). `ARRIVALS`는 검증에서 방향이 반대로 나와 서버가 보내지 않는다.
+- 검증 통과 여부는 verdict로 표시한다: `PASS`(도매→소매), `CONDITIONAL`(1년 위치: 싼 쪽만 강함), `FACT`(방향을 주장하지 않는 사실. 배수는 도매 흐름과 겹쳐 FACT로 둠).
+- 화면은 질문별 섹션(지금 싼 편인가 / 움직일 신호가 있나 / 안정적인가)으로 묶고, 카드마다 읽는 법·보통 흐름·알아둘 점(`components/prices/indicator-help.ts`)을 접지 않고 보여준다.
+
+### 초안 계약 (프로토타입 시점, 필드 이름 일부 바뀜)
 
 가격 예측이 직전 가격 유지(naive)를 안정적으로 이기지 못해, 상세 화면의 메인을 "데이터로 검증된 근거"로 바꿨다.
 기존 7일 예측(`/forecast`)과 요인(`/factors`)은 아래 "모델 의견"으로 그대로 둔다.
