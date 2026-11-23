@@ -14,7 +14,7 @@ const verdictTags: Record<IndicatorVerdict, string> = {
   FACT: "사실", PASS: "검증된 근거", CONDITIONAL: "조건부 근거 · 추가 확인 필요", WEAK: "참고 사실 · 방향 표시 안 함",
 };
 // Series colors avoid red/blue, which mean 상승/하락 on this site.
-const COLORS = { current: "#14532d", mean: "#6f8276", band: "#e3ece0", past: "#d3dbd2", wholesale: "#a0742f", retail: "#14532d" };
+const COLORS = { current: "#14532d", mean: "#6b7684", band: "#e5e8eb", past: "#d1d6db", wholesale: "#a0742f", retail: "#14532d" };
 
 /** Draft contract rates are fractions; formatPercent expects percent units. */
 const rate = (value: number | null) => formatPercent(value === null ? null : value * 100);
@@ -99,9 +99,9 @@ function SeasonalChart({ card }: { card: SeasonalCard }) {
     <svg viewBox={`0 0 ${width} ${height}`} role="img" aria-label={label} className="indicator-svg">
       <title>{label}</title>
       <desc>{`가로축은 1~${maxWeek}주차, 세로축은 원. ${chart.currentYear}년 마지막 값 ${last ? won(last.price) : "-"}.`}</desc>
-      {ticks.map(tick => <g key={tick}><line x1={left} x2={right} y1={y(tick)} y2={y(tick)} stroke="#e9ece9" />
-        <text x={left - 6} y={y(tick) + 4} textAnchor="end" fontSize="10" fill="#727c76">{tick ? `${tick / 1000}천` : "0"}</text></g>)}
-      {[1, 9, 18, 27, 35, 44].filter(week => week <= maxWeek).map(week => <text key={week} x={x(week)} y={height - 10} textAnchor="middle" fontSize="10" fill="#727c76">{weekMonth(week)}월</text>)}
+      {ticks.map(tick => <g key={tick}><line x1={left} x2={right} y1={y(tick)} y2={y(tick)} stroke="#e5e8eb" />
+        <text x={left - 6} y={y(tick) + 4} textAnchor="end" fontSize="10" fill="#6b7684">{tick ? `${tick / 1000}천` : "0"}</text></g>)}
+      {[1, 9, 18, 27, 35, 44].filter(week => week <= maxWeek).map(week => <text key={week} x={x(week)} y={height - 10} textAnchor="middle" fontSize="10" fill="#6b7684">{weekMonth(week)}월</text>)}
       {past.map(row => <path key={row.year} d={series(row)} fill="none" stroke={COLORS.past} strokeWidth="1.2" />)}
       {band && <path d={band} fill={COLORS.band} fillOpacity="0.85" />}
       <path d={linePath(stats.map(row => ({ x: x(row.week), y: row.mean === null ? null : y(row.mean) })))} fill="none" stroke={COLORS.mean} strokeWidth="1.5" strokeDasharray="4 3" />
@@ -110,7 +110,7 @@ function SeasonalChart({ card }: { card: SeasonalCard }) {
       <ChartHover points={hover} left={left} right={right} top={top + 20} bottom={bottom} color={COLORS.current}
         tooltip={point => ({ title: `${weekMonth(point.week)}월 · ${point.week}주차`,
           lines: [...(point.price !== null ? [{ text: `${chart.currentYear}년 ${won(point.price)}`, bold: true }] : []),
-            ...(point.mean !== null ? [{ text: `직전 ${normal.length}년 평균 ${won(Math.round(point.mean))}`, color: "#cfdcd3" }] : [])],
+            ...(point.mean !== null ? [{ text: `직전 ${normal.length}년 평균 ${won(Math.round(point.mean))}`, color: "#d1d6db" }] : [])],
           markers: [...(point.mean !== null ? [{ y: y(point.mean), color: COLORS.mean }] : []), ...(point.price !== null ? [{ y: y(point.price), color: COLORS.current }] : [])] })} />
     </svg>
   </div>;
@@ -153,10 +153,10 @@ function IndexedChart({ card }: { card: WholesaleLeadCard }) {
     <svg viewBox={`0 0 ${width} ${height}`} role="img" aria-label={label} className="indicator-svg">
       <title>{label}</title>
       <desc>{`마지막 주 도매 ${points.at(-1)?.wholesale ?? "-"}, 소매 ${points.at(-1)?.retail ?? "-"}.`}</desc>
-      {ticks.map(tick => <g key={tick}><line x1={left} x2={right} y1={y(tick)} y2={y(tick)} stroke="#e9ece9" />
-        <text x={left - 6} y={y(tick) + 4} textAnchor="end" fontSize="10" fill="#727c76">{tick}</text></g>)}
-      <line x1={left} x2={right} y1={y(100)} y2={y(100)} stroke="#a3aba6" strokeDasharray="2 3" />
-      {dateTicks.map(index => <text key={index} x={x(index)} y={height - 8} textAnchor={index === 0 ? "start" : index === lastIndex ? "end" : "middle"} fontSize="10" fill="#727c76">{points[index].date.slice(5).replace("-", "/")}</text>)}
+      {ticks.map(tick => <g key={tick}><line x1={left} x2={right} y1={y(tick)} y2={y(tick)} stroke="#e5e8eb" />
+        <text x={left - 6} y={y(tick) + 4} textAnchor="end" fontSize="10" fill="#6b7684">{tick}</text></g>)}
+      <line x1={left} x2={right} y1={y(100)} y2={y(100)} stroke="#b0b8c1" strokeDasharray="2 3" />
+      {dateTicks.map(index => <text key={index} x={x(index)} y={height - 8} textAnchor={index === 0 ? "start" : index === lastIndex ? "end" : "middle"} fontSize="10" fill="#6b7684">{points[index].date.slice(5).replace("-", "/")}</text>)}
       {(["wholesale", "retail"] as const).map(key => <path key={key} d={linePath(points.map((point, index) => ({ x: x(index), y: point[key] === null ? null : y(point[key]!) })))}
         fill="none" stroke={COLORS[key]} strokeWidth="2" strokeLinejoin="round" />)}
       {ends.map(end => end.y !== null && <g key={end.key}>

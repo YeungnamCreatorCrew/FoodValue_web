@@ -1,5 +1,5 @@
 /* unslop (Damir Sokolovsky, CC BY 4.0) 다듬기: 중립 램프 하나, 텍스트 3단계, 헤어라인 테두리, 강조는 브랜드 초록 하나 */
-.price-dashboard { --ink-1: #1c2520; --ink-2: #4e5a53; --ink-3: #727c76; --line: rgba(28, 37, 32, .1); --raised: #f6f7f5; --accent: #14532d; }
+.price-dashboard { --ink-1: #191f28; --ink-2: #4e5968; --ink-3: #6b7684; --line: rgba(28, 37, 32, .1); --raised: #f2f4f6; --accent: #14532d; }
 .price-page.price-dashboard { display: flex; flex-direction: column; gap: 16px; padding: 8px 28px 28px; color: var(--ink-1); }
 .price-dashboard .dashboard-heading { margin-bottom: 4px; }
 .price-dashboard .dashboard-heading h1 { font-size: 30px; line-height: 1.3; }
@@ -41,7 +41,7 @@
 .price-dashboard .dashboard-factor-heading h2 { font-size: 21px; }
 .price-dashboard .factor-filter { display: flex; gap: 4px; }
 .price-dashboard .factor-filter button { min-width: 54px; min-height: 44px; padding: 6px 12px; border-radius: 8px; font-size: 13px; color: var(--ink-3); }
-.price-dashboard .factor-filter button[aria-pressed="true"] { background: #eaf2e6; color: var(--accent); font-weight: 600; }
+.price-dashboard .factor-filter button[aria-pressed="true"] { background: #f2f4f6; color: var(--accent); font-weight: 600; }
 .price-dashboard .dashboard-factor-columns,.price-dashboard .dashboard-factor-toggle { display: grid; grid-template-columns: 22fr 20fr 38fr 14fr 18px; gap: 20px; align-items: center; padding-inline: 24px; }
 .price-dashboard .dashboard-factor-columns { min-height: 40px; background: var(--raised); border-block: 1px solid var(--line); font-size: 12px; color: var(--ink-3); }
 .price-dashboard .dashboard-factor-columns small { font-size: 11px; margin-left: 12px; color: var(--ink-3); }
@@ -189,7 +189,7 @@
 .price-dashboard .indicator-chip.is-link:hover { filter: brightness(.95); text-decoration: underline; }
 .price-dashboard .indicator-chip .chip-arrow { font-size: 11px; opacity: .7; }
 .price-dashboard .indicator-card { scroll-margin-top: 88px; }
-.price-dashboard .indicator-card:target { box-shadow: 0 0 0 3px #b9d7b4; }
+.price-dashboard .indicator-card:target { box-shadow: 0 0 0 3px #d1d6db; }
 
 /* ---- 모델 의견: 한 줄 + 자세히 보기 ---- */
 .price-dashboard .model-opinion-card { display: flex; flex-direction: column; gap: 12px; padding: 16px 20px; border: 1px solid var(--line); border-radius: 16px; background: var(--raised); }
@@ -262,9 +262,9 @@
 /* 카드 ⓘ 설명 */
 .price-dashboard .indicator-head-side { display: inline-flex; align-items: center; gap: 8px; flex-shrink: 0; }
 .price-dashboard .indicator-info { width: 24px; height: 24px; border: 1px solid var(--line); border-radius: 50%; background: white; font: italic 600 13px/1 Georgia, serif; color: var(--ink-2); cursor: pointer; }
-.price-dashboard .indicator-info:hover,.price-dashboard .indicator-info[aria-expanded="true"] { background: #eef3ec; border-color: #b9d7b4; color: #14532d; }
+.price-dashboard .indicator-info:hover,.price-dashboard .indicator-info[aria-expanded="true"] { background: #f2f4f6; border-color: #d1d6db; color: #14532d; }
 .price-dashboard .indicator-info:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-.price-dashboard .indicator-help { display: flex; flex-direction: column; gap: 8px; padding: 12px 14px; border-radius: 10px; background: #f5f8f4; font-size: 13px; line-height: 1.65; color: var(--ink-2); word-break: keep-all; }
+.price-dashboard .indicator-help { display: flex; flex-direction: column; gap: 8px; padding: 12px 14px; border-radius: 10px; background: #f9fafb; font-size: 13px; line-height: 1.65; color: var(--ink-2); word-break: keep-all; }
 .price-dashboard .indicator-help b { display: block; font-size: 12px; font-weight: 600; color: var(--ink-1); }
 
 /* 질문별 섹션 + 카드 안에 항상 보이는 설명 (ⓘ 버튼 제거) */
@@ -276,7 +276,7 @@
 .price-dashboard .indicator-grid.is-7-5 { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); }
 .price-dashboard .indicator-grid.is-1 { grid-template-columns: minmax(0, 1fr); }
 .price-dashboard .indicator-sub { margin-top: -4px; font-size: 13px; line-height: 1.6; color: var(--ink-2); word-break: keep-all; }
-.price-dashboard .indicator-flow { padding: 12px 14px; border-radius: 10px; background: #f5f8f4; }
+.price-dashboard .indicator-flow { padding: 12px 14px; border-radius: 10px; background: #f9fafb; }
 .price-dashboard .indicator-flow b { display: block; font-size: 12px; font-weight: 600; color: var(--ink-1); }
 .price-dashboard .indicator-flow p { margin-top: 2px; font-size: 13px; line-height: 1.65; color: var(--ink-2); word-break: keep-all; }
 .price-dashboard .indicator-caution { font-size: 12px; line-height: 1.6; color: var(--ink-3); word-break: keep-all; }
@@ -298,8 +298,8 @@
 .price-dashboard .indicator-sections .indicator-flow p { font-size: 12.5px; line-height: 1.6; }
 
 /* 접기/펼치기: 눌러보고 싶게 보이는 버튼 + 전체 보기 방식 토글 */
-.price-dashboard .indicator-more { display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%; padding: 10px 14px; border: 1px solid #cfe0cb; border-radius: 10px; background: #f3f8f1; text-align: left; cursor: pointer; color: #14532d; transition: background-color .15s ease-out; }
-.price-dashboard .indicator-more:hover { background: #e8f1e5; }
+.price-dashboard .indicator-more { display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%; padding: 10px 14px; border: 1px solid #d1d6db; border-radius: 10px; background: #f2f4f6; text-align: left; cursor: pointer; color: #14532d; transition: background-color .15s ease-out; }
+.price-dashboard .indicator-more:hover { background: #f2f4f6; }
 .price-dashboard .indicator-more:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .price-dashboard .more-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
 .price-dashboard .more-text b { font-size: 13px; font-weight: 600; }
@@ -310,9 +310,9 @@
 .price-dashboard .indicator-fold .indicator-sub { margin-top: 0; }
 .price-dashboard .indicator-sub b { display: block; font-size: 12px; font-weight: 600; color: var(--ink-1); }
 .price-dashboard .indicator-viewmode { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; }
-.price-dashboard .indicator-viewmode > div { display: inline-flex; padding: 3px; border-radius: 10px; background: #eef1ee; }
+.price-dashboard .indicator-viewmode > div { display: inline-flex; padding: 3px; border-radius: 10px; background: #f2f4f6; }
 .price-dashboard .indicator-viewmode button { padding: 6px 12px; border: 0; border-radius: 8px; background: transparent; font-size: 13px; font-weight: 600; color: var(--ink-2); cursor: pointer; }
 .price-dashboard .indicator-viewmode button[aria-pressed="true"] { background: white; color: #14532d; box-shadow: 0 1px 2px rgba(0,0,0,.12); }
 .price-dashboard .indicator-viewmode p { font-size: 12px; color: var(--ink-3); }
-.price-dashboard .indicator-card.is-notice { background: #f7f8fa; border-style: dashed; }
+.price-dashboard .indicator-card.is-notice { background: #f9fafb; border-style: dashed; }
 .price-dashboard .indicator-card.is-notice .indicator-fact { color: var(--ink-2, #55606f); }

@@ -56,11 +56,11 @@ function FactorTrendChart({ itemId, factor }: { itemId: string; factor: ShapFact
     <svg viewBox={`0 0 ${width} 186`} role="img" aria-label={`${factor.label} 과거 추이`} className="factor-history-svg">
       <title>{`${factor.label} 과거 추이`}</title>
       <desc>{`${formatDate(points[0].date)}부터 ${formatDate(last.date)}까지 ${points.length}개 값. 마지막 값 ${factorValue(last.value, data.unit)}.`}</desc>
-      <text x="50" y="17" textAnchor="end" fontSize="10" fill="#65776b">{data.unit || "지표값"}</text>
-      {[max, (min + max) / 2, min].map(value => <g key={value}><line x1="58" x2={right} y1={y(value)} y2={y(value)} stroke="#e4ece2" /><text x="50" y={y(value) + 4} textAnchor="end" fill="#65776b" fontSize="10">{tick(value)}</text></g>)}
+      <text x="50" y="17" textAnchor="end" fontSize="10" fill="#6b7684">{data.unit || "지표값"}</text>
+      {[max, (min + max) / 2, min].map(value => <g key={value}><line x1="58" x2={right} y1={y(value)} y2={y(value)} stroke="#e5e8eb" /><text x="50" y={y(value) + 4} textAnchor="end" fill="#6b7684" fontSize="10">{tick(value)}</text></g>)}
       <path d={path} fill="none" stroke="#23804d" strokeWidth="2" strokeLinejoin="round" />
       <circle cx={slots.at(-1)!.x} cy={slots.at(-1)!.y} r="4" fill="#14532d" stroke="white" strokeWidth="2" />
-      <text x="58" y="178" fontSize="10" fill="#65776b">{points[0].date.slice(5)}</text><text x={right} y="178" textAnchor="end" fontSize="10" fill="#65776b">{last.date.slice(5)}</text>
+      <text x="58" y="178" fontSize="10" fill="#6b7684">{points[0].date.slice(5)}</text><text x={right} y="178" textAnchor="end" fontSize="10" fill="#6b7684">{last.date.slice(5)}</text>
       <ChartHover points={slots} left={58} right={right} top={36} bottom={152} unit={data.unit} digits={data.unit === "원" ? 0 : data.unit === "%" ? 1 : 2} color="#14532d" />
     </svg>
     <p className="chart-footnote">{formatDate(last.date)} · 마지막 값 {factorValue(last.value, data.unit)} · 값 {points.length}건 · 예측 시점에 모델이 받은 값 · 커서를 올리면 날짜별 값</p>

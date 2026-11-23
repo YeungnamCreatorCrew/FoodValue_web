@@ -47,7 +47,7 @@ export function FloatingMenu() {
         <nav id="floating-navigation" aria-label="주 메뉴" className="floating-menu-panel">
           <p className="px-3 pb-3 pt-1 text-lg font-bold text-primary">FoodValue</p>
           {TABS.map(tab => <Link key={tab.key} href={tab.href} onClick={close} aria-current={isTabActive(pathname, tab.href) ? "page" : undefined}
-            className="flex min-h-11 items-center gap-3 rounded-xl px-3 text-sm font-medium text-slate-600 hover:bg-primary-soft aria-[current=page]:bg-primary-soft aria-[current=page]:text-primary">
+            className="flex min-h-11 items-center gap-3 rounded-xl px-3 text-sm font-medium text-slate-600 hover:bg-slate-100 aria-[current=page]:bg-slate-100 aria-[current=page]:text-slate-900">
             <Icon name={tab.icon} size={20} />{tab.label}
           </Link>)}
         </nav>
