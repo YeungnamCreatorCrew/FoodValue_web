@@ -34,8 +34,8 @@ export function PriceDetail({ item }: { item: LivePrice }) {
       <div className="model-opinion-top">
         <div className="model-opinion-figures">
         <div className="dashboard-metrics is-forecast">
-          <div className="dashboard-metric forecast-metric"><h3>{baseline ? "7일 뒤 (직전 가격 유지)" : "7일 뒤 예상가"}</h3><strong>{won(item.forecastPrice)}</strong></div>
-          <div className={"dashboard-metric direction-metric " + (down ? "is-down" : item.forecastDirection === "up" ? "is-up" : "text-slate-500")}><h3>예측 방향</h3><strong>{down ? "↓" : item.forecastDirection === "up" ? "↑" : "—"} {direction}</strong><p>{item.forecastDelta !== null && item.forecastDelta > 0 ? "+" : ""}{won(item.forecastDelta)} ({formatPercent(item.forecastPercent)})</p></div>
+          <div className="dashboard-metric forecast-metric"><h3>{baseline ? "7일 뒤 (직전 가격 유지)" : "AI 7일 예측"}</h3><strong>{won(item.forecastPrice)}</strong></div>
+          <div className={"dashboard-metric direction-metric " + (down ? "is-down" : item.forecastDirection === "up" ? "is-up" : "text-slate-500")}><h3>예측 방향</h3><strong>{down ? "↓ " : item.forecastDirection === "up" ? "↑ " : ""}{direction}</strong><p>{item.forecastDelta !== null && item.forecastDelta > 0 ? "+" : ""}{won(item.forecastDelta)} ({formatPercent(item.forecastPercent)})</p></div>
           <div className="dashboard-metric guide-metric"><h3>구매 가이드</h3><strong>{item.guide?.title ?? "구매 가이드 없음"}</strong><p>{item.guide?.description ?? "아직 구매 가이드가 없습니다."}</p></div>
         </div>
         <p className="dashboard-dates">예측 기준일 <time dateTime={item.baseDate ?? undefined}>{formatDate(item.baseDate)}</time> · 예측 대상일 <time dateTime={item.forecastDate ?? undefined}>{formatDate(item.forecastDate)}</time></p>

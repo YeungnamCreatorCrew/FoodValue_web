@@ -390,7 +390,7 @@ export function PriceIndicators({ item, product, opinion }: { item: LivePrice; p
     {data.signals.length > 0 && <ul className="indicator-signals" aria-label="지표별 상태 (누르면 해당 근거로 이동)">{data.signals.map(signal => {
       const chip = <>{signal.label} · {signal.stateLabel}</>;
       return <li key={signal.key}>{cardKeys.has(signal.key)
-        ? <a href={`#${cardAnchor(signal.key)}`} onClick={event => jumpToCard(event, signal.key)} className={`indicator-chip is-link ${stateClass(signal.state)}`}>{chip}<span aria-hidden="true" className="chip-arrow">↓</span></a>
+        ? <a href={`#${cardAnchor(signal.key)}`} onClick={event => jumpToCard(event, signal.key)} className={`indicator-chip is-link ${stateClass(signal.state)}`}>{chip}<svg aria-hidden="true" className="chip-arrow" width="12" height="12" viewBox="0 0 16 16"><path d="M3.5 6 8 10.5 12.5 6" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg></a>
         : <span className={`indicator-chip ${stateClass(signal.state)}`}>{chip}</span>}</li>;
     })}</ul>}
     <p className="indicator-disclaimer">{DISCLAIMER}</p>

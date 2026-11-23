@@ -13,7 +13,7 @@ export function ForecastSparkline({ item, historyDays = 14, variant = "card" }: 
   const chart = forecastChart(item, historyDays, { left, right, top, bottom });
   if (!chart.actual.length && !chart.forecast.length) return <p className="py-6 text-xs text-muted">가격 이력과 예측 정보가 없습니다.</p>;
   const title = `${item.name} 실제 가격 및 7일 예측`;
-  const description = `실선은 ${chart.actual.length}개 실제 관측값, 점선은 서버가 제공한 ${chart.forecast.length}개 일별 예측값입니다. 가격이 조사된 날만 순서대로 이었습니다.`;
+  const description = `실선은 ${chart.actual.length}개 실제 관측값, 점선은 AI 7일 예측 ${chart.forecast.length}개 일별 값입니다. 가격이 조사된 날만 순서대로 이었습니다.`;
   return <div className={`forecast-sparkline forecast-sparkline--${variant}`} style={priceChartStyle(item)} data-data-kind="api">
     <svg viewBox={`0 0 360 ${height}`} role="img" aria-label={title}>
       <title>{title}</title><desc>{description}</desc>
@@ -30,8 +30,8 @@ export function ForecastSparkline({ item, historyDays = 14, variant = "card" }: 
       {item.forecastPrice !== null && <circle cx={chart.forecastX} cy={chart.y(item.forecastPrice)} r="4.5" fill="var(--price-chart-color)" stroke="white" strokeWidth="2" />}
       <text x={left} y="17" fill="#466450" fontSize="12">{`현재 ${won(item.currentPrice)}`}</text>
       <text x={right} y="17" textAnchor="end" fill="#14532d" fontSize="13" fontWeight="700">{`${won(item.forecastPrice)} 예측`}</text>
-      {!card && <><text x={chart.currentX - 6} y={height - 5} textAnchor="end" fill="#708575" fontSize="10">{`관측 ${formatDate(item.priceDate ?? null)}`}</text>
-      <text x={right} y={height - 5} textAnchor="end" fill="#14532d" fontSize="10">{`${formatDate(item.forecastDate)} 예측`}</text></>}
+      {!card && <><text x={chart.currentX - 6} y={height - 5} textAnchor="end" fill="#708575" fontSize="10">{`가격 기준일 ${formatDate(item.priceDate ?? null)}`}</text>
+      <text x={right} y={height - 5} textAnchor="end" fill="#14532d" fontSize="10">{`예측 대상일 ${formatDate(item.forecastDate)}`}</text></>}
     </svg>
     <div className="forecast-sparkline-legend" aria-hidden="true"><span><i />실제 가격</span><span><i />AI 7일 예측</span></div>
     {!chart.forecast.length && <p className="text-xs text-muted">아직 예측 정보가 없습니다.</p>}

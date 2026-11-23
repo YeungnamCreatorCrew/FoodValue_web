@@ -50,14 +50,14 @@ export function PriceChart({ item: summary, presentation = "detail" }: { item: L
           {item.forecastPrice !== null && <circle cx={forecastX} cy={y(item.forecastPrice)} r="5" fill="var(--price-chart-color)" stroke="white" strokeWidth="2" />}
           {/* Longer windows cross a year boundary, so the first label carries the year. */}
           {points[0] && <text x={points[0].x} y="231" fontSize="11" fill="#65776b">{period > 90 ? points[0].date.slice(2).replaceAll("-", ".") : points[0].date.slice(5)}</text>}
-          {currentX >= left && <text x={currentX - 4} y="231" textAnchor="end" fontSize="11" fill="#334c3c">관측 {item.priceDate?.slice(5) ?? "-"}</text>}
-          <text x={right} y="251" textAnchor="end" fontSize="11" fill="#14532d">예측 {item.forecastDate?.slice(5) ?? "-"}</text>
+          {currentX >= left && <text x={currentX - 4} y="231" textAnchor="end" fontSize="11" fill="#334c3c">가격 기준일 {item.priceDate?.slice(5) ?? "-"}</text>}
+          <text x={right} y="251" textAnchor="end" fontSize="11" fill="#14532d">예측 대상일 {item.forecastDate?.slice(5) ?? "-"}</text>
           <ChartHover points={points.map(point => ({ date: point.date, value: point.price, x: point.x, y: point.y, kind: point.kind,
             previous: point.previous && { date: point.previous.date, value: point.previous.price } }))} left={left} right={right} top={45} bottom={205} />
         </svg>
       </>}
-      <dl className="chart-endpoints"><div><dt>현재 · {formatDate(item.priceDate ?? null)}</dt><dd>{won(item.currentPrice)}</dd></div><div><dt>7일 후 · {formatDate(item.forecastDate)}</dt><dd>{won(item.forecastPrice)}</dd></div></dl>
-      <p className="chart-footnote">최근 {PRICE_CHART_PERIODS.find(entry => entry.days === period)?.label ?? `${period}일`} 중 가격이 조사된 {actual.length}일 · 그래프에 커서를 올리면 날짜별 가격을 볼 수 있습니다. 점선은 서버에서 제공한 일별 예측입니다.</p>
+      <dl className="chart-endpoints"><div><dt>가격 기준일 · {formatDate(item.priceDate ?? null)}</dt><dd>{won(item.currentPrice)}</dd></div><div><dt>AI 7일 예측 · {formatDate(item.forecastDate)}</dt><dd>{won(item.forecastPrice)}</dd></div></dl>
+      <p className="chart-footnote">최근 {PRICE_CHART_PERIODS.find(entry => entry.days === period)?.label ?? `${period}일`} 중 가격이 조사된 {actual.length}일 · 그래프에 커서를 올리면 날짜별 가격을 볼 수 있습니다. 점선은 AI 7일 예측입니다.</p>
     </>}
   </section>;
 }

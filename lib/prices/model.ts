@@ -43,7 +43,10 @@ export interface LivePrice extends PriceChartData {
   dataFactors: DataFactor[];
   /** Detail only: server-stored forecast sentences (headline template + optional Gemini-edited detail). */
   aiSummary: AiSummary | null;
+  /** List only: 지표 칩과 1년 가격대(서버 스냅샷). 없으면 null. */
+  listIndicators: ListIndicators | null;
 }
+export interface ListIndicators { asOfDate: string; stale: boolean; headline: string | null; signals: IndicatorSignal[]; yearRange: { low: number | null; high: number | null; percentile: number | null } | null }
 export interface PriceListQuery {
   category?: Category | "ALL";
   keyword?: string;

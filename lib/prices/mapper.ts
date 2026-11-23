@@ -3,15 +3,14 @@ import type { BuyingGuide, ForecastPoint, IndicatorCard, IndicatorSignal, Indica
 import { mapDataFactors } from "./factors";
 import { mapAiSummary } from "./shap";
 import { itemImage } from "./item-images";
+import { classifyForecast } from "./indicator";
 
 const categories = { VEGETABLE: "채소류", GRAIN: "곡류", FRUIT: "과일류", MEAT: "육류", SEAFOOD: "수산물", ETC: "기타" };
 export function priceChanges(current: number | null, forecast: number | null, percent?: number | null) {
   const delta = current === null || forecast === null ? null : forecast - current;
-  return {
-    forecastDelta: delta,
-    forecastPercent: delta === null ? null : percent ?? (current ? delta / current * 100 : null),
-    forecastDirection: delta === null ? null : delta > 0 ? "up" as const : delta < 0 ? "down" as const : "flat" as const,
-  };
+  const forecastPercent = delta === null ? null : percent ?? (current ? delta / current * 100 : null);
+  // 방향은 변화율 기준(±3%)으로 정해 구매 가이드의 "보합세"와 어긋나지 않게 한다.
+  return { forecastDelta: delta, forecastPercent, forecastDirection: delta === null ? null : classifyForecast(forecastPercent) ?? (delta > 0 ? "up" as const : delta < 0 ? "down" as const : "flat" as const) };
 }
 export function mapSummary(dto: PriceSummaryDto): LivePrice {
   if (!Number.isSafeInteger(dto.id) || dto.id < 1) throw new Error("지원하지 않는 품목 ID입니다.");
@@ -24,6 +23,8 @@ export function mapSummary(dto: PriceSummaryDto): LivePrice {
     forecastDate: dto.forecastTargetDate, forecastPrice: dto.forecastPrice,
     ...priceChanges(dto.currentPrice, dto.forecastPrice, dto.forecastChangePercent),
     priceHistory: [], forecastPoints: [], guide: null, forecastStatus: null, dataFactors: [], aiSummary: null,
+    listIndicators: dto.indicators ? { asOfDate: dto.indicators.asOfDate, stale: dto.indicators.stale, headline: dto.indicators.headline ?? null, yearRange: dto.indicators.yearRange,
+      signals: dto.indicators.signals.map(s => ({ key: s.key, label: s.label, state: indicatorState(s.state), stateLabel: s.stateLabel })) } : null,
   };
 }
 export function mapForecast(dto: PriceForecastDto): ForecastPoint[] {
@@ -34,7 +35,7 @@ export function mapGuide(dto: PriceGuideDto | null): BuyingGuide | null {
   if (!dto) return null;
   const titles: Record<string, string> = { BUY_NOW: "지금 구매 추천", BUY_LATER: dto.buyAfterDays === null ? "조금 기다려보세요" : `${dto.buyAfterDays}일 뒤 구매 추천`, HOLD: "구매 판단 보류", STABLE: "가격 보합세" };
   return { title: titles[dto.recommendation] ?? "구매 가이드 확인",
-    description: dto.expectedSaving === null ? "서버에서 제공한 구매 판단입니다." : `예상 절약액 ${dto.expectedSaving.toLocaleString("ko-KR")}원`,
+    description: dto.expectedSaving ? `예상 절약액 ${dto.expectedSaving.toLocaleString("ko-KR")}원` : "",
     buyAfterDays: dto.buyAfterDays, expectedSaving: dto.expectedSaving, mape: dto.mape };
 }
 export function withForecast(item: LivePrice, points: ForecastPoint[], baseDate: string | null): LivePrice {
