@@ -2,6 +2,7 @@ import type { IndicatorCardDto, PriceDetailDto, PriceForecastDto, PriceGuideDto,
 import type { BuyingGuide, ForecastPoint, IndicatorCard, IndicatorSignal, IndicatorState, IndicatorVerdict, LevelEvidence, LivePrice, PriceIndicators } from "./model";
 import { mapDataFactors } from "./factors";
 import { mapAiSummary } from "./shap";
+import { itemImage } from "./item-images";
 
 const categories = { VEGETABLE: "채소류", GRAIN: "곡류", FRUIT: "과일류", MEAT: "육류", SEAFOOD: "수산물", ETC: "기타" };
 export function priceChanges(current: number | null, forecast: number | null, percent?: number | null) {
@@ -16,7 +17,7 @@ export function mapSummary(dto: PriceSummaryDto): LivePrice {
   if (!Number.isSafeInteger(dto.id) || dto.id < 1) throw new Error("지원하지 않는 품목 ID입니다.");
   return {
     id: String(dto.id), name: dto.name, category: categories[dto.category], categoryCode: dto.category,
-    unit: dto.unitLabel ?? "단위 정보 없음", image: /대파/.test(dto.name) ? "/figma/home/green-onion.png" : dto.name === "양파" ? "/figma/home/onion.png" : null,
+    unit: dto.unitLabel ?? "단위 정보 없음", image: itemImage(dto.name, dto.aliases),
     source: dto.source, status: dto.status, quality: dto.quality,
     baseDate: dto.forecastBaseDate, priceDate: dto.priceDate,
     currentPrice: dto.currentPrice, weeklyChangeRate: dto.weeklyChangePercent,

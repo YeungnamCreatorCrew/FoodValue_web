@@ -15,6 +15,7 @@ require.extensions[".ts"] = (module, filename) => {
   module._compile(result.outputText, filename);
 };
 const { pricesApi, PriceApiError } = require("../lib/prices/api.ts");
+const { itemImage } = require("../lib/prices/item-images.ts");
 const { mapSummary, mapDetail, withForecast, mapIndicators } = require("../lib/prices/mapper.ts");
 const { getPriceChart, resolveFavoriteId, resolvePriceRoute } = require("../lib/prices/service.ts");
 const { forecastChart } = require("../lib/prices/forecast-chart.ts");
@@ -238,6 +239,15 @@ try {
     assert.equal(result.cards[1].state, "up"); assert.equal(result.cards[1].chart, null); assert.equal(result.cards[1].fact.retailChange2w, null);
     assert.equal(result.cards[2].state, null);
     assert.equal(mapIndicators({ itemId: 1, market: "RETAIL", asOfDate: null, unavailableReason: "준비 중", summary: null, cards: [] }).headline, null);
+  });
+  await test("item images resolve by WAS name or alias; unknown items fall back to the icon", () => {
+    assert.equal(itemImage("대파"), "/images/items/green-onion.webp");
+    assert.equal(itemImage("깐마늘"), "/images/items/peeled-garlic.webp");
+    assert.equal(itemImage("배추(월동)"), "/images/items/napa-cabbage.webp");
+    assert.equal(itemImage("국산 마늘", ["마늘"]), "/images/items/peeled-garlic.webp");
+    assert.equal(itemImage("토마토"), null);
+    assert.equal(mapSummary({ ...summary, name: "무" }).image, "/images/items/radish.webp");
+    assert.equal(mapSummary({ ...summary, name: "양파", aliases: undefined }).image, "/images/items/onion.webp");
   });
 } finally {
   globalThis.fetch = originalFetch;
