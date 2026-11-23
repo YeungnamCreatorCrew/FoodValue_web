@@ -6,6 +6,7 @@ import { formatDate, formatNumber, formatPercent, won } from "@/lib/prices/forma
 import { usePriceIndicators } from "@/lib/prices/use-prices";
 import { ChartHover } from "./chart-hover";
 import { INDICATOR_HELP } from "./indicator-help";
+import { RangeBar, toneClass } from "./indicator-ui";
 
 // Judgement-aid cards. Chip color and wording come from the server's state; nothing here recomputes a direction from prices.
 const DISCLAIMER = "예측이 아니라 지금 상황을 정리한 것입니다. 판단은 직접 내려 주세요.";
@@ -19,7 +20,7 @@ const COLORS = { current: "#14532d", mean: "#6f8276", band: "#e3ece0", past: "#d
 const rate = (value: number | null) => formatPercent(value === null ? null : value * 100);
 const share = (value: number | null) => value === null ? "-" : `${Math.round(value * 100)}%`;
 const cardAnchor = (key: string) => `indicator-${key.toLowerCase()}`;
-const stateClass = (state: IndicatorState | null) => state === "up" ? "is-up" : state === "down" ? "is-down" : "is-neutral";
+const stateClass = toneClass;
 
 function StateChip({ state, label }: { state: IndicatorState | null; label: string | null }) {
   if (!label) return null;
@@ -260,14 +261,6 @@ function Arrivals({ card }: { card: ArrivalsCard }) {
 }
 
 /** 한 줄 막대: low~high 범위에서 현재 위치(굵은 점)와 평소 값(세로 눈금). 색은 방향이 아니라 위치만 나타낸다. */
-function RangeBar({ low, high, current, mark, lowLabel, highLabel, label }: { low: number; high: number; current: number; mark: number | null;
-  lowLabel: string; highLabel: string; label: string }) {
-  const at = (value: number) => `${Math.min(100, Math.max(0, (value - low) / Math.max(1e-9, high - low) * 100))}%`;
-  return <div className="indicator-range" role="img" aria-label={label}>
-    <div className="range-track">{mark !== null && <i className="range-mark" style={{ left: at(mark) }} />}<b className="range-dot" style={{ left: at(current) }} /></div>
-    <div className="range-labels"><span>{lowLabel}</span><span>{highLabel}</span></div>
-  </div>;
-}
 const pct = (value: number | null) => value === null ? "-" : `${Math.round(value * 100)}%`;
 const md = (date: string | null) => date ? date.slice(5).replace("-", "/") : "";
 const periodText = (evidence: LevelEvidence) => evidence.periodStart && evidence.periodEnd
@@ -331,7 +324,7 @@ const SECTIONS: { id: string; title: string; lead: string; keys: string[]; cols:
 const NOTICE_TITLE: Record<string, string> = { WHOLESALE_LEAD: "도매가가 먼저 움직였나", VOLATILITY: "최근 가격이 얼마나 출렁였나" };
 function NoticeCard({ notice }: { notice: IndicatorNotice }) {
   return <article id={cardAnchor(notice.key)} className="indicator-card is-notice" aria-label={NOTICE_TITLE[notice.key] ?? "잠시 쉬는 지표"}>
-    <div className="indicator-card-head"><h3>{NOTICE_TITLE[notice.key] ?? "잠시 쉬는 지표"}</h3><span className="indicator-chip is-neutral">잠시 쉬어요</span></div>
+    <div className="indicator-card-head"><h3>{NOTICE_TITLE[notice.key] ?? "잠시 쉬는 지표"}</h3><span className="indicator-chip tone-flat">잠시 쉬어요</span></div>
     <p className="indicator-fact">{notice.text}</p>
   </article>;
 }

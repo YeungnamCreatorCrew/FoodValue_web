@@ -18,8 +18,8 @@ export function MarketSummary({ items, onPick }: { items: LivePrice[]; onPick: (
   return <section className="market-summary" aria-labelledby="market-summary-title">
     <h2 id="market-summary-title" className="market-summary-title">오늘 시세 한눈에 · 품목 {items.length}개 · 가격 기준일 {formatDate(priceDate)}</h2>
     <dl className="market-stats">
-      <div className="market-stat"><dt>지난주보다 오른 품목</dt><dd className="ind-up">{up}</dd></div>
-      <div className="market-stat"><dt>지난주보다 내린 품목</dt><dd className="ind-down">{down}</dd></div>
+      <div className="market-stat"><dt>지난주보다 오른 품목</dt><dd className="tone-up">{up}</dd></div>
+      <div className="market-stat"><dt>지난주보다 내린 품목</dt><dd className="tone-down">{down}</dd></div>
       {hasIndicators && indicatorStats.map(stat => <div key={stat.id} className="market-stat">
         <dt><button type="button" className="market-stat-link" onClick={() => onPick(stat.id)}>{stat.label}<span aria-hidden="true"> →</span></button></dt>
         <dd>{stat.count}</dd>

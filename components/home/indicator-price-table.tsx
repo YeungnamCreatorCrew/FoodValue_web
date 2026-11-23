@@ -2,13 +2,13 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import type { IndicatorSignal, IndicatorState, LivePrice } from "@/lib/prices/model";
+import type { IndicatorState, LivePrice } from "@/lib/prices/model";
 import { favoriteIdentity, isFavoriteItem } from "@/lib/prices/identity";
 import { useFavorites } from "@/lib/home/favorites";
 import { formatDate, formatPercent, won } from "@/lib/prices/format";
 import { FavoriteStar } from "@/components/prices/favorite-star";
 import { IngredientImage } from "@/components/prices/price-forecast-card";
-import { ForecastLabel, YearRangeBar } from "@/components/prices/indicator-ui";
+import { changeTone, ForecastLabel, StateText, YearRangeBar } from "@/components/prices/indicator-ui";
 
 const signalOf = (item: LivePrice, key: string) => item.listIndicators?.signals.find(signal => signal.key === key) ?? null;
 const stateIs = (item: LivePrice, key: string, state: IndicatorState) => signalOf(item, key)?.state === state;
@@ -28,12 +28,6 @@ const SORT_VALUE: Record<SortKey, (item: LivePrice) => number | null> = {
   position: item => item.listIndicators?.yearRange?.percentile ?? null,
   forecast: item => item.forecastPercent,
 };
-
-function StateText({ signal }: { signal: IndicatorSignal | null }) {
-  if (!signal) return <span className="ind-flat">—</span>;
-  const tone = signal.state === "down" ? "ind-down" : signal.state === "up" ? "ind-up" : "ind-flat";
-  return <span className={`ind-state ${tone}`}><span className="ind-dot" aria-hidden="true" />{signal.stateLabel}</span>;
-}
 
 function SortHeader({ label, sortKey, sort, onSort, className = "" }: {
   label: React.ReactNode; sortKey: SortKey; sort: { key: SortKey; dir: 1 | -1 } | null; onSort: (key: SortKey) => void; className?: string;
@@ -95,10 +89,10 @@ export function IndicatorPriceTable({ items, filter, onFilterChange: setFilter }
             <Link href={`/prices/${item.id}`} className="row-link"><IngredientImage item={item} /><span><strong>{item.name}</strong><small>{item.unit}</small></span></Link>
           </th>
           <td className="num col-price">{won(item.currentPrice)}</td>
-          <td className={`num col-weekly ${item.weeklyChangeRate === null ? "" : item.weeklyChangeRate > 0 ? "ind-up" : item.weeklyChangeRate < 0 ? "ind-down" : ""}`}>
+          <td className={`num col-weekly ${changeTone(item.weeklyChangeRate)}`}>
             {item.weeklyChangeRate === null ? "—" : formatPercent(item.weeklyChangeRate)}</td>
           {hasIndicators && <>
-            <td className="col-position"><span className="mobile-label">1년 중 </span><StateText signal={signalOf(item, "PRICE_POSITION")} /><YearRangeBar item={item} compact /></td>
+            <td className="col-position"><span className="mobile-label">1년 중 </span><StateText signal={signalOf(item, "PRICE_POSITION")} /><YearRangeBar item={item} /></td>
             <td className="col-seasonal"><span className="mobile-label">평년 대비 </span><StateText signal={signalOf(item, "SEASONAL")} /></td>
             <td className="col-lead"><span className="mobile-label">도매 </span><StateText signal={signalOf(item, "WHOLESALE_LEAD")} /></td>
           </>}

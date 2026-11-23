@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-:root { --color-price-up: #ef4444; --color-price-down: #2563eb; --color-price-flat: #64748b; --color-brand-border: #a8c7a6; }
+:root { --color-price-up: #c24149; --color-price-down: #2563b0; --color-price-flat: #55606f; --color-price-up-soft: #fff0f0; --color-price-down-soft: #edf4ff; --color-price-flat-soft: #eef1f4; --color-brand-border: #a8c7a6; }
 
 /* FoodValue 디자인 토큰 (피그마 shadcn/ui 키트 기준) */
 @theme {
@@ -91,8 +91,8 @@ body {
 .featured-price-values p { font-size: 12px; color: var(--color-muted); margin-bottom: 5px; }
 .featured-price-values strong { font-size: clamp(21px,2vw,29px); letter-spacing: -.8px; font-weight: 750; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .price-direction { display: inline-flex; padding: 6px 10px; border-radius: 7px; font-size: 12px; font-weight: 600; }
-.price-up { color: #c24149; background: #fff0f0; }
-.price-down { color: #2563b0; background: #edf4ff; }
+.price-up { color: var(--color-price-up); background: var(--color-price-up-soft); }
+.price-down { color: var(--color-price-down); background: var(--color-price-down-soft); }
 .home-analysis-grid { display: grid; grid-template-columns: minmax(0,2.3fr) minmax(0,1fr); gap: 24px; }
 .home-trend-panel,.home-factor-panel { min-width: 0; padding: 28px; border: 1px solid var(--color-brand-border); border-radius: 24px; background: white; }
 .home-ingredient-selector { display: flex; gap: 8px; margin-bottom: 18px; }
@@ -348,11 +348,15 @@ html[data-splash="off"] .splash { display: none; }
 /* 홈 히어로: 지표 스냅샷 */
 .home-hero { padding: 8px 0 28px; border-bottom: 1px solid var(--color-brand-border); }
 .ind-dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
-.ind-down { color: var(--color-price-down); } .ind-up { color: var(--color-price-up); } .ind-flat { color: var(--color-price-flat); }
-.year-bar { display: grid; gap: 6px; font-size: 12px; color: var(--color-muted); }
-.year-bar-track { position: relative; display: block; height: 4px; border-radius: 2px; background: var(--color-slate-200); }
-.year-bar-mark { position: absolute; top: 50%; width: 10px; height: 10px; border-radius: 50%; background: var(--color-slate-900); transform: translate(-50%, -50%); }
-.year-bar-ends { display: flex; justify-content: space-between; font-variant-numeric: tabular-nums; }
+.tone-down { color: var(--color-price-down); } .tone-up { color: var(--color-price-up); } .tone-flat { color: var(--color-price-flat); }
+/* 범위 막대(홈 시세표·상세 1년 위치 카드 공통) */
+.indicator-range { display: flex; flex-direction: column; gap: 6px; }
+.range-track { position: relative; height: 8px; border-radius: 4px; background: #e9ece9; }
+.range-dot { position: absolute; top: 50%; width: 14px; height: 14px; border-radius: 50%; background: var(--color-slate-900); border: 2px solid white; transform: translate(-50%, -50%); box-shadow: 0 0 0 1px var(--color-slate-900); }
+.range-mark { position: absolute; top: -3px; width: 2px; height: 14px; background: #6f8276; transform: translateX(-1px); }
+.range-labels { display: flex; justify-content: space-between; gap: 8px; font-size: 11px; color: var(--color-muted); font-variant-numeric: tabular-nums; }
+.indicator-range.is-compact .range-track { height: 4px; border-radius: 2px; }
+.indicator-range.is-compact .range-dot { width: 10px; height: 10px; border-width: 0; box-shadow: none; }
 
 /* 검색 보조 칩: 검색창 바로 아래 */
 .home-hero .popular-ingredients { margin-top: 14px; gap: 14px; }
@@ -393,7 +397,7 @@ html[data-splash="off"] .splash { display: none; }
 .row-link:hover strong { text-decoration: underline; text-underline-offset: 3px; }
 .col-price { font-size: 15px; font-weight: 650; }
 .col-position { min-width: 140px; }
-.col-position .year-bar { margin-top: 6px; max-width: 120px; }
+.col-position .indicator-range { margin-top: 6px; max-width: 120px; }
 .ind-state { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; white-space: nowrap; }
 .price-table .col-ai, .forecast-label { color: var(--color-slate-400); font-size: 13px; }
 .col-star { width: 44px; padding-right: 0 !important; }
@@ -413,7 +417,7 @@ html[data-splash="off"] .splash { display: none; }
   .price-table .col-seasonal { grid-area: sea; }
   .price-table .col-lead { grid-area: lead; }
   .price-table .col-weekly { display: none; }
-  .price-table .col-position .year-bar, .price-table .col-ai { display: none; }
+  .price-table .col-position .indicator-range, .price-table .col-ai { display: none; }
   .mobile-label { display: inline; font-size: 12px; color: var(--color-muted); }
   .ind-state { font-size: 12px; }
 }
