@@ -96,6 +96,9 @@ export interface PriceFactorsDto {
   explained: boolean;
   unavailableReason: string | null;
   modelName: string | null;
+  /** 모델 채택을 정한 최종 평가(과거 검증) 구간. 없을 수 있다. */
+  evaluationStart?: string | null;
+  evaluationEnd?: string | null;
   method: string | null;
   horizonDays: number | null;
   targetDate: string | null;
@@ -115,4 +118,44 @@ export interface FactorHistoryDto {
   baseDate: string;
   days: number;
   points: { date: string; value: number | null }[];
+}
+
+/**
+ * DRAFT contract (팀 합의 전): GET /prices/items/{id}/indicators?market=RETAIL.
+ * key / state / verdict / chart.type stay strings so unknown values reach the mapper and are skipped there.
+ * Rates are fractions (-0.149 = -14.9%).
+ */
+export interface IndicatorSignalDto { key: string; label: string; state: string | null; stateLabel: string | null }
+export interface SeasonalOverlayChartDto {
+  type: "SEASONAL_OVERLAY";
+  currentYear: number;
+  years: { year: number; points: { week: number; price: number | null }[] }[];
+}
+export interface IndexedLinesChartDto {
+  type: "INDEXED_LINES";
+  baseDate: string;
+  points: { date: string; wholesale: number | null; retail: number | null }[];
+}
+export interface IndicatorCardDto {
+  key: string;
+  verdict: string;
+  state: string | null;
+  available?: boolean | null;
+  fact: Record<string, unknown> | null;
+  evidence?: Record<string, unknown> | null;
+  chart?: ({ type: string } & Record<string, unknown>) | null;
+}
+/** 카드를 만들지 않은 이유(예: 작형 전환 직후). text는 서버가 쓴 사용자용 문장. */
+export interface IndicatorNoticeDto { key: string; reason: string; text: string }
+export interface PriceIndicatorsDto {
+  itemId: number;
+  market: PriceMarketDto;
+  /** READY | STALE | NO_DATA | INSUFFICIENT_HISTORY (mock에는 없음) */
+  status?: string;
+  specVersion?: string | null;
+  asOfDate: string | null;
+  unavailableReason: string | null;
+  summary: { headline: string; signals: IndicatorSignalDto[] } | null;
+  cards: IndicatorCardDto[];
+  notices?: IndicatorNoticeDto[];
 }

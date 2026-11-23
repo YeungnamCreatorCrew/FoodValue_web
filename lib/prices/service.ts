@@ -1,6 +1,6 @@
 import { pricesApi } from "./api";
-import { mapDetail, mapForecast, mapSummary } from "./mapper";
-import type { HistoryPeriod, PriceChartResult, PriceListPage, PriceListQuery } from "./model";
+import { mapDetail, mapForecast, mapIndicators, mapSummary } from "./mapper";
+import type { HistoryPeriod, PriceChartResult, PriceHistoryPeriod, PriceListPage, PriceListQuery } from "./model";
 import { legacyIngredient, sameIngredientName } from "./identity";
 import { mapFactorTrend, mapShapAnalysis } from "./shap";
 
@@ -9,7 +9,7 @@ export async function listPrices(query: PriceListQuery = {}, signal?: AbortSigna
   return { ...page, items: page.items.map(mapSummary) };
 }
 export async function getPrice(id: string, signal?: AbortSignal) { return mapDetail(await pricesApi.detail(id, signal)); }
-export async function getPriceChart(id: string, days: HistoryPeriod, signal?: AbortSignal): Promise<PriceChartResult> {
+export async function getPriceChart(id: string, days: PriceHistoryPeriod, signal?: AbortSignal): Promise<PriceChartResult> {
   const [history, forecast] = await Promise.all([pricesApi.history(id, days, signal), pricesApi.forecast(id, signal)]);
   return { priceHistory: history.points.map(point => ({ date: point.date, price: point.price })), historyEndDate: history.endDate,
     forecast: mapForecast(forecast), forecastBaseDate: forecast.baseDate };
@@ -32,3 +32,4 @@ export async function getPriceFactors(id: string, signal?: AbortSignal) { return
 export async function getFactorTrend(id: string, factorId: string, days: HistoryPeriod, signal?: AbortSignal) {
   return mapFactorTrend(await pricesApi.factorHistory(id, factorId, days, signal));
 }
+export async function getPriceIndicators(id: string, signal?: AbortSignal) { return mapIndicators(await pricesApi.indicators(id, signal)); }

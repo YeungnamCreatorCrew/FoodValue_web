@@ -1,5 +1,5 @@
-import type { FactorHistoryDto, PriceDetailDto, PriceFactorsDto, PriceForecastDto, PriceHistoryDto, PricePageDto, PriceSortDto } from "./dto";
-import type { PriceListQuery, HistoryPeriod } from "./model";
+import type { FactorHistoryDto, PriceDetailDto, PriceFactorsDto, PriceForecastDto, PriceHistoryDto, PriceIndicatorsDto, PricePageDto, PriceSortDto } from "./dto";
+import type { PriceListQuery, HistoryPeriod, PriceHistoryPeriod } from "./model";
 
 // Uvicorn's default port; override before next dev/build for another WAS host.
 const baseUrl = (process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000").replace(/\/+$/, "");
@@ -38,7 +38,7 @@ export const pricesApi = {
     return get<PricePageDto>("", params, signal);
   },
   detail(id: string, signal?: AbortSignal) { return get<PriceDetailDto>(itemPath(id), marketParams(), signal); },
-  history(id: string, days: HistoryPeriod, signal?: AbortSignal) {
+  history(id: string, days: PriceHistoryPeriod, signal?: AbortSignal) {
     const params = marketParams(); params.set("days", String(days));
     return get<PriceHistoryDto>(`${itemPath(id)}/history`, params, signal);
   },
@@ -48,5 +48,21 @@ export const pricesApi = {
     if (!/^[A-Za-z0-9]{1,40}$/.test(factorId)) throw new PriceApiError(404, "올바른 요인 ID가 아닙니다.");
     const params = marketParams(); params.set("days", String(days));
     return get<FactorHistoryDto>(`${itemPath(id)}/factors/${factorId}/history`, params, signal);
+  },
+  /**
+   * WAS GET /prices/items/{id}/indicators. 브라우저 주소에 ?mock=indicators|empty|error 가 있으면 프로토타입 mock을 쓴다
+   * (WAS 없이 화면을 볼 때, 빈/오류 화면 확인용). 그 밖에는 실제 API다.
+   * mock은 동적 import라 서버 번들과 scripts/check-prices.mjs에 섞이지 않는다.
+   */
+  async indicators(id: string, signal?: AbortSignal): Promise<PriceIndicatorsDto> {
+    const path = itemPath(id);
+    const mock = typeof window === "undefined" ? null : new URLSearchParams(window.location.search).get("mock");
+    if (mock === "indicators" || mock === "empty" || mock === "error") {
+      const { fetchMockIndicators } = await import("@/mocks/priceIndicatorsServer");
+      const dto = await fetchMockIndicators(Number(path.slice(1)));
+      if (signal?.aborted) throw new PriceApiError(0, "요청이 취소되었습니다.");
+      return dto;
+    }
+    return get<PriceIndicatorsDto>(`${path}/indicators`, marketParams(), signal);
   },
 };

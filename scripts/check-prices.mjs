@@ -15,7 +15,7 @@ require.extensions[".ts"] = (module, filename) => {
   module._compile(result.outputText, filename);
 };
 const { pricesApi, PriceApiError } = require("../lib/prices/api.ts");
-const { mapSummary, mapDetail, withForecast } = require("../lib/prices/mapper.ts");
+const { mapSummary, mapDetail, withForecast, mapIndicators } = require("../lib/prices/mapper.ts");
 const { getPriceChart, resolveFavoriteId, resolvePriceRoute } = require("../lib/prices/service.ts");
 const { forecastChart } = require("../lib/prices/forecast-chart.ts");
 const { favoriteIdentity } = require("../lib/prices/identity.ts");
@@ -126,7 +126,7 @@ try {
         points: [{ date: "2026-11-07", price: 3100 }, { date: "2026-11-08", price: null }, { date: "2026-11-09", price: 3000 }],
       }));
     };
-    for (const days of [14, 30, 90]) {
+    for (const days of [14, 30, 90, 180, 365]) {
       const data = await getPriceChart("901", days);
       assert.equal(data.priceHistory[1].price, null);
       const request = calls.at(-2).url;
@@ -192,8 +192,9 @@ try {
   });
   await test("factors: baseline runs are not explained and keep a reason", () => {
     const analysis = mapShapAnalysis({ itemId: 60, market: "RETAIL", baseDate: "2026-11-05", status: "STALE", explained: false, unavailableReason: "BASELINE_MODEL",
-      modelName: "LAST_PRICE", method: null, horizonDays: null, targetDate: null, currentPrice: null, basePrice: null, predictedPrice: null, summary: null, categories: [], factors: [] });
+      modelName: "LAST_PRICE", evaluationStart: "2026-09-07", evaluationEnd: "2026-10-29", method: null, horizonDays: null, targetDate: null, currentPrice: null, basePrice: null, predictedPrice: null, summary: null, categories: [], factors: [] });
     assert.equal(analysis.explained, false); assert.match(unavailableText(analysis.unavailableReason), /기준 모델/);
+    assert.equal(analysis.evaluationStart, "2026-09-07"); assert.equal(analysis.evaluationEnd, "2026-10-29");
     assert.equal(mapAiSummary(null), null);
   });
   await test("factor history requests 90 days once and drops missing values without filling", async () => {
@@ -220,6 +221,23 @@ try {
     assert.equal(chart.points[1].previous.date, "2026-11-06"); // 11/09 compares with 11/06
     assert.equal(chart.points[3].previous.date, "2026-11-10"); // first forecast compares with the last actual
     assert.equal(chart.forecastPath.split("M").length - 1, 1);
+  });
+  await test("indicators (draft): unknown keys skipped, server state kept, WEAK has no direction, chart points sorted", () => {
+    const result = mapIndicators({ itemId: 60, market: "RETAIL", asOfDate: "2026-10-30", unavailableReason: null,
+      summary: { headline: "h", signals: [{ key: "SEASONAL", label: "같은 시기 대비", state: "DOWN", stateLabel: "싼 편" }] },
+      cards: [
+        { key: "NEW_THING", verdict: "PASS", state: "UP", fact: {} },
+        { key: "SEASONAL", verdict: "FACT", state: "DOWN", fact: { currentPrice: 2658, diffRate: -0.149, normalYears: [2021] },
+          chart: { type: "SEASONAL_OVERLAY", currentYear: 2026, years: [{ year: 2026, points: [{ week: 2, price: 10 }, { week: 1, price: null }, { week: 1, price: 9 }] }] } },
+        { key: "WHOLESALE_LEAD", verdict: "PASS", state: "UP", fact: { wholesaleChange2w: 0.06 }, chart: { type: "UNKNOWN_CHART" } },
+        { key: "ARRIVALS", verdict: "WEAK", state: "UP", fact: { avgTon4w: 325 } },
+      ] });
+    assert.deepEqual(result.cards.map(card => card.key), ["SEASONAL", "WHOLESALE_LEAD", "ARRIVALS"]);
+    assert.equal(result.cards[0].state, "down"); assert.equal(result.cards[0].stateLabel, "싼 편");
+    assert.deepEqual(result.cards[0].chart.years[0].points, [{ week: 1, price: 9 }, { week: 2, price: 10 }]);
+    assert.equal(result.cards[1].state, "up"); assert.equal(result.cards[1].chart, null); assert.equal(result.cards[1].fact.retailChange2w, null);
+    assert.equal(result.cards[2].state, null);
+    assert.equal(mapIndicators({ itemId: 1, market: "RETAIL", asOfDate: null, unavailableReason: "준비 중", summary: null, cards: [] }).headline, null);
   });
 } finally {
   globalThis.fetch = originalFetch;
