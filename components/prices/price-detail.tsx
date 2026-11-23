@@ -3,7 +3,7 @@ import type { LivePrice } from "@/lib/prices/model";
 import { favoriteIdentity } from "@/lib/prices/identity";
 import { missingForecastReason } from "@/lib/prices/status";
 import { formatDate, formatNumber, formatPercent, won } from "@/lib/prices/format";
-import { IngredientImage } from "./price-forecast-card";
+import { IngredientImage } from "./ingredient-image";
 import { FavoriteStar } from "./favorite-star";
 import { PriceNotices } from "./price-notices";
 import { RecentPriceChart } from "./recent-price-chart";

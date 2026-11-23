@@ -7,7 +7,7 @@ import { favoriteIdentity, isFavoriteItem } from "@/lib/prices/identity";
 import { useFavorites } from "@/lib/home/favorites";
 import { formatDate, formatPercent, won } from "@/lib/prices/format";
 import { FavoriteStar } from "@/components/prices/favorite-star";
-import { IngredientImage } from "@/components/prices/price-forecast-card";
+import { IngredientImage } from "@/components/prices/ingredient-image";
 import { changeTone, ForecastLabel, StateText, YearRangeBar } from "@/components/prices/indicator-ui";
 
 const signalOf = (item: LivePrice, key: string) => item.listIndicators?.signals.find(signal => signal.key === key) ?? null;
