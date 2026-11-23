@@ -10,7 +10,7 @@
 .forecast-sparkline--detail { margin-top: 4px; }
 .forecast-sparkline--detail > svg { height: 150px; }
 .forecast-sparkline--card { margin-top: 20px; padding-block: 12px 8px; }
-.forecast-sparkline--card > svg { height: 156px; }
+.forecast-sparkline--card > svg { height: 120px; }
 .forecast-sparkline--card .forecast-sparkline-legend { justify-content: space-between; margin-top: 8px; font-size: 11px; gap: 8px; }
 .featured-price-card .price-card-link { display: flex; flex-direction: column; height: 100%; }
 .forecast-card-meta { min-height: 27px; }

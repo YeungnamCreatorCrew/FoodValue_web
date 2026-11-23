@@ -17,12 +17,12 @@ export function PriceList({ initialKeyword = "" }: { initialKeyword?: string }) 
   const { data, loading, error, reload } = usePriceList({ keyword: debouncedKeyword, category, sort, page, size: 12 });
   const results = data?.items ?? [];
   return <main id="main-content" className="price-page price-list-page">
-    <header className="price-page-heading"><p className="home-eyebrow">FoodValue</p><h1>식자재 시세</h1><p>식자재의 현재 가격과 AI가 예측한<br className="md:hidden" /> 7일 뒤 가격을 확인해보세요.</p></header>
+    <header className="price-page-heading"><h1>식자재 시세</h1><p>품목별 현재 가격과 흐름을 확인하세요.<br className="md:hidden" /> AI 7일 예측은 참고용입니다.</p></header>
     <div className="price-list-tools">
       <div className="price-list-search"><Icon name="search" size={22} /><label htmlFor="price-search" className="sr-only">식자재 검색</label><input id="price-search" type="search" maxLength={50} value={keyword} onChange={event => { setKeyword(event.target.value); setPage(1); }} placeholder="식자재를 검색해보세요. (예: 대파)" /></div>
       <div className="price-category-chips" role="group" aria-label="품목 카테고리">{categories.map(item => <button type="button" key={item.id} aria-pressed={category === item.id} onClick={() => { setCategory(item.id); setPage(1); }}>{item.label}</button>)}</div>
     </div>
-    <div className="price-data-note"><p>전국 평균 소매 가격과 7일 예측입니다.</p></div>
+    <div className="price-data-note"><p>전국 평균 소매가 · KAMIS</p></div>
     <label className="mb-4 flex items-center justify-end gap-2 text-sm text-muted">정렬 <select value={sort} onChange={event => { setSort(event.target.value as PriceSort); setPage(1); }}><option value="name">이름순</option><option value="price-drop">주간 하락률순</option><option value="forecast-drop">예측 하락률순</option></select></label>
     <section aria-label="식자재 검색 결과" aria-live="polite">
       {loading ? <p role="status" className="py-10 text-center text-muted">가격 정보를 불러오는 중입니다.</p> : error ? <div role="alert" className="price-empty"><p>{error}</p><button type="button" onClick={reload}>다시 시도</button></div> : <>
