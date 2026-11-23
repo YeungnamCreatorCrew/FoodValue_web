@@ -14,10 +14,10 @@ export function changeTone(value: number | null) {
   return value === null || value === 0 ? "tone-flat" : value > 0 ? "tone-up" : "tone-down";
 }
 
-/** 점 + 상태 문구("싼 편"). 표 셀처럼 좁은 곳에 쓴다. */
+/** 상태 문구("싼 편")를 상태 색으로. 표 셀처럼 좁은 곳에 쓴다. 의미는 문구가 전하므로 장식 점은 두지 않는다. */
 export function StateText({ signal }: { signal: IndicatorSignal | null }) {
-  if (!signal) return <span className="tone-flat">—</span>;
-  return <span className={`ind-state ${toneClass(signal.state)}`}><span className="ind-dot" aria-hidden="true" />{signal.stateLabel}</span>;
+  if (!signal) return <span className="ind-state tone-flat">—</span>;
+  return <span className={`ind-state ${toneClass(signal.state)}`}>{signal.stateLabel}</span>;
 }
 
 /** 최저~최고 범위에서 현재 위치. mark는 평균 같은 기준선. compact는 라벨 없이 막대만. */
@@ -31,7 +31,10 @@ export function RangeBar({ low, high, current, mark = null, lowLabel, highLabel,
   </div>;
 }
 
-/** 목록 응답의 1년 범위로 그린 compact 막대(홈 시세표). 상세의 1년 위치 카드와 같은 RangeBar를 쓴다. */
+/**
+ * 목록 응답의 1년 범위로 그린 compact 막대(시세표). 상세의 1년 위치 카드와 같은 RangeBar를 쓴다.
+ * compact에서는 현재 위치를 원 대신 세로 눈금으로 그리고, 눈금 색은 부모의 상태 색(currentColor)을 따른다.
+ */
 export function YearRangeBar({ item }: { item: LivePrice }) {
   const range = item.listIndicators?.yearRange;
   if (!range || range.low === null || range.high === null || item.currentPrice === null || range.high <= range.low) return null;

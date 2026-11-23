@@ -292,7 +292,6 @@ html[data-splash="off"] .splash { display: none; }
 
 /* 홈 히어로: 지표 스냅샷 */
 .home-hero { padding: 8px 0 28px; border-bottom: 1px solid var(--color-brand-border); }
-.ind-dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
 .tone-down { color: var(--color-price-down); } .tone-up { color: var(--color-price-up); } .tone-flat { color: var(--color-price-flat); }
 /* 범위 막대(홈 시세표·상세 1년 위치 카드 공통) */
 .indicator-range { display: flex; flex-direction: column; gap: 6px; }
@@ -300,8 +299,9 @@ html[data-splash="off"] .splash { display: none; }
 .range-dot { position: absolute; top: 50%; width: 14px; height: 14px; border-radius: 50%; background: var(--grey-900); border: 2px solid white; transform: translate(-50%, -50%); box-shadow: 0 0 0 1px var(--grey-900); }
 .range-mark { position: absolute; top: -3px; width: 2px; height: 14px; background: #6b7684; transform: translateX(-1px); }
 .range-labels { display: flex; justify-content: space-between; gap: 8px; font-size: 11px; color: var(--color-muted); font-variant-numeric: tabular-nums; }
-.indicator-range.is-compact .range-track { height: 4px; border-radius: 2px; }
-.indicator-range.is-compact .range-dot { width: 10px; height: 10px; border-width: 0; box-shadow: none; }
+/* compact: 가는 트랙 + 상태 색 세로 눈금(증권 앱의 52주 범위 표시 방식). 원형 점과 겹쳐 보이지 않게 한다 */
+.indicator-range.is-compact .range-track { height: 4px; border-radius: 2px; background: var(--grey-200); }
+.indicator-range.is-compact .range-dot { width: 3px; height: 14px; border-radius: 2px; border: 0; box-shadow: 0 0 0 2px #fff; background: currentColor; }
 
 /* 검색 보조 칩: 검색창 바로 아래 */
 .home-hero .popular-ingredients { margin-top: 14px; gap: 14px; }
@@ -340,9 +340,11 @@ html[data-splash="off"] .splash { display: none; }
 .row-link small { display: block; font-size: 12px; color: var(--color-muted); }
 .row-link:hover strong { text-decoration: underline; text-underline-offset: 3px; }
 .col-price { font-size: 15px; font-weight: 650; }
-.col-position { min-width: 140px; }
-.col-position .indicator-range { margin-top: 6px; max-width: 120px; }
-.ind-state { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; white-space: nowrap; }
+.col-position { min-width: 160px; }
+.position-cell { display: inline-flex; align-items: center; gap: 12px; }
+.position-cell .indicator-range { width: 88px; flex-shrink: 0; }
+.position-cell .ind-state { color: inherit; }
+.ind-state { display: inline-flex; align-items: center; font-size: 13px; font-weight: 600; white-space: nowrap; }
 .price-table .col-ai, .forecast-label { color: var(--grey-400); font-size: 13px; }
 .col-star { width: 44px; padding-right: 0 !important; }
 .favorite-star-row { position: relative; z-index: 1; background: transparent; opacity: .35; }
@@ -400,3 +402,6 @@ html[data-splash="off"] .splash { display: none; }
 .price-table-empty .home-more { margin-top: 8px; }
 .price-page button:focus-visible,.price-back-link:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 3px; }
 .factor-summary-panel h2 { margin-top: 8px; }
+/* 보통·신호 없음은 한 발 물러서게: 색 있는 상태(싼 편·비싼 편·신호)만 눈에 띈다 */
+.price-table .ind-state.tone-flat, .price-table .position-cell.tone-flat .ind-state { color: var(--grey-500); font-weight: 500; }
+.price-table .position-cell.tone-flat .range-dot { background: var(--grey-500); }

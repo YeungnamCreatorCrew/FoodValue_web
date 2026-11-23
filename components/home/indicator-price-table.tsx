@@ -8,7 +8,7 @@ import { useFavorites } from "@/lib/home/favorites";
 import { formatDate, formatPercent, won } from "@/lib/prices/format";
 import { FavoriteStar } from "@/components/prices/favorite-star";
 import { IngredientImage } from "@/components/prices/ingredient-image";
-import { changeTone, ForecastLabel, StateText, YearRangeBar } from "@/components/prices/indicator-ui";
+import { changeTone, ForecastLabel, StateText, toneClass, YearRangeBar } from "@/components/prices/indicator-ui";
 
 const signalOf = (item: LivePrice, key: string) => item.listIndicators?.signals.find(signal => signal.key === key) ?? null;
 const stateIs = (item: LivePrice, key: string, state: IndicatorState) => signalOf(item, key)?.state === state;
@@ -92,7 +92,7 @@ export function IndicatorPriceTable({ items, filter, onFilterChange: setFilter }
           <td className={`num col-weekly ${changeTone(item.weeklyChangeRate)}`}>
             {item.weeklyChangeRate === null ? "—" : formatPercent(item.weeklyChangeRate)}</td>
           {hasIndicators && <>
-            <td className="col-position"><span className="mobile-label">1년 중 </span><StateText signal={signalOf(item, "PRICE_POSITION")} /><YearRangeBar item={item} /></td>
+            <td className="col-position"><span className="mobile-label">1년 중 </span><span className={`position-cell ${toneClass(signalOf(item, "PRICE_POSITION")?.state)}`}><YearRangeBar item={item} /><StateText signal={signalOf(item, "PRICE_POSITION")} /></span></td>
             <td className="col-seasonal"><span className="mobile-label">평년 대비 </span><StateText signal={signalOf(item, "SEASONAL")} /></td>
             <td className="col-lead"><span className="mobile-label">도매 </span><StateText signal={signalOf(item, "WHOLESALE_LEAD")} /></td>
           </>}
