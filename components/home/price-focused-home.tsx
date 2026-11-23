@@ -41,7 +41,7 @@ function HeroSection({ item, loading, error }: { item?: LivePrice; loading: bool
 }
 
 export function PriceFocusedHome() {
-  const { data, loading, error, reload } = usePriceList({ sort: "name", page: 1, size: 3 });
+  const { data, loading, error, reload } = usePriceList({ sort: "name", page: 1, size: 50 });
   const items = data?.items ?? [];
   return <main id="home-content" className="price-home">
     <a href="#featured-title" className="sr-only focus:not-sr-only">주요 시세 바로가기</a>

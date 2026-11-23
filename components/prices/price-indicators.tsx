@@ -302,7 +302,7 @@ function RetailWholesaleGap({ card }: { card: RetailWholesaleGapCard }) {
     details={showRecord && evidence ? <LevelRecord evidence={evidence} lowWord="배수가 낮은 쪽(하위 25%)일 때" highWord="높은 쪽(상위 25%)일 때" /> : null}
     caution={evidence?.overlapsLead ? "이 배수는 도매 흐름과 같은 이야기를 다르게 보여주는 면이 커서, 따로 믿을 근거로는 세우지 않았습니다." : undefined}>
     {fact.ratio !== null && <p className="indicator-price"><strong>{formatNumber(fact.ratio, 2)}배</strong>
-      <span>{fact.retailPrice !== null && fact.wholesalePrice !== null ? `소매 ${won(fact.retailPrice)} ÷ 도매 ${won(fact.wholesalePrice)}` : "소매 ÷ 도매"}</span></p>}
+      <span>{fact.retailPrice !== null && fact.wholesalePrice !== null ? `소매 ${won(fact.retailPrice)} ÷ 도매 ${won(fact.wholesalePrice)}(소매 단위로 환산)` : "소매 ÷ 도매"}</span></p>}
     {ready && <RangeBar low={fact.low!} high={fact.high!} current={fact.ratio!} mark={fact.normalRatio} label="최근 1년 소매÷도매 배수 범위에서 현재 위치"
       lowLabel={`${formatNumber(fact.low!, 2)}배`} highLabel={`${formatNumber(fact.high!, 2)}배`} />}
     <p className="indicator-fact">1년 평소 <b>{fact.normalRatio === null ? "-" : `${formatNumber(fact.normalRatio, 2)}배`}</b>, 1년 중 지금보다 배수가 낮은 날은 <b>{pct(fact.percentile)}</b>입니다.</p>
