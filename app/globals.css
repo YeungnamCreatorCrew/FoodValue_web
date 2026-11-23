@@ -342,9 +342,11 @@ html[data-splash="off"] .splash { display: none; }
 .col-price { font-size: 15px; font-weight: 650; }
 .col-position { min-width: 160px; }
 .position-cell { display: inline-flex; align-items: center; gap: 12px; }
+.position-cell .ind-state { min-width: 52px; }
 .position-cell .indicator-range { width: 88px; flex-shrink: 0; }
 .position-cell .ind-state { color: inherit; }
-.ind-state { display: inline-flex; align-items: center; font-size: 13px; font-weight: 600; white-space: nowrap; }
+.ind-state { display: inline-flex; align-items: center; gap: 4px; font-size: 13px; font-weight: 600; white-space: nowrap; }
+.ind-icon { flex-shrink: 0; }
 .price-table .col-ai, .forecast-label { color: var(--grey-400); font-size: 13px; }
 .col-star { width: 44px; padding-right: 0 !important; }
 .favorite-star-row { position: relative; z-index: 1; background: transparent; opacity: .35; }
@@ -364,7 +366,8 @@ html[data-splash="off"] .splash { display: none; }
   .price-table .col-lead { grid-area: lead; }
   .price-table .col-weekly { display: none; }
   .price-table .col-position .indicator-range, .price-table .col-ai { display: none; }
-  .mobile-label { display: inline; font-size: 12px; color: var(--color-muted); }
+  .mobile-label { display: inline; margin-right: 4px; font-size: 12px; color: var(--color-muted); }
+  .position-cell .ind-state { min-width: 0; }
   .ind-state { font-size: 12px; }
 }
 

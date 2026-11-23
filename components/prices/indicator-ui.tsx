@@ -14,10 +14,28 @@ export function changeTone(value: number | null) {
   return value === null || value === 0 ? "tone-flat" : value > 0 ? "tone-up" : "tone-down";
 }
 
-/** 상태 문구("싼 편")를 상태 색으로. 표 셀처럼 좁은 곳에 쓴다. 의미는 문구가 전하므로 장식 점은 두지 않는다. */
+// 수준 지표(1년 중 위치·평년 대비)는 ↓·↑, 흐름 신호(도매 흐름)는 추세선 ↘·↗, 보통·신호 없음은 —
+const ICON_PATHS: Record<"down" | "up" | "fall" | "rise" | "flat", string[]> = {
+  down: ["M12 5v14", "m19 12-7 7-7-7"],
+  up: ["M12 19V5", "m5 12 7-7 7 7"],
+  fall: ["m22 17-8.5-8.5-5 5L2 7", "M16 17h6v-6"],
+  rise: ["m22 7-8.5 8.5-5-5L2 17", "M16 7h6v6"],
+  flat: ["M5 12h14"],
+};
+const SIGNAL_KEYS = new Set(["WHOLESALE_LEAD"]);
+
+function StateIcon({ signal }: { signal: IndicatorSignal }) {
+  const trend = SIGNAL_KEYS.has(signal.key);
+  const shape = signal.state === "down" ? (trend ? "fall" : "down") : signal.state === "up" ? (trend ? "rise" : "up") : "flat";
+  return <svg className="ind-icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    {ICON_PATHS[shape].map(d => <path key={d} d={d} />)}
+  </svg>;
+}
+
+/** 방향 아이콘 + 상태 문구("↓ 싼 편"). 색을 못 봐도 모양으로 방향이 읽힌다. */
 export function StateText({ signal }: { signal: IndicatorSignal | null }) {
   if (!signal) return <span className="ind-state tone-flat">—</span>;
-  return <span className={`ind-state ${toneClass(signal.state)}`}>{signal.stateLabel}</span>;
+  return <span className={`ind-state ${toneClass(signal.state)}`}><StateIcon signal={signal} />{signal.stateLabel}</span>;
 }
 
 /** 최저~최고 범위에서 현재 위치. mark는 평균 같은 기준선. compact는 라벨 없이 막대만. */

@@ -92,7 +92,7 @@ export function IndicatorPriceTable({ items, filter, onFilterChange: setFilter }
           <td className={`num col-weekly ${changeTone(item.weeklyChangeRate)}`}>
             {item.weeklyChangeRate === null ? "—" : formatPercent(item.weeklyChangeRate)}</td>
           {hasIndicators && <>
-            <td className="col-position"><span className="mobile-label">1년 중 </span><span className={`position-cell ${toneClass(signalOf(item, "PRICE_POSITION")?.state)}`}><YearRangeBar item={item} /><StateText signal={signalOf(item, "PRICE_POSITION")} /></span></td>
+            <td className="col-position"><span className="mobile-label">1년 중 </span><span className={`position-cell ${toneClass(signalOf(item, "PRICE_POSITION")?.state)}`}><StateText signal={signalOf(item, "PRICE_POSITION")} /><YearRangeBar item={item} /></span></td>
             <td className="col-seasonal"><span className="mobile-label">평년 대비 </span><StateText signal={signalOf(item, "SEASONAL")} /></td>
             <td className="col-lead"><span className="mobile-label">도매 </span><StateText signal={signalOf(item, "WHOLESALE_LEAD")} /></td>
           </>}
