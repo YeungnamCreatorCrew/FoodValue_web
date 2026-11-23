@@ -42,7 +42,14 @@ body {
 /* Price-focused PoC: overlay navigation never reserves horizontal space. */
 .price-service-shell { --service-nav-height: 0px; min-height: 100dvh; background: #f8faf8; }
 .floating-header { height: 72px; padding: 14px 24px; display: flex; align-items: center; justify-content: flex-start; position: relative; z-index: 50; }
-.mobile-brand { display: none; font-size: 22px; font-weight: 750; color: var(--color-primary); }
+.mobile-brand { display: flex; align-items: center; min-height: 44px; font-size: 22px; font-weight: 750; color: var(--color-primary); }
+.floating-header { gap: 32px; }
+.desktop-nav { display: flex; gap: 4px; }
+.desktop-nav a { display: inline-flex; align-items: center; min-height: 40px; padding: 0 14px; border-radius: 8px; font-size: 15px; font-weight: 600; color: #4b5a51; }
+.desktop-nav a:hover { background: var(--color-slate-100); }
+.desktop-nav a[aria-current=page] { color: var(--color-primary); background: var(--color-primary-soft); }
+@media (min-width: 1024px) { .floating-header .floating-menu-root { display: none; } .floating-header { padding-inline: 32px; } }
+@media (max-width: 1023px) { .desktop-nav { display: none; } }
 .floating-menu-root { position: relative; }
 .menu-trigger { display: grid; place-items: center; width: 44px; height: 44px; border: 1px solid var(--color-brand-border); border-radius: 13px; background: #ffffffeb; color: var(--color-primary); cursor: pointer; }
 .menu-trigger:hover { background: #edf5ef; }

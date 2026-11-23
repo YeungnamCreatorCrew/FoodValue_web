@@ -31,6 +31,10 @@ export function FloatingMenu() {
 
   return <header className="floating-header">
     <Link href="/" className="mobile-brand" aria-label="FoodValue 홈">FoodValue</Link>
+    {/* 메뉴가 4개 이하라 데스크톱에서는 펼쳐 둔다. 모바일은 아래 햄버거 메뉴를 쓴다. */}
+    <nav aria-label="주 메뉴" className="desktop-nav">
+      {TABS.map(tab => <Link key={tab.key} href={tab.href} aria-current={isTabActive(pathname, tab.href) ? "page" : undefined}>{tab.label}</Link>)}
+    </nav>
     <div ref={root} className="floating-menu-root"
       onPointerEnter={event => { if (event.pointerType === "mouse" && window.matchMedia("(min-width: 1024px)").matches) setHovered(true); }}
       onPointerLeave={() => setHovered(false)}
