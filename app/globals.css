@@ -283,7 +283,7 @@ body {
 .chart-endpoints { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 14px; padding: 14px 0 4px; }
 .chart-endpoints > div:last-child { text-align: right; }
 .chart-endpoints dt { font-size: 11px; color: #708073; }
-.chart-endpoints dd { margin-top: 5px; font-size: 20px; font-weight: 700; color: var(--color-primary); font-variant-numeric: tabular-nums; }
+.chart-endpoints dd { margin-top: 5px; font-size: 20px; font-weight: 700; color: var(--color-slate-900); font-variant-numeric: tabular-nums; }
 .detail-page-heading nav { display: flex; gap: 10px; align-items: center; font-size: 13px; color: #708073; }
 .detail-page-heading .price-back-link { margin: 0; }
 .price-detail-overview { grid-template-columns: minmax(0,1.65fr) minmax(0,1fr); }

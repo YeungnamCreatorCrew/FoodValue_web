@@ -15,8 +15,8 @@ export interface PriceChartData {
   forecastPoints?: ForecastPoint[];
 }
 export interface BuyingGuide {
-  title: string;
-  description: string;
+  /** 서버 원값(BUY_NOW 등). 화면에 판정 문구로 바꿔 보여주지 않는다. */
+  recommendation: string;
   buyAfterDays: number | null;
   expectedSaving: number | null;
   mape: number | null;

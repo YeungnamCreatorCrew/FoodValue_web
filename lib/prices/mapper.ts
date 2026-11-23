@@ -33,9 +33,8 @@ export function mapForecast(dto: PriceForecastDto): ForecastPoint[] {
 }
 export function mapGuide(dto: PriceGuideDto | null): BuyingGuide | null {
   if (!dto) return null;
-  const titles: Record<string, string> = { BUY_NOW: "지금 구매 추천", BUY_LATER: dto.buyAfterDays === null ? "조금 기다려보세요" : `${dto.buyAfterDays}일 뒤 구매 추천`, HOLD: "구매 판단 보류", STABLE: "가격 보합세" };
-  return { title: titles[dto.recommendation] ?? "구매 가이드 확인",
-    description: dto.expectedSaving ? `예상 절약액 ${dto.expectedSaving.toLocaleString("ko-KR")}원` : "",
+  // 구매 판정 문구("지금 구매 추천" 등)는 화면에 쓰지 않는다. 서버 원값만 남긴다.
+  return { recommendation: dto.recommendation,
     buyAfterDays: dto.buyAfterDays, expectedSaving: dto.expectedSaving, mape: dto.mape };
 }
 export function withForecast(item: LivePrice, points: ForecastPoint[], baseDate: string | null): LivePrice {
