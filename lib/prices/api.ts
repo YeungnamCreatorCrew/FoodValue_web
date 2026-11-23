@@ -25,17 +25,24 @@ function itemPath(id: string) {
   if (!/^[1-9]\d*$/.test(id) || !Number.isSafeInteger(Number(id))) throw new PriceApiError(404, "올바른 품목 ID가 아닙니다.");
   return `/${id}`;
 }
+const mockFlag = () => typeof window === "undefined" ? null : new URLSearchParams(window.location.search).get("mock");
 const marketParams = () => new URLSearchParams({ market: "RETAIL" });
 const sorts: Record<NonNullable<PriceListQuery["sort"]>, PriceSortDto> = { name: "name", "price-drop": "change", "forecast-drop": "forecast" };
 export const pricesApi = {
-  list(query: PriceListQuery = {}, signal?: AbortSignal) {
+  async list(query: PriceListQuery = {}, signal?: AbortSignal): Promise<PricePageDto> {
     const params = marketParams();
     if (query.category && query.category !== "ALL") params.set("category", query.category);
     if (query.keyword?.trim()) params.set("keyword", query.keyword.trim().slice(0, 50));
     params.set("sort", sorts[query.sort ?? "name"]);
     params.set("page", String(query.page ?? 1));
     params.set("size", String(Math.min(50, Math.max(1, query.size ?? 12))));
-    return get<PricePageDto>("", params, signal);
+    const page = await get<PricePageDto>("", params, signal);
+    // ?mock=indicators: 서버가 목록 지표를 아직 안 주면 mock으로 채운다(상세 지표 mock과 같은 스위치).
+    if (mockFlag() === "indicators") {
+      const { withMockListIndicators } = await import("@/mocks/priceListIndicators");
+      return withMockListIndicators(page);
+    }
+    return page;
   },
   detail(id: string, signal?: AbortSignal) { return get<PriceDetailDto>(itemPath(id), marketParams(), signal); },
   history(id: string, days: PriceHistoryPeriod, signal?: AbortSignal) {
@@ -56,7 +63,7 @@ export const pricesApi = {
    */
   async indicators(id: string, signal?: AbortSignal): Promise<PriceIndicatorsDto> {
     const path = itemPath(id);
-    const mock = typeof window === "undefined" ? null : new URLSearchParams(window.location.search).get("mock");
+    const mock = mockFlag();
     if (mock === "indicators" || mock === "empty" || mock === "error") {
       const { fetchMockIndicators } = await import("@/mocks/priceIndicatorsServer");
       const dto = await fetchMockIndicators(Number(path.slice(1)));

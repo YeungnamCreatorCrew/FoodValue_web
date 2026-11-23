@@ -6,6 +6,7 @@ import { formatDate, formatNumber, formatPercent, won } from "@/lib/prices/forma
 import { usePriceIndicators } from "@/lib/prices/use-prices";
 import { ChartHover } from "./chart-hover";
 import { INDICATOR_HELP } from "./indicator-help";
+import { RangeBar, toneClass } from "./indicator-ui";
 
 // Judgement-aid cards. Chip color and wording come from the server's state; nothing here recomputes a direction from prices.
 const DISCLAIMER = "예측이 아니라 지금 상황을 정리한 것입니다. 판단은 직접 내려 주세요.";
@@ -13,13 +14,13 @@ const verdictTags: Record<IndicatorVerdict, string> = {
   FACT: "사실", PASS: "검증된 근거", CONDITIONAL: "조건부 근거 · 추가 확인 필요", WEAK: "참고 사실 · 방향 표시 안 함",
 };
 // Series colors avoid red/blue, which mean 상승/하락 on this site.
-const COLORS = { current: "#14532d", mean: "#6f8276", band: "#e3ece0", past: "#d3dbd2", wholesale: "#a0742f", retail: "#14532d" };
+const COLORS = { current: "#14532d", mean: "#6b7684", band: "#e5e8eb", past: "#d1d6db", wholesale: "#a0742f", retail: "#14532d" };
 
 /** Draft contract rates are fractions; formatPercent expects percent units. */
 const rate = (value: number | null) => formatPercent(value === null ? null : value * 100);
 const share = (value: number | null) => value === null ? "-" : `${Math.round(value * 100)}%`;
 const cardAnchor = (key: string) => `indicator-${key.toLowerCase()}`;
-const stateClass = (state: IndicatorState | null) => state === "up" ? "is-up" : state === "down" ? "is-down" : "is-neutral";
+const stateClass = toneClass;
 
 function StateChip({ state, label }: { state: IndicatorState | null; label: string | null }) {
   if (!label) return null;
@@ -98,9 +99,9 @@ function SeasonalChart({ card }: { card: SeasonalCard }) {
     <svg viewBox={`0 0 ${width} ${height}`} role="img" aria-label={label} className="indicator-svg">
       <title>{label}</title>
       <desc>{`가로축은 1~${maxWeek}주차, 세로축은 원. ${chart.currentYear}년 마지막 값 ${last ? won(last.price) : "-"}.`}</desc>
-      {ticks.map(tick => <g key={tick}><line x1={left} x2={right} y1={y(tick)} y2={y(tick)} stroke="#e9ece9" />
-        <text x={left - 6} y={y(tick) + 4} textAnchor="end" fontSize="10" fill="#727c76">{tick ? `${tick / 1000}천` : "0"}</text></g>)}
-      {[1, 9, 18, 27, 35, 44].filter(week => week <= maxWeek).map(week => <text key={week} x={x(week)} y={height - 10} textAnchor="middle" fontSize="10" fill="#727c76">{weekMonth(week)}월</text>)}
+      {ticks.map(tick => <g key={tick}><line x1={left} x2={right} y1={y(tick)} y2={y(tick)} stroke="#e5e8eb" />
+        <text x={left - 6} y={y(tick) + 4} textAnchor="end" fontSize="10" fill="#6b7684">{tick ? `${tick / 1000}천` : "0"}</text></g>)}
+      {[1, 9, 18, 27, 35, 44].filter(week => week <= maxWeek).map(week => <text key={week} x={x(week)} y={height - 10} textAnchor="middle" fontSize="10" fill="#6b7684">{weekMonth(week)}월</text>)}
       {past.map(row => <path key={row.year} d={series(row)} fill="none" stroke={COLORS.past} strokeWidth="1.2" />)}
       {band && <path d={band} fill={COLORS.band} fillOpacity="0.85" />}
       <path d={linePath(stats.map(row => ({ x: x(row.week), y: row.mean === null ? null : y(row.mean) })))} fill="none" stroke={COLORS.mean} strokeWidth="1.5" strokeDasharray="4 3" />
@@ -109,7 +110,7 @@ function SeasonalChart({ card }: { card: SeasonalCard }) {
       <ChartHover points={hover} left={left} right={right} top={top + 20} bottom={bottom} color={COLORS.current}
         tooltip={point => ({ title: `${weekMonth(point.week)}월 · ${point.week}주차`,
           lines: [...(point.price !== null ? [{ text: `${chart.currentYear}년 ${won(point.price)}`, bold: true }] : []),
-            ...(point.mean !== null ? [{ text: `직전 ${normal.length}년 평균 ${won(Math.round(point.mean))}`, color: "#cfdcd3" }] : [])],
+            ...(point.mean !== null ? [{ text: `직전 ${normal.length}년 평균 ${won(Math.round(point.mean))}`, color: "#d1d6db" }] : [])],
           markers: [...(point.mean !== null ? [{ y: y(point.mean), color: COLORS.mean }] : []), ...(point.price !== null ? [{ y: y(point.price), color: COLORS.current }] : [])] })} />
     </svg>
   </div>;
@@ -152,10 +153,10 @@ function IndexedChart({ card }: { card: WholesaleLeadCard }) {
     <svg viewBox={`0 0 ${width} ${height}`} role="img" aria-label={label} className="indicator-svg">
       <title>{label}</title>
       <desc>{`마지막 주 도매 ${points.at(-1)?.wholesale ?? "-"}, 소매 ${points.at(-1)?.retail ?? "-"}.`}</desc>
-      {ticks.map(tick => <g key={tick}><line x1={left} x2={right} y1={y(tick)} y2={y(tick)} stroke="#e9ece9" />
-        <text x={left - 6} y={y(tick) + 4} textAnchor="end" fontSize="10" fill="#727c76">{tick}</text></g>)}
-      <line x1={left} x2={right} y1={y(100)} y2={y(100)} stroke="#a3aba6" strokeDasharray="2 3" />
-      {dateTicks.map(index => <text key={index} x={x(index)} y={height - 8} textAnchor={index === 0 ? "start" : index === lastIndex ? "end" : "middle"} fontSize="10" fill="#727c76">{points[index].date.slice(5).replace("-", "/")}</text>)}
+      {ticks.map(tick => <g key={tick}><line x1={left} x2={right} y1={y(tick)} y2={y(tick)} stroke="#e5e8eb" />
+        <text x={left - 6} y={y(tick) + 4} textAnchor="end" fontSize="10" fill="#6b7684">{tick}</text></g>)}
+      <line x1={left} x2={right} y1={y(100)} y2={y(100)} stroke="#b0b8c1" strokeDasharray="2 3" />
+      {dateTicks.map(index => <text key={index} x={x(index)} y={height - 8} textAnchor={index === 0 ? "start" : index === lastIndex ? "end" : "middle"} fontSize="10" fill="#6b7684">{points[index].date.slice(5).replace("-", "/")}</text>)}
       {(["wholesale", "retail"] as const).map(key => <path key={key} d={linePath(points.map((point, index) => ({ x: x(index), y: point[key] === null ? null : y(point[key]!) })))}
         fill="none" stroke={COLORS[key]} strokeWidth="2" strokeLinejoin="round" />)}
       {ends.map(end => end.y !== null && <g key={end.key}>
@@ -260,14 +261,6 @@ function Arrivals({ card }: { card: ArrivalsCard }) {
 }
 
 /** 한 줄 막대: low~high 범위에서 현재 위치(굵은 점)와 평소 값(세로 눈금). 색은 방향이 아니라 위치만 나타낸다. */
-function RangeBar({ low, high, current, mark, lowLabel, highLabel, label }: { low: number; high: number; current: number; mark: number | null;
-  lowLabel: string; highLabel: string; label: string }) {
-  const at = (value: number) => `${Math.min(100, Math.max(0, (value - low) / Math.max(1e-9, high - low) * 100))}%`;
-  return <div className="indicator-range" role="img" aria-label={label}>
-    <div className="range-track">{mark !== null && <i className="range-mark" style={{ left: at(mark) }} />}<b className="range-dot" style={{ left: at(current) }} /></div>
-    <div className="range-labels"><span>{lowLabel}</span><span>{highLabel}</span></div>
-  </div>;
-}
 const pct = (value: number | null) => value === null ? "-" : `${Math.round(value * 100)}%`;
 const md = (date: string | null) => date ? date.slice(5).replace("-", "/") : "";
 const periodText = (evidence: LevelEvidence) => evidence.periodStart && evidence.periodEnd
@@ -331,7 +324,7 @@ const SECTIONS: { id: string; title: string; lead: string; keys: string[]; cols:
 const NOTICE_TITLE: Record<string, string> = { WHOLESALE_LEAD: "도매가가 먼저 움직였나", VOLATILITY: "최근 가격이 얼마나 출렁였나" };
 function NoticeCard({ notice }: { notice: IndicatorNotice }) {
   return <article id={cardAnchor(notice.key)} className="indicator-card is-notice" aria-label={NOTICE_TITLE[notice.key] ?? "잠시 쉬는 지표"}>
-    <div className="indicator-card-head"><h3>{NOTICE_TITLE[notice.key] ?? "잠시 쉬는 지표"}</h3><span className="indicator-chip is-neutral">잠시 쉬어요</span></div>
+    <div className="indicator-card-head"><h3>{NOTICE_TITLE[notice.key] ?? "잠시 쉬는 지표"}</h3><span className="indicator-chip tone-flat">잠시 쉬어요</span></div>
     <p className="indicator-fact">{notice.text}</p>
   </article>;
 }
@@ -390,7 +383,7 @@ export function PriceIndicators({ item, product, opinion }: { item: LivePrice; p
     {data.signals.length > 0 && <ul className="indicator-signals" aria-label="지표별 상태 (누르면 해당 근거로 이동)">{data.signals.map(signal => {
       const chip = <>{signal.label} · {signal.stateLabel}</>;
       return <li key={signal.key}>{cardKeys.has(signal.key)
-        ? <a href={`#${cardAnchor(signal.key)}`} onClick={event => jumpToCard(event, signal.key)} className={`indicator-chip is-link ${stateClass(signal.state)}`}>{chip}<span aria-hidden="true" className="chip-arrow">↓</span></a>
+        ? <a href={`#${cardAnchor(signal.key)}`} onClick={event => jumpToCard(event, signal.key)} className={`indicator-chip is-link ${stateClass(signal.state)}`}>{chip}<svg aria-hidden="true" className="chip-arrow" width="12" height="12" viewBox="0 0 16 16"><path d="M3.5 6 8 10.5 12.5 6" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg></a>
         : <span className={`indicator-chip ${stateClass(signal.state)}`}>{chip}</span>}</li>;
     })}</ul>}
     <p className="indicator-disclaimer">{DISCLAIMER}</p>

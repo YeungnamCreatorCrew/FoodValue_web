@@ -31,6 +31,10 @@ export function FloatingMenu() {
 
   return <header className="floating-header">
     <Link href="/" className="mobile-brand" aria-label="FoodValue 홈">FoodValue</Link>
+    {/* 메뉴가 4개 이하라 데스크톱에서는 펼쳐 둔다. 모바일은 아래 햄버거 메뉴를 쓴다. */}
+    <nav aria-label="주 메뉴" className="desktop-nav">
+      {TABS.map(tab => <Link key={tab.key} href={tab.href} aria-current={isTabActive(pathname, tab.href) ? "page" : undefined}>{tab.label}</Link>)}
+    </nav>
     <div ref={root} className="floating-menu-root"
       onPointerEnter={event => { if (event.pointerType === "mouse" && window.matchMedia("(min-width: 1024px)").matches) setHovered(true); }}
       onPointerLeave={() => setHovered(false)}
@@ -43,7 +47,7 @@ export function FloatingMenu() {
         <nav id="floating-navigation" aria-label="주 메뉴" className="floating-menu-panel">
           <p className="px-3 pb-3 pt-1 text-lg font-bold text-primary">FoodValue</p>
           {TABS.map(tab => <Link key={tab.key} href={tab.href} onClick={close} aria-current={isTabActive(pathname, tab.href) ? "page" : undefined}
-            className="flex min-h-11 items-center gap-3 rounded-xl px-3 text-sm font-medium text-slate-600 hover:bg-primary-soft aria-[current=page]:bg-primary-soft aria-[current=page]:text-primary">
+            className="flex min-h-11 items-center gap-3 rounded-xl px-3 text-sm font-medium text-slate-600 hover:bg-slate-100 aria-[current=page]:bg-slate-100 aria-[current=page]:text-slate-900">
             <Icon name={tab.icon} size={20} />{tab.label}
           </Link>)}
         </nav>

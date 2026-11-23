@@ -15,8 +15,8 @@ export interface PriceChartData {
   forecastPoints?: ForecastPoint[];
 }
 export interface BuyingGuide {
-  title: string;
-  description: string;
+  /** 서버 원값(BUY_NOW 등). 화면에 판정 문구로 바꿔 보여주지 않는다. */
+  recommendation: string;
   buyAfterDays: number | null;
   expectedSaving: number | null;
   mape: number | null;
@@ -43,7 +43,10 @@ export interface LivePrice extends PriceChartData {
   dataFactors: DataFactor[];
   /** Detail only: server-stored forecast sentences (headline template + optional Gemini-edited detail). */
   aiSummary: AiSummary | null;
+  /** List only: 지표 칩과 1년 가격대(서버 스냅샷). 없으면 null. */
+  listIndicators: ListIndicators | null;
 }
+export interface ListIndicators { asOfDate: string; stale: boolean; headline: string | null; signals: IndicatorSignal[]; yearRange: { low: number | null; high: number | null; percentile: number | null } | null }
 export interface PriceListQuery {
   category?: Category | "ALL";
   keyword?: string;

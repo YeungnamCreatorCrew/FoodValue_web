@@ -47,10 +47,10 @@ export function ChartHover<T extends HoverPoint>({ points, left, right, top, bot
     const boxX = Math.max(left - 8, active.x + gap + width > right ? active.x - gap - width : active.x + gap);
     const boxY = Math.max(top - 20, Math.min(active.y - height / 2, bottom - height));
     box = <g pointerEvents="none" aria-hidden="true">
-      <line x1={active.x} x2={active.x} y1={top - 12} y2={bottom + 6} stroke="#5f7466" strokeWidth={k} strokeDasharray={`${3 * k} ${3 * k}`} />
+      <line x1={active.x} x2={active.x} y1={top - 12} y2={bottom + 6} stroke="#6b7684" strokeWidth={k} strokeDasharray={`${3 * k} ${3 * k}`} />
       {(content.markers ?? [{ y: active.y, color }]).map(marker => <circle key={`${marker.color}${marker.y}`} cx={active.x} cy={marker.y} r={4.5 * k} fill={marker.color} stroke="white" strokeWidth={2 * k} />)}
-      <rect x={boxX} y={boxY} width={width} height={height} rx={8 * k} fill="#1f2a24" fillOpacity="0.92" />
-      <text x={boxX + 10 * k} y={boxY + 18 * k} fontSize={12 * k} fill="#cfdcd3">{content.title}</text>
+      <rect x={boxX} y={boxY} width={width} height={height} rx={8 * k} fill="#191f28" fillOpacity="0.92" />
+      <text x={boxX + 10 * k} y={boxY + 18 * k} fontSize={12 * k} fill="#d1d6db">{content.title}</text>
       {content.lines.map((line, index) => <text key={line.text} x={boxX + 10 * k} y={boxY + (38 + index * 19) * k} fontSize={(line.bold ? 14 : 12) * k}
         fontWeight={line.bold ? 700 : 500} fill={line.color ?? "white"}>{line.text}</text>)}
     </g>;
@@ -63,13 +63,13 @@ export function ChartHover<T extends HoverPoint>({ points, left, right, top, bot
     const boxX = Math.max(left - 8, active.x + gap + width > right ? active.x - gap - width : active.x + gap);
     const boxY = Math.max(top - 20, Math.min(active.y - height / 2, bottom - height));
     box = <g pointerEvents="none" aria-hidden="true">
-      <line x1={active.x} x2={active.x} y1={top - 12} y2={bottom + 6} stroke="#5f7466" strokeWidth={k} strokeDasharray={`${3 * k} ${3 * k}`} />
+      <line x1={active.x} x2={active.x} y1={top - 12} y2={bottom + 6} stroke="#6b7684" strokeWidth={k} strokeDasharray={`${3 * k} ${3 * k}`} />
       <circle cx={active.x} cy={active.y} r={5 * k} fill={color} stroke="white" strokeWidth={2 * k} />
-      <rect x={boxX} y={boxY} width={width} height={height} rx={8 * k} fill="#1f2a24" fillOpacity="0.92" />
-      <text x={boxX + 10 * k} y={boxY + 18 * k} fontSize={12 * k} fill="#cfdcd3">{title}</text>
+      <rect x={boxX} y={boxY} width={width} height={height} rx={8 * k} fill="#191f28" fillOpacity="0.92" />
+      <text x={boxX + 10 * k} y={boxY + 18 * k} fontSize={12 * k} fill="#d1d6db">{title}</text>
       <text x={boxX + 10 * k} y={boxY + 37 * k} fontSize={15 * k} fontWeight="700" fill="white">{value(active.value)}</text>
-      {change !== null && <text x={boxX + 10 * k} y={boxY + 54 * k} fontSize={12 * k} fill={change > 0 ? "#fca5a5" : change < 0 ? "#93c5fd" : "#cfdcd3"}>
-        {changeText} <tspan fill="#9fb2a6">{active.previous ? `${active.previous.date.slice(5).replace("-", "/")} 대비` : ""}</tspan></text>}
+      {change !== null && <text x={boxX + 10 * k} y={boxY + 54 * k} fontSize={12 * k} fill={change > 0 ? "#fca5a5" : change < 0 ? "#93c5fd" : "#d1d6db"}>
+        {changeText} <tspan fill="#b0b8c1">{active.previous ? `${active.previous.date.slice(5).replace("-", "/")} 대비` : ""}</tspan></text>}
     </g>;
   }
   return <>

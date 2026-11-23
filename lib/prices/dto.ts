@@ -21,6 +21,15 @@ export interface PriceSummaryDto {
   forecastTargetDate: string | null;
   quality: string | null;
   status: string;
+  /** 목록 응답에만 있다(WAS feat/price-list-indicators). 이전 서버에는 없을 수 있다. */
+  indicators?: ListIndicatorsDto | null;
+}
+export interface ListIndicatorsDto {
+  asOfDate: string;
+  stale: boolean;
+  headline?: string | null;
+  signals: { key: string; label: string; state: string | null; stateLabel: string }[];
+  yearRange: { low: number | null; high: number | null; percentile: number | null } | null;
 }
 export interface PricePageDto { items: PriceSummaryDto[]; page: number; size: number; total: number }
 export interface PriceHistoryDto {

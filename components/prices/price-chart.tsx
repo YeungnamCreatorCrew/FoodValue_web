@@ -39,25 +39,25 @@ export function PriceChart({ item: summary, presentation = "detail" }: { item: L
         <svg viewBox={"0 0 " + width + " 260"} className="price-trend-svg" role="img" aria-label={chartLabel}>
           <title>{chartLabel}</title>
           <desc>실선은 가격이 조사된 {actual.length}일을 순서대로 이은 것이고(주말·공휴일 등 미조사일은 축에서 제외), 점선은 서버의 일별 예측 {forecast.length}개입니다.</desc>
-          <rect x={Math.max(left, currentX)} y="28" width={Math.max(0, right - Math.max(left, currentX))} height="184" fill="#eef7f0" rx="5" />
-          {[max, (max + min) / 2, min].map(value => <g key={value}><line x1={left} x2={right} y1={y(value)} y2={y(value)} stroke="#e8eee8" /><text x={left - 8} y={y(value) + 4} textAnchor="end" fill="#65776b" fontSize="11">{formatNumber(value)}</text></g>)}
-          <text x={left - 8} y="19" textAnchor="end" fontSize="10" fill="#65776b">원</text>
+          <rect x={Math.max(left, currentX)} y="28" width={Math.max(0, right - Math.max(left, currentX))} height="184" fill="#f2f4f6" rx="5" />
+          {[max, (max + min) / 2, min].map(value => <g key={value}><line x1={left} x2={right} y1={y(value)} y2={y(value)} stroke="#e5e8eb" /><text x={left - 8} y={y(value) + 4} textAnchor="end" fill="#6b7684" fontSize="11">{formatNumber(value)}</text></g>)}
+          <text x={left - 8} y="19" textAnchor="end" fontSize="10" fill="#6b7684">원</text>
           <path data-series="history" data-point-count={actual.length} d={actualPath} fill="none" stroke="var(--price-chart-color)" strokeWidth="2" strokeLinejoin="round" />
           <path data-series="forecast" data-point-count={forecast.length} d={forecastPath} fill="none" stroke="var(--price-chart-color)" strokeWidth="2.5" strokeDasharray="6 5" />
           {period <= 90 && points.filter(point => point.kind === "actual").map(point => <circle key={point.date} cx={point.x} cy={point.y} r="1.5" fill="var(--price-chart-color)" />)}
-          {currentX >= left && <line x1={currentX} x2={currentX} y1="28" y2="212" stroke="#6b8c72" strokeDasharray="4 4" />}
+          {currentX >= left && <line x1={currentX} x2={currentX} y1="28" y2="212" stroke="#6b7684" strokeDasharray="4 4" />}
           {item.currentPrice !== null && currentX >= left && <circle cx={currentX} cy={y(item.currentPrice)} r="5" fill="var(--price-chart-color)" stroke="white" strokeWidth="2" />}
           {item.forecastPrice !== null && <circle cx={forecastX} cy={y(item.forecastPrice)} r="5" fill="var(--price-chart-color)" stroke="white" strokeWidth="2" />}
           {/* Longer windows cross a year boundary, so the first label carries the year. */}
-          {points[0] && <text x={points[0].x} y="231" fontSize="11" fill="#65776b">{period > 90 ? points[0].date.slice(2).replaceAll("-", ".") : points[0].date.slice(5)}</text>}
-          {currentX >= left && <text x={currentX - 4} y="231" textAnchor="end" fontSize="11" fill="#334c3c">관측 {item.priceDate?.slice(5) ?? "-"}</text>}
-          <text x={right} y="251" textAnchor="end" fontSize="11" fill="#14532d">예측 {item.forecastDate?.slice(5) ?? "-"}</text>
+          {points[0] && <text x={points[0].x} y="231" fontSize="11" fill="#6b7684">{period > 90 ? points[0].date.slice(2).replaceAll("-", ".") : points[0].date.slice(5)}</text>}
+          {currentX >= left && <text x={currentX - 4} y="231" textAnchor="end" fontSize="11" fill="#333d4b">가격 기준일 {item.priceDate?.slice(5) ?? "-"}</text>}
+          <text x={right} y="251" textAnchor="end" fontSize="11" fill="#14532d">예측 대상일 {item.forecastDate?.slice(5) ?? "-"}</text>
           <ChartHover points={points.map(point => ({ date: point.date, value: point.price, x: point.x, y: point.y, kind: point.kind,
             previous: point.previous && { date: point.previous.date, value: point.previous.price } }))} left={left} right={right} top={45} bottom={205} />
         </svg>
       </>}
-      <dl className="chart-endpoints"><div><dt>현재 · {formatDate(item.priceDate ?? null)}</dt><dd>{won(item.currentPrice)}</dd></div><div><dt>7일 후 · {formatDate(item.forecastDate)}</dt><dd>{won(item.forecastPrice)}</dd></div></dl>
-      <p className="chart-footnote">최근 {PRICE_CHART_PERIODS.find(entry => entry.days === period)?.label ?? `${period}일`} 중 가격이 조사된 {actual.length}일 · 그래프에 커서를 올리면 날짜별 가격을 볼 수 있습니다. 점선은 서버에서 제공한 일별 예측입니다.</p>
+      <dl className="chart-endpoints"><div><dt>가격 기준일 · {formatDate(item.priceDate ?? null)}</dt><dd>{won(item.currentPrice)}</dd></div><div><dt>AI 7일 예측 · {formatDate(item.forecastDate)}</dt><dd>{won(item.forecastPrice)}</dd></div></dl>
+      <p className="chart-footnote">최근 {PRICE_CHART_PERIODS.find(entry => entry.days === period)?.label ?? `${period}일`} 중 가격이 조사된 {actual.length}일 · 그래프에 커서를 올리면 날짜별 가격을 볼 수 있습니다. 점선은 AI 7일 예측입니다.</p>
     </>}
   </section>;
 }

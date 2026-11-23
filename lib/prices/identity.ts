@@ -13,3 +13,9 @@ export function sameIngredientName(name: string, legacy: { name: string; aliases
 export function favoriteIdentity(item: Pick<LivePrice, "id" | "name">) {
   return { id: `was:${item.id}`, aliases: priceCatalog.filter(legacy => sameIngredientName(item.name, legacy)).map(item => item.id) };
 }
+/** 저장된 관심(고정) 목록에 이 품목이 있는지. 예전 프론트 slug로 저장된 항목도 별칭으로 맞춘다. */
+export function isFavoriteItem(item: Pick<LivePrice, "id" | "name">, favorites: string[]) {
+  const keys = new Set(favorites.map(canonicalIngredientId));
+  const { id, aliases } = favoriteIdentity(item);
+  return [canonicalIngredientId(id), ...aliases].some(key => keys.has(key));
+}
