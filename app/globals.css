@@ -309,3 +309,39 @@ body {
   .prediction-summary > p { font-size: 14px; }
   .detail-factor-layout { gap: 18px; }
 }
+
+/* 시작 화면(SplashScreen): 탭 세션당 한 번, 위로 걷히며 사라짐 */
+html[data-splash="off"] .splash { display: none; }
+.splash { position: fixed; inset: 0; z-index: 9999; display: grid; place-items: center; overflow: hidden; background: radial-gradient(120% 90% at 50% 40%, #1d6b38 0%, #14532d 55%, #0f3f22 100%); color: #ffffff; cursor: pointer; }
+.splash-leave { animation: splash-out .7s cubic-bezier(.76,0,.24,1) forwards; }
+.splash-progress { position: absolute; top: 0; left: 0; height: 3px; width: 100%; background: #bef264; transform-origin: left; animation: splash-progress 1.9s cubic-bezier(.4,0,.2,1) both; }
+.splash-chart { position: absolute; left: 0; right: 0; bottom: 6vh; width: 100%; height: 42vh; opacity: .9; }
+.splash-chart-line { fill: none; stroke: #ffffff33; stroke-width: 3; vector-effect: non-scaling-stroke; stroke-dasharray: 1300; stroke-dashoffset: 1300; animation: splash-draw 1.2s .15s cubic-bezier(.4,0,.2,1) forwards; }
+.splash-chart-forecast { fill: none; stroke: #bef264; stroke-width: 3; vector-effect: non-scaling-stroke; stroke-dasharray: 420; stroke-dashoffset: 420; animation: splash-draw .6s 1.2s ease-out forwards; }
+.splash-chart-band { fill: #bef2641f; animation: splash-fade .6s 1.35s ease-out both; }
+.splash-brand { position: relative; display: flex; align-items: center; gap: clamp(16px, 2vw, 28px); padding: 0 24px; }
+.splash-mark { width: clamp(64px, 7vw, 104px); height: auto; flex: none; animation: splash-pop .6s cubic-bezier(.3,1.5,.5,1) both; filter: drop-shadow(0 18px 30px #0a2a1466); }
+.splash-mark-line { stroke-dasharray: 90; stroke-dashoffset: 90; animation: splash-draw .5s .3s ease-out forwards; }
+.splash-mark-dot { transform-origin: 74px 32px; animation: splash-dot .4s .75s cubic-bezier(.3,1.6,.5,1) both; }
+.splash-word { font-size: clamp(40px, 6.4vw, 96px); font-weight: 850; letter-spacing: -0.04em; line-height: 1; }
+.splash-word span { display: inline-block; animation: splash-rise .55s cubic-bezier(.2,.8,.2,1) both; }
+.splash-tagline { margin-top: clamp(8px, 1vw, 14px); font-size: clamp(15px, 1.5vw, 22px); color: #d9f99d; animation: splash-fade .6s .85s ease-out both; }
+.splash-footer { position: absolute; left: 0; right: 0; bottom: calc(28px + env(safe-area-inset-bottom, 0px)); display: flex; justify-content: space-between; gap: 16px; padding: 0 clamp(20px, 4vw, 56px); font-size: 13px; letter-spacing: .3px; color: #ffffffa6; animation: splash-fade .6s 1s ease-out both; }
+@keyframes splash-progress { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes splash-pop { from { opacity: 0; transform: scale(.4) rotate(-12deg); } to { opacity: 1; transform: none; } }
+@keyframes splash-draw { to { stroke-dashoffset: 0; } }
+@keyframes splash-dot { from { opacity: 0; transform: scale(0); } to { opacity: 1; transform: scale(1); } }
+@keyframes splash-rise { from { opacity: 0; transform: translateY(0.4em); } to { opacity: 1; transform: none; } }
+@keyframes splash-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes splash-out { to { transform: translateY(-100%); visibility: hidden; } }
+@media (max-width: 767px) {
+  .splash-brand { flex-direction: column; text-align: center; }
+  .splash-skip { display: none; }
+  .splash-footer { justify-content: center; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .splash *, .splash { animation-duration: .01ms !important; animation-delay: 0s !important; }
+  .splash-mark-line, .splash-chart-line, .splash-chart-forecast { stroke-dashoffset: 0; }
+  .splash-leave { animation: splash-fade-out .3s ease forwards !important; }
+}
+@keyframes splash-fade-out { to { opacity: 0; visibility: hidden; } }
