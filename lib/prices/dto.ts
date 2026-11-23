@@ -5,6 +5,8 @@ export type PriceSortDto = "name" | "change" | "forecast";
 export interface PriceSummaryDto {
   id: number;
   name: string;
+  /** WAS PR #61부터 제공(검색용 별칭). 이전 응답에는 없을 수 있다. */
+  aliases?: string[];
   category: PriceCategoryDto;
   market: PriceMarketDto;
   seriesId: number;

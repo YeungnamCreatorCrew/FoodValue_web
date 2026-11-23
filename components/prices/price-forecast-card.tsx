@@ -21,7 +21,7 @@ export function ForecastValues({ item }: { item: LivePrice }) {
   </div>;
 }
 export function IngredientImage({ item }: { item: LivePrice }) {
-  return <div className="ingredient-image">{item.image ? <Image src={item.image} alt="" width={92} height={92} className="h-full w-full object-contain" /> : <div className="ingredient-placeholder"><Icon name="image-off" size={24} /><span>{item.name}</span></div>}</div>;
+  return <div className="ingredient-image">{item.image ? <Image src={item.image} alt="" width={240} height={240} className="h-full w-full rounded-[13px] object-cover" /> : <div className="ingredient-placeholder"><Icon name="image-off" size={24} /><span>{item.name}</span></div>}</div>;
 }
 export function PriceForecastCard({ item }: { item: LivePrice }) {
   return <article className="featured-price-card">
