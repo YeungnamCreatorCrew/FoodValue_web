@@ -71,13 +71,19 @@ export function IndicatorPriceTable({ items, filter, onFilterChange: setFilter }
       <p className="price-table-source">전국 평균 소매가 · KAMIS · 가격 기준일 {formatDate(priceDate)}</p>
     </div>
     {rows.length === 0 ? <p className="price-table-empty">조건에 맞는 품목이 없습니다.</p> : <div className="price-table-scroll">
-      <table className="price-table">
+      <table className={hasIndicators ? "price-table" : "price-table is-basic"}>
+        {/* 열 너비를 고정해 내용 길이와 상관없이 같은 리듬을 유지한다(너비는 globals.css의 col.w-*) */}
+        <colgroup>
+          <col className="w-item" /><col className="w-price" /><col className="w-weekly" />
+          {hasIndicators && <><col className="w-position" /><col className="w-seasonal" /><col className="w-lead" /></>}
+          <col className="w-ai" /><col className="w-star" />
+        </colgroup>
         <thead><tr>
           <th scope="col">품목</th>
           <SortHeader label="현재가" sortKey="price" sort={sort} onSort={onSort} className="num" />
           <SortHeader label="주간" sortKey="weekly" sort={sort} onSort={onSort} className="num" />
           {hasIndicators && <>
-            <SortHeader label="1년 중 위치" sortKey="position" sort={sort} onSort={onSort} />
+            <SortHeader label="1년 중 위치" sortKey="position" sort={sort} onSort={onSort} className="col-position-head" />
             <th scope="col">평년 대비</th>
             <th scope="col">도매 흐름</th>
           </>}
@@ -92,9 +98,9 @@ export function IndicatorPriceTable({ items, filter, onFilterChange: setFilter }
           <td className={`num col-weekly ${changeTone(item.weeklyChangeRate)}`}>
             {item.weeklyChangeRate === null ? "—" : formatPercent(item.weeklyChangeRate)}</td>
           {hasIndicators && <>
-            <td className="col-position"><span className="mobile-label">1년 중 </span><span className={`position-cell ${toneClass(signalOf(item, "PRICE_POSITION")?.state)}`}><StateText signal={signalOf(item, "PRICE_POSITION")} /><YearRangeBar item={item} /></span></td>
-            <td className="col-seasonal"><span className="mobile-label">평년 대비 </span><StateText signal={signalOf(item, "SEASONAL")} /></td>
-            <td className="col-lead"><span className="mobile-label">도매 </span><StateText signal={signalOf(item, "WHOLESALE_LEAD")} /></td>
+            <td className="col-position"><span className="mobile-label">1년 중 위치</span><span className={`position-cell ${toneClass(signalOf(item, "PRICE_POSITION")?.state)}`}><StateText signal={signalOf(item, "PRICE_POSITION")} /><YearRangeBar item={item} /></span></td>
+            <td className="col-seasonal"><span className="mobile-label">평년 대비</span><StateText signal={signalOf(item, "SEASONAL")} /></td>
+            <td className="col-lead"><span className="mobile-label">도매 흐름</span><StateText signal={signalOf(item, "WHOLESALE_LEAD")} /></td>
           </>}
           <td className="num col-ai"><ForecastLabel item={item} /></td>
           <td className="col-star"><FavoriteStar {...favoriteIdentity(item)} name={item.name} className="favorite-star-row" /></td>

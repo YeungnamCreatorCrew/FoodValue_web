@@ -320,7 +320,21 @@ html[data-splash="off"] .splash { display: none; }
 .price-table-source { font-size: 12px; color: var(--color-muted); }
 .price-table-empty { padding: 40px 0; text-align: center; font-size: 14px; color: var(--color-muted); border-top: 1px solid var(--color-border); }
 .price-table-scroll { overflow-x: auto; }
-.price-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.price-table { width: 100%; border-collapse: collapse; font-size: 14px; table-layout: fixed; }
+/* 열 너비: 품목 | 현재가 | 주간 ‖ 1년 중 위치 | 평년 대비 | 도매 흐름 ‖ AI 예측 | 고정 */
+.price-table col.w-item { width: 18%; }
+.price-table col.w-price { width: 11%; }
+.price-table col.w-weekly { width: 9%; }
+.price-table col.w-position { width: 21%; }
+.price-table col.w-seasonal { width: 12%; }
+.price-table col.w-lead { width: 13%; }
+.price-table col.w-ai { width: 16%; }
+.price-table col.w-star { width: 56px; }
+.price-table.is-basic col.w-item { width: 40%; }
+.price-table.is-basic col.w-price, .price-table.is-basic col.w-weekly { width: 18%; }
+.price-table.is-basic col.w-ai { width: 24%; }
+/* 숫자(오른쪽 정렬)와 지표(왼쪽 정렬)가 맞붙지 않게 지표 묶음 앞에 여백 */
+.price-table th.col-position-head, .price-table td.col-position { padding-left: 40px; }
 .price-table thead th { padding: 10px 12px; border-bottom: 1px solid var(--grey-300); font-size: 12px; font-weight: 600; color: var(--color-muted); text-align: left; white-space: nowrap; }
 .price-table td, .price-table tbody th { padding: 12px; border-bottom: 1px solid var(--color-border); vertical-align: middle; text-align: left; font-weight: 400; }
 .price-table tbody tr { position: relative; }
@@ -332,7 +346,9 @@ html[data-splash="off"] .splash { display: none; }
 .table-sort-mark { display: inline-block; width: 8px; font-size: 8px; }
 .table-ref { font-size: 11px; font-weight: 500; color: var(--grey-400); }
 .price-table th:first-child, .price-table td:first-child { padding-left: 0; }
-.row-link { display: flex; align-items: center; gap: 12px; min-width: 150px; }
+.row-link { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.row-link > span { min-width: 0; }
+.row-link strong, .row-link small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .row-link::after { content: ""; position: absolute; inset: 0; } /* 행 전체를 링크로 */
 .row-link .ingredient-image { width: 40px; height: 40px; border-radius: 8px; }
 .row-link .ingredient-placeholder span { display: none; }
@@ -340,7 +356,7 @@ html[data-splash="off"] .splash { display: none; }
 .row-link small { display: block; font-size: 12px; color: var(--color-muted); }
 .row-link:hover strong { text-decoration: underline; text-underline-offset: 3px; }
 .col-price { font-size: 15px; font-weight: 650; }
-.col-position { min-width: 160px; }
+
 .position-cell { display: inline-flex; align-items: center; gap: 12px; }
 .position-cell .ind-state { min-width: 52px; }
 .position-cell .indicator-range { width: 88px; flex-shrink: 0; }
@@ -348,7 +364,7 @@ html[data-splash="off"] .splash { display: none; }
 .ind-state { display: inline-flex; align-items: center; gap: 4px; font-size: 13px; font-weight: 600; white-space: nowrap; }
 .ind-icon { flex-shrink: 0; }
 .price-table .col-ai, .forecast-label { color: var(--grey-400); font-size: 13px; }
-.col-star { width: 44px; padding-right: 0 !important; }
+.col-star { padding-right: 0 !important; text-align: right !important; }
 .favorite-star-row { position: relative; z-index: 1; background: transparent; opacity: .35; }
 .favorite-star-row:hover, .favorite-star-row:focus-visible, .favorite-star-row[aria-pressed=true] { opacity: 1; }
 .mobile-label { display: none; }
@@ -356,17 +372,19 @@ html[data-splash="off"] .splash { display: none; }
 @media (max-width: 639px) {
   .price-table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
   .price-table, .price-table tbody { display: block; }
-  .price-table tbody tr { display: grid; grid-template-columns: auto auto minmax(0, 1fr) auto auto; grid-template-areas: "item item item price star" "pos sea lead lead lead"; align-items: center; gap: 8px 14px; padding: 14px 0; border-bottom: 1px solid var(--color-border); }
+  .price-table tbody tr { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-areas: "item item price" "pos sea lead"; align-items: center; gap: 10px 12px; padding: 14px 0; border-bottom: 1px solid var(--color-border); }
   .price-table td, .price-table tbody th { padding: 0; border: 0; }
+  .price-table td.col-position { padding-left: 0; }
   .price-table .col-item { grid-area: item; }
   .price-table .col-price { grid-area: price; }
-  .price-table .col-star { grid-area: star; }
+  .price-table .col-star { position: absolute; top: 14px; right: 0; }
+  .price-table .col-price { justify-self: end; padding-right: 48px !important; }
   .price-table .col-position { grid-area: pos; min-width: 0; }
   .price-table .col-seasonal { grid-area: sea; }
   .price-table .col-lead { grid-area: lead; }
   .price-table .col-weekly { display: none; }
   .price-table .col-position .indicator-range, .price-table .col-ai { display: none; }
-  .mobile-label { display: inline; margin-right: 4px; font-size: 12px; color: var(--color-muted); }
+  .mobile-label { display: block; margin-bottom: 2px; font-size: 11px; color: var(--color-muted); }
   .position-cell .ind-state { min-width: 0; }
   .ind-state { font-size: 12px; }
 }
