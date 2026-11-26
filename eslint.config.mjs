@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // 로컬 임시 폴더(디자인 캡처용 브라우저 프로필 등). 저장소 코드가 아니다.
+    ".tmp-figma/**",
   ]),
 ]);
 

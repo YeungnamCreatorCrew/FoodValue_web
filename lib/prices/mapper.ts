@@ -17,7 +17,8 @@ export function mapSummary(dto: PriceSummaryDto): LivePrice {
   return {
     id: String(dto.id), name: dto.name, category: categories[dto.category], categoryCode: dto.category,
     unit: dto.unitLabel ?? "단위 정보 없음", image: itemImage(dto.name, dto.aliases),
-    source: dto.source, status: dto.status, quality: dto.quality,
+    // MERGED는 출처가 아니라 KAMIS 작형별 가격을 이어 붙인 계열이라는 표시(WAS #68). 화면에는 원래 출처인 KAMIS로 쓴다.
+    source: dto.source === "MERGED" ? "KAMIS" : dto.source, status: dto.status, quality: dto.quality,
     baseDate: dto.forecastBaseDate, priceDate: dto.priceDate,
     currentPrice: dto.currentPrice, weeklyChangeRate: dto.weeklyChangePercent,
     forecastDate: dto.forecastTargetDate, forecastPrice: dto.forecastPrice,

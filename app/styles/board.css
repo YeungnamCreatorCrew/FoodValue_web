@@ -1,0 +1,86 @@
+/* 홈: 한 줄 요약 + 품목 표. PC(주 화면)는 표, 768px 아래는 같은 순서의 카드로 쌓는다. */
+.board-page { gap: var(--sp-6); }
+.board-hero { display: flex; flex-direction: column; gap: var(--sp-3); }
+.board-date { font-size: var(--fs-cap); font-weight: 600; color: var(--fv-text-2); }
+.board-headline { font-size: var(--fs-num); line-height: var(--lh-tight); font-weight: 800; letter-spacing: -0.02em; }
+.board-movers { display: flex; flex-wrap: wrap; gap: var(--sp-2) var(--sp-6); font-size: var(--fs-sub); font-weight: 600; }
+.board-movers li { word-break: keep-all; color: var(--fv-text-2); }
+.board-movers b { font-weight: 800; }
+
+.board { display: flex; flex-direction: column; gap: var(--sp-4); }
+.board-tools { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--sp-3); }
+.board-search { width: min(320px, 100%); }
+.board-sortline { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-3); }
+.board-sortnote { font-size: var(--fs-cap); color: var(--fv-text-2); }
+.board-sortselect { display: none; align-items: center; gap: var(--sp-2); }
+.board-sortselect select { min-height: 44px; padding: 0 var(--sp-3); border: 1px solid var(--fv-line-strong); border-radius: var(--r-sm); background: var(--fv-bg); font: inherit; }
+
+.board-table { width: 100%; border-collapse: separate; border-spacing: 0; table-layout: fixed; }
+.board-table thead th { height: 48px; padding: 0 var(--sp-4); border-bottom: 2px solid var(--fv-text); font-size: var(--fs-cap); font-weight: 700; color: var(--fv-text-2); text-align: left; white-space: nowrap; }
+.board-table th.col-item { width: 29%; }
+.board-table .col-price { width: 12%; text-align: right; white-space: nowrap; }
+.board-table .col-change { width: 12%; text-align: right; }
+.board-table .col-judge { width: 13%; text-align: center; }
+.board-table .col-spark { width: 15%; text-align: center; }
+.board-table .col-position { width: 19%; }
+.board-table thead th.col-price, .board-table thead th.col-change { text-align: right; }
+.board-table thead th.col-spark { text-align: center; }
+.spark { display: inline-block; width: 120px; height: 36px; vertical-align: middle; }
+.spark.is-up { color: var(--fv-up); } .spark.is-down { color: var(--fv-down); } .spark.is-flat { color: var(--fv-text-2); }
+.spark.is-loading { border-radius: var(--r-sm); background: var(--fv-subtle); }
+.board-forecast { font-size: var(--fs-cap); color: var(--fv-text-2); }
+.board-unit { white-space: nowrap; }
+@media (min-width: 1024px) { .board-sub { white-space: nowrap; } }
+.board-forecast:not(:empty)::before { content: "·"; margin-inline: var(--sp-2); color: var(--fv-text-3); }
+.board-forecast .fv-change { font-size: var(--fs-cap); font-weight: 700; }
+.board-table thead th.col-judge { text-align: center; }
+.board-sort { display: inline-flex; align-items: center; gap: var(--sp-1); min-height: 44px; font: inherit; color: inherit; cursor: pointer; white-space: nowrap; }
+.board-sort:hover { color: var(--fv-text); }
+.board-sort[aria-pressed=true] { color: var(--fv-brand); }
+.board-sort-mark { font-size: 13px; }
+
+.board-row { cursor: pointer; transition: background .12s; }
+.board-row:hover { background: var(--fv-subtle); }
+.board-row > * { padding: var(--sp-2) var(--sp-4); border-bottom: 1px solid var(--fv-line); vertical-align: middle; }
+.board-row th { font-weight: 400; text-align: left; }
+.board-item { display: flex; align-items: center; gap: var(--sp-3); min-height: 48px; color: var(--fv-text); }
+.board-item:hover b { text-decoration: underline; text-underline-offset: 3px; }
+.board-name { display: flex; flex-direction: column; min-width: 0; }
+.board-name b { font-size: var(--fs-sub); font-weight: 750; overflow-wrap: anywhere; }
+.board-name span { font-size: var(--fs-cap); color: var(--fv-text-2); }
+.col-price b { font-size: var(--fs-sub); font-weight: 750; }
+.judge-pill { display: inline-flex; padding: var(--sp-1) var(--sp-3); border-radius: var(--r-pill); }
+.judge-pill.tone-down { background: var(--fv-down-soft); } .judge-pill.tone-up { background: var(--fv-up-soft); } .judge-pill.tone-flat { background: var(--fv-flat-soft); }
+.board-position { display: flex; flex-direction: column; gap: var(--sp-1); }
+.board-position-word { display: inline-flex; gap: var(--sp-1); font-size: var(--fs-cap); font-weight: 650; color: var(--fv-text-2); }
+.board-old { display: block; font-size: var(--fs-cap); color: var(--fv-text-2); }
+.board-missing, .board-note { font-size: var(--fs-cap); color: var(--fv-text-2); }
+.board-pages .fv-chip { min-width: 44px; justify-content: center; }
+.board-pages { display: flex; flex-wrap: wrap; gap: var(--sp-2); justify-content: center; }
+
+.board-skel { display: flex; flex-direction: column; gap: var(--sp-4); }
+.board-skel .skel-head { height: 120px; } .board-skel .skel-chips { height: 44px; width: 60%; } .board-skel .skel-table { height: 420px; }
+
+@media (max-width: 1023px) {
+  .board-table .col-position { width: 18%; }
+  .board-table th.col-item { width: 22%; }
+}
+/* 태블릿 이하: 표를 카드로 쌓는다. 정보 순서는 PC와 같다. */
+@media (max-width: 899px) {
+  .board-sortselect { display: inline-flex; } .board-sorthint { display: none; }
+  .board-sortline { flex-wrap: wrap; }
+  .board-table, .board-table tbody { display: block; border: 0; }
+  .board-table thead { display: none; }
+  .board-row { display: grid; grid-template-columns: 1fr auto; gap: var(--sp-2) var(--sp-4); padding: var(--sp-4); margin-bottom: var(--sp-3); border: 1px solid var(--fv-line); border-radius: var(--r-lg); }
+  .board-row > * { padding: 0; border: 0 !important; width: auto !important; }
+  .board-row th { grid-column: 1 / -1; }
+  .board-row td { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-3); grid-column: 1 / -1; text-align: right !important; }
+  .board-row td::before { content: attr(data-label); font-size: var(--fs-cap); color: var(--fv-text-2); text-align: left; }
+  .board-row td.col-position { align-items: flex-start; }
+  .board-position { width: min(220px, 60%); }
+}
+@media (max-width: 767px) {
+  .board-headline { font-size: var(--fs-title); }
+  .board-movers { font-size: var(--fs-body); }
+  .board-search { width: 100%; }
+}

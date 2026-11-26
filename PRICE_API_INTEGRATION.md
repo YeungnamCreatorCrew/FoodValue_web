@@ -28,11 +28,11 @@ UI의 `ALL`은 query에서 생략한다. 검색 `q`는 API에서 `keyword`로,
 
 ## 예측 요인(SHAP)과 AI 요약
 
-- 상세 "예측에 영향을 준 요인"과 홈 AI INSIGHT는 `/factors`를 쓴다(`components/prices/shap-factors.tsx`, `lib/prices/shap.ts`).
-  요인은 서버 순서(기여 절댓값 순) 그대로, 상위 8개를 먼저 보이고 나머지는 "더 보기". 분류 필터는 응답에 있는 분류(가격·날씨·달력·계절·생산량·환율)만.
+- 상세 예측 팝업의 "예측에 영향을 준 요인"은 `/factors`를 쓴다(`components/prices/shap-factors.tsx`, `lib/prices/shap.ts`).
+  요인은 서버 순서(기여 절댓값 순) 그대로, 상위 몇 개를 먼저 보이고 나머지는 "더 보기". 처음에는 모두 접어 둔다. 분류 필터는 응답에 있는 분류(가격·날씨·달력·계절·생산량·환율)만.
 - 요인을 펼치면 `/factors/{id}/history`를 한 번(90일) 받아 14/30/90일을 화면에서 자른다. 값이 없는 날은 선을 만들지 않는다.
-  `hasHistory=false`(예측 대상일의 계절)는 추이를 그리지 않는다.
-- `explained=false`(학습 모델이 기준 모델을 이기지 못해 기준 모델로 공개, 예측 없음 등)면 기존 `guide.factors` 관측값 카드를 보여준다.
+  `hasHistory=false`(예측 대상일의 계절, 시계열 추세 등)는 추이를 그리지 않고 이유를 한 줄로 적는다. 반올림해 0원인 영향은 "중립"으로 둔다.
+- `explained=false`(학습 모델이 기준 모델을 이기지 못해 기준 모델로 공개, 예측 없음 등)면 요인 표 대신 그 이유를 안내한다.
 - AI 예측 요약은 상세 응답의 `summary.headline`(서버 고정 문장)과 `summary.detail`(Gemini가 다듬은 요인 요약, 숫자 없음)을 쓰고,
   `summary`가 없을 때만 화면에서 숫자로 문장을 만든다. 분류별 설명은 `categories[].description` → `summary.categories` → 고정 문장 순.
 - SHAP은 모델 예측에 대한 기여이며 인과관계가 아니라는 안내를 유지한다.
@@ -41,15 +41,15 @@ UI의 `ALL`은 query에서 생략한다. 검색 `q`는 API에서 `keyword`로,
 
 **현재 상태**: WAS `GET /prices/items/{id}/indicators`에 실제로 연결되어 있다(WAS `docs/INDICATORS_API_DESIGN.md`, 별도 DB에서 `python -m app.indicator_batch --item-id 60`으로 생성).
 주소에 `?mock=indicators|empty|error`를 붙이면 프로토타입 mock을 쓴다(WAS 없이 화면 확인용). 아래 계약 표는 초안이며 실제와 다른 점은 이 박스가 우선한다.
-- 응답에 `status`(READY·STALE·NO_DATA·INSUFFICIENT_HISTORY)와 `specVersion`이 있다. STALE이면 화면 기준일 옆에 "오래된 기준일"을 붙인다.
+- 응답에 `status`(READY·STALE·NO_DATA·INSUFFICIENT_HISTORY)와 `specVersion`이 있다. STALE이고 가격일과 기준일이 다르면 상세 기준일 줄에 "지표는 ○.○ 기준" 꼬리표를 붙인다.
 - 카드 key: `PRICE_POSITION`(1년 중 위치), `SEASONAL`(같은 시기 대비: 최근 28일 vs 과거 5년 같은 구간), `WHOLESALE_LEAD`, `RETAIL_WHOLESALE_GAP`(소매÷도매 배수), `VOLATILITY`(최근 4주 변동폭). `ARRIVALS`는 검증에서 방향이 반대로 나와 서버가 보내지 않는다.
 - 검증 통과 여부는 verdict로 표시한다: `PASS`(도매→소매), `CONDITIONAL`(1년 위치: 싼 쪽만 강함), `FACT`(방향을 주장하지 않는 사실. 배수는 도매 흐름과 겹쳐 FACT로 둠).
-- 화면은 질문별 섹션(지금 싼 편인가 / 움직일 신호가 있나 / 안정적인가)으로 묶고, 카드마다 읽는 법·보통 흐름·알아둘 점(`components/prices/indicator-help.ts`)을 접지 않고 보여준다.
+- 상세는 질문형 카드(같은 시기 평년보다 싼가요? 등)로 보여 준다. 주요 3개(평년 대비·1년 중 위치·도매 흐름)는 바로, 나머지는 "다른 지표 더 보기". 카드를 펼치면 숫자·그래프·과거 기록·읽는 법(`components/prices/indicator-help.ts`)이 나온다(`components/detail/evidence-cards.tsx`).
 
 ### 초안 계약 (프로토타입 시점, 필드 이름 일부 바뀜)
 
 가격 예측이 직전 가격 유지(naive)를 안정적으로 이기지 못해, 상세 화면의 메인을 "데이터로 검증된 근거"로 바꿨다.
-기존 7일 예측(`/forecast`)과 요인(`/factors`)은 아래 "모델 의견"으로 그대로 둔다.
+기존 7일 예측(`/forecast`)과 요인(`/factors`)은 상세의 "AI 7일 예측" 칸과 팝업으로 그대로 둔다.
 디자인 참고: 대파 프로토타입(https://claude.ai/artifact/WaxwFErFMB83aUWeggUcWr). 구성과 문구만 따르고 스타일은 기존 가격 화면에 맞췄다.
 
 ### 계약 초안 (팀 합의 전, 필드 이름 바뀔 수 있음)
@@ -80,19 +80,16 @@ UI의 `ALL`은 query에서 생략한다. 검색 `q`는 API에서 `keyword`로,
 
 ### 화면 규칙
 
-- 상세 순서(결론 먼저): 상단 히어로 카드에 상품·현재가와 한 줄 요약·칩을 함께 둔다 → 바로 아래 탭으로 "판단 근거"(기본) / "모델 의견"을 전환한다.
-  탭은 `role="tablist"`이고 좌우 화살표·Home·End로 옮겨 다닌다. 칩은 해당 카드가 있으면 판단 근거 탭으로 바꾼 뒤 그 카드로 이동한다.
-  모델 의견 탭은 참고용 안내와 기준값 안내, 그 아래 예상가·방향·구매 가이드, 예측 차트, AI 예측 요약, 요인 패널을 펼쳐 보여주며,
-  처음 선택할 때 그린다(그때 차트·`/factors` 요청).
-- 요약 아래 고정 안내: "예측이 아니라 지금 상황을 정리한 것입니다. 판단은 직접 내려 주세요."
-- 칩 색과 문장은 서버 state를 그대로 쓴다. 화면에서 가격으로 방향을 다시 계산하지 않는다. 근거 문장은 숫자 필드로만 만든다
-  (예: "도매가가 2주 새 5% 넘게 오른 뒤 2주 안에 소매가가 오른 경우 72% (평소 44%, 193번)").
-- 차트 선 색은 상승/하락색(Red/Blue)을 피해 브랜드 초록(올해·소매)과 갈색(도매)·회색(평균·지난 해)을 쓴다.
-  SEASONAL: 올해 굵은 선, 직전 5년(`fact.normalYears`) 범위 띠와 평균 점선, 그 이전 해 옅은 선, 커서 툴팁(주차·올해 가격·직전 5년 평균).
-  WHOLESALE_LEAD: 도매·소매 지수 두 선, 끝점 이름 라벨, 커서 툴팁. 툴팁은 `ChartHover`의 `tooltip` prop으로 재사용한다.
-- 모델 의견: `/factors`가 `explained=false` + `BASELINE_MODEL`이면 탭 맨 위 안내 아래 "모델이 직전 가격 유지보다 낫지 않아 기준값을 보여줍니다."를 표시한다.
-  탭을 숨길지는 팀 결정 전이라 둔다. `/factors`는 탭에서 한 번만 요청해 요인 패널과 공유한다.
-- 모바일(375px)은 카드 한 열, 가로 스크롤 없음. 1024px 미만부터 한 열.
+화면 구성과 표시 규칙은 `PRICE_IMPLEMENTATION.md`에 정리했다. API와 관련된 것만 적는다.
+
+- 칩·답 문장의 방향은 서버 `state`를 그대로 쓴다. 화면에서 가격으로 판단을 다시 계산하지 않는다.
+- `/factors`가 `explained=false` + `BASELINE_MODEL`이면 직전 가격 유지 품목으로 보고 팝업 대신 안내 한 줄을 둔다.
+- `/factors`는 팝업을 처음 열 때 한 번만 요청하고, 다시 열어도 같은 응답을 쓴다(`use-prices.ts`의 캐시).
+- v2 앙상블(WAS #70)의 `validation`이 있으면 팝업에 검증 실적 한 줄(직전 가격 대비 개선율, ±5% 안 비율)을 보여 주고,
+  "과거 평균 오차"도 `validation.mape`를 먼저 쓴다. 없으면(예전 모델) 가이드의 `mape`를 쓴다.
+- 값이 없는 것이 정상인 요인(`arima_trend`, `seriesProfile`, `targetSeason`)은 "정보 없음" 대신 이름(모델 추세 등)으로,
+  `…여부` 요인은 예/아니요, `target_weekday`는 요일 이름으로 보여 준다.
+- 계열 출처 `MERGED`(배추·무 이어 붙인 계열, WAS #68)는 화면에 원래 출처인 KAMIS로 쓴다.
 
 ### 확인 시 주의 (포트)
 
@@ -101,30 +98,19 @@ WAS 기본 CORS는 `localhost:3000`, `localhost:5173`만 허용한다. 다른 �
 
 ### 가격 흐름 차트 기간
 
-상세 모델 의견 탭과 홈의 "가격 흐름 및 7일 예측" 차트는 90일(기본) / 180일 / 1년을 고른다(`PRICE_CHART_PERIODS`).
-14·30일은 짧아 미조사일이 많을 때 선이 거의 없어 뺐다. 180일·1년은 날짜 점을 그리지 않고 첫 날짜 라벨에 연도를 붙인다.
-WAS `/history`가 180·365를 받아야 하므로, 그 변경이 머지되기 전 WAS로는 180일·1년이 400 오류가 난다.
+상세 가격 흐름 그래프는 1개월 / 3개월(기본) / 6개월 / 1년(`/history?days=30|90|180|365`)을 고르고, 기간은 주소(`?period=`)에 남긴다.
+상세 첫 화면은 서버에서 365일 이력을 한 번 받아 기준 가격 4칸과 그래프에 함께 쓴다.
+홈 "최근 8주" 흐름선은 보이는 품목마다 `/history?days=90`을 한 번씩 받는다.
 요인 과거 추이(`/factors/{id}/history`)는 그대로 14/30/90일이다.
 
 ## 프론트 구조
 
 `UI → service.ts / mapper.ts / model.ts → api.ts / dto.ts → WAS`.
-`use-prices.ts`는 요청 취소, 변경된 검색/품목/기간에 대한 이전 응답 차단, 재시도를 담당한다.
-Home·Prices·Detail은 같은 계층을 사용한다. 예측 `points: []`는 데이터 없음으로 표시한다.
-실제 가격은 실선, 일별 예측은 점선이며 상승 Red / 하락 Blue / 보합 Gray를 유지한다.
+홈 목록과 상세(상세·지표·365일 이력)는 서버 컴포넌트에서 먼저 받아 그린다. WAS 오류는 화면을 깨지 않고 오류 안내와 다시 시도 버튼으로 보여 준다.
+브라우저에서 부르는 것은 홈 흐름선(`/history`), 그래프 기간 변경(`/history`), 예측 팝업(`/factors`, 요인 추이)뿐이다.
+`use-prices.ts`는 요청 취소, 이전 응답 차단, 같은 요청 캐시를 맡는다.
 
-숫자 상세 URL은 실제 목록 응답의 정수 ID를 사용한다. 임의 ID 매핑은 없다.
-`green-onion` 등 기존 문자 slug는 기존 메타데이터의 이름으로 목록 API를 검색해
-유일하게 식별한 실제 ID로 이동한다. 찾을 수 없거나 모호하면 품목 없음으로 처리한다.
-백엔드는 BIGINT를 허용하지만 JS 정밀도를 넘는 ID는 잘못된 품목을 조회하지 않도록 거절한다.
-
-즐겨찾기 키 `foodvalue-favorite-ingredients`와 `useFavorites`는 유지한다.
-신규 값은 `was:<실제 ID>`로 저장해 기존 데모 숫자 ID와 충돌을 피한다.
-기존 숫자/slug 값은 이름을 통해 실제 API의 ID로 연결하며 저장값은 자동 변경·삭제하지 않는다.
-기존 품목이 미제공/모호하면 홈에 안내하며 나머지 즐겨찾기는 계속 표시한다.
-관심 식재료 탭 전환 시 선택한 14/30/90일 기간은 유지한다.
-
-기존 PoC JSON과 demo/mock 파일은 보존한다. 인기 검색어도 기존 정적 목록이다.
+숫자 상세 URL은 실제 목록 응답의 정수 ID를 쓴다. 임의 ID 매핑은 없다. 품목이 없으면 404 화면을 보여 준다.
 
 ## 실행
 
@@ -157,8 +143,9 @@ uv run uvicorn app.main:app --host 127.0.0.1 --port 8000
 WEB은 `http://localhost:3000`으로 접속한다. `127.0.0.1:3000`이나 다른 origin이면
 백엔드 실행 환경의 `CORS_ORIGINS` 설정이 필요하다. 백엔드 코드/CORS 설정은 변경하지 않았다.
 
-작업 환경에서 WAS의 `.env`와 `.venv`가 없고 localhost:8000이 응답하지 않는 것을 확인했다.
-실제 비밀값이나 DB를 만들지 않고 서버 실행·실데이터 호출은 하지 않았다.
+v2 앙상블 예측(대파·양파·깐마늘·배추·무)을 보려면 WAS `.env`에 `FOODVALUE_PRICE_MODEL=v2`를 두고
+WAS 쪽 배치(`app.merged_series`, `app.price_pipeline --predict-only`, `app.indicator_batch --item-id <id>`)를 먼저 돌린다.
+WAS 명령은 `python`이 아니라 `uv run --extra prices python -m ...`으로 실행해야 필요한 패키지가 잡힌다.
 
 ## 검증
 
@@ -169,8 +156,6 @@ node scripts/check-prices.mjs
 npm.cmd run build
 ```
 
-계약 검사는 네트워크를 mock하여 query/실제 ID 전달, nullable 가격, 결측 차트,
-7개 일별 예측, 빈 예측, 서버 가이드 유지, 기존 즐겨찾기 해석, HTTP 오류·요청 취소를 확인한다.
-브라우저 자동 조작은 실행하지 않는다. 실제 API·화면 검증은 WAS 환경 준비 후 별도로 필요하다.
-전체 `npm.cmd run lint`는 기존 `.tmp-figma`의 브라우저 확장 JS 때문에 실패한다.
-해당 임시 자료를 변경하거나 삭제하지 않고 위 소스 디렉터리 대상으로 별도 검사한다.
+계약 검사(`scripts/check-prices.mjs`)는 네트워크를 mock하여 query/실제 ID 전달, nullable 가격, 결측 차트,
+7개 일별 예측, 빈 예측, 서버 가이드 유지, MERGED 출처 표시, HTTP 오류·요청 취소를 확인한다.
+`.tmp-figma`는 eslint 대상에서 뺐다(`eslint.config.mjs`).

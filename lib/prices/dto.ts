@@ -109,6 +109,8 @@ export interface PriceFactorsDto {
   /** 모델 채택을 정한 최종 평가(과거 검증) 구간. 없을 수 있다. */
   evaluationStart?: string | null;
   evaluationEnd?: string | null;
+  /** v2 앙상블 실행만 있는 과거 검증 실적(WAS #70). 예전 모델은 null이거나 없다. */
+  validation?: ValidationDto | null;
   method: string | null;
   horizonDays: number | null;
   targetDate: string | null;
@@ -168,4 +170,15 @@ export interface PriceIndicatorsDto {
   summary: { headline: string; signals: IndicatorSignalDto[] } | null;
   cards: IndicatorCardDto[];
   notices?: IndicatorNoticeDto[];
+}
+
+/** WAS ValidationRecord. mape·naiveMape·improvementPct·within5Pct는 % 값. */
+export interface ValidationDto {
+  mape: number | null;
+  naiveMape: number | null;
+  improvementPct: number | null;
+  within5Pct: number | null;
+  points: number | null;
+  evaluationStart: string | null;
+  evaluationEnd: string | null;
 }
