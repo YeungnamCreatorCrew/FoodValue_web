@@ -143,3 +143,4 @@ a.fv-card:hover { border-color: var(--fv-line-strong); box-shadow: var(--sh-floa
 .hero-stale { display: inline-block; margin: var(--sp-1) 0 0 var(--sp-2); padding: 0 var(--sp-2); border-radius: var(--r-sm); background: var(--fv-subtle); color: var(--fv-text-2); font-weight: 700; white-space: nowrap; }
 /* 연한 빨강 바탕 위 빨강 글자는 대비가 모자라 한 단계 진한 빨강을 쓴다. */
 .fv-badge.tone-up, .judge-pill.tone-up, .hero-verdict.tone-up .tone-up, .ev-card.tone-up .tone-up, .hero-card .hero-verdict.tone-up .hero-eyebrow { color: var(--fv-up-ink); }
+.fv-change.ref-up { color: var(--fv-ref-up); } .fv-change.ref-down { color: var(--fv-ref-down); }

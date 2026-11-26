@@ -25,6 +25,8 @@
   --fv-flat: #55606f;
   --fv-flat-soft: #eff1f4;
   --fv-ref: #4e5968; /* AI 예측(참고) */
+  --fv-ref-up: #b4505a; /* 예측 방향(참고): 실제 빨강보다 옅게 */
+  --fv-ref-down: #4a72a8; /* 예측 방향(참고): 실제 파랑보다 옅게 */
   --fv-chart-actual: #333d4b;
   --fv-chart-grid: #e5e8eb;
   --fv-chart-band: #eceef1;
