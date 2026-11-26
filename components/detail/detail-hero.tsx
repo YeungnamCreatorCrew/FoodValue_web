@@ -1,5 +1,6 @@
 "use client";
 
+import type { ReactNode } from "react";
 import type { IndicatorSignal, LivePrice, PriceIndicators, PricePoint } from "@/lib/prices/model";
 import { priceNear, REFERENCES } from "@/lib/prices/reference";
 import { longDate, shortDate, won } from "@/lib/prices/format";
@@ -77,31 +78,38 @@ function References({ item, indicators, history }: { item: LivePrice; indicators
       return <RefCell key={entry.key} label={week !== null ? "작년 같은 주 평균" : entry.label} price={near ?? week} current={item.currentPrice} />;
     })}
     <RefCell label="평년 (같은 4주)" price={normal?.normalAvg ?? null} current={null}
-      note={normal?.recentAvg != null ? `판단 기준: 최근 4주 평균 ${won(normal.recentAvg)}` : undefined} />
+      note={normal?.recentAvg != null ? `4주 평균 ${won(normal.recentAvg)}과 비교` : undefined} />
   </div>;
 }
 
-/** 상세 맨 위 카드: 왼쪽 품목·현재가(크게), 오른쪽 결론, 아래 기준 가격 4칸. */
-export function DetailHero({ item, indicators, history = [] }: { item: LivePrice; indicators: Indicators; history?: PricePoint[] }) {
+/**
+ * 상세 맨 위 카드(v3): 왼쪽 품목·현재가, 오른쪽 가격 흐름 → 한 줄 결론 띠 → 기준 가격 4칸 + AI 7일 예측 1칸(참고).
+ * 가격과 추세를 한눈에 보이게 그래프를 현재가 옆에 둔다. 가격이 없으면(NO_DATA) 그래프와 예측 칸은 그리지 않는다.
+ */
+export function DetailHero({ item, indicators, history = [], trend, forecast }: { item: LivePrice; indicators: Indicators; history?: PricePoint[]; trend?: ReactNode; forecast?: ReactNode }) {
   const tags = statusTags(item, indicators.data);
   const seasonal = judge(indicators.data?.signals ?? []);
   return <section className="hero-card" aria-labelledby="item-title">
-    <div className="hero">
-    <div className="hero-item">
-      <p className="hero-date">{item.priceDate ? <><time dateTime={item.priceDate}>{longDate(item.priceDate)}</time> 기준</> : "기준일 정보 없음"}{item.source && ` · ${item.source} 소매가`}
-        {tags.map(tag => <span key={tag} className="hero-stale"><span className="sr-only"> · </span>{tag}</span>)}</p>
-      <div className="hero-name">
-        <IngredientImage item={item} size={56} />
-        <h1 id="item-title" className="hero-title">{item.name}<span>{item.unit}</span></h1>
+    <div className={trend ? "hero has-trend" : "hero"}>
+      <div className="hero-item">
+        <p className="hero-date">{item.priceDate ? <><time dateTime={item.priceDate}>{longDate(item.priceDate)}</time> 기준</> : "기준일 정보 없음"}{item.source && ` · ${item.source} 소매가`}
+          {tags.map(tag => <span key={tag} className="hero-stale"><span className="sr-only"> · </span>{tag}</span>)}</p>
+        <div className="hero-name">
+          <IngredientImage item={item} size={56} />
+          <h1 id="item-title" className="hero-title">{item.name}<span>{item.unit}</span></h1>
+        </div>
+        <p className="hero-price"><strong className="fv-num">{item.currentPrice === null ? "정보 없음" : won(item.currentPrice)}</strong>
+          {item.currentPrice !== null && <span className="hero-change"><span className="fv-cap">지난주보다</span><WeeklyChange value={item.weeklyChangeRate} label="" /></span>}</p>
       </div>
-      <p className="hero-price"><strong className="fv-num">{item.currentPrice === null ? "정보 없음" : won(item.currentPrice)}</strong>
-        {item.currentPrice !== null && <span className="hero-change"><span className="fv-cap">지난주보다</span><WeeklyChange value={item.weeklyChangeRate} label="" /></span>}</p>
+      {trend && <div className="hero-trend">{trend}</div>}
     </div>
     <div className={`hero-verdict ${toneClass(seasonal?.state)}`}>
       <p className="hero-eyebrow">한 줄 결론</p>
       <Conclusion item={item} indicators={indicators} />
     </div>
+    <div className="ref-row">
+      <References item={item} indicators={indicators.data} history={history} />
+      {forecast}
     </div>
-    <References item={item} indicators={indicators.data} history={history} />
   </section>;
 }

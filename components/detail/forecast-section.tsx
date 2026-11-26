@@ -7,7 +7,7 @@ import type { ValidationDto } from "@/lib/prices/dto";
 import { formatNumber, shortDate, won } from "@/lib/prices/format";
 import { usePriceFactors } from "@/lib/prices/use-prices";
 import { ForecastChange } from "@/components/fv/change";
-import { LoadingRegion, Notice, Skeleton } from "@/components/fv/state";
+import { LoadingRegion, Skeleton } from "@/components/fv/state";
 import { toHaeyo } from "@/components/fv/haeyo";
 import { Modal } from "@/components/common/modal";
 
@@ -63,31 +63,34 @@ function passed(date: string | null | undefined) {
 }
 
 /**
- * 상세 본문에는 한 줄 요약만 둔다. 자세한 숫자와 예측 요인은 팝업으로 연다(상세가 길어지지 않게).
- * 직전 가격을 쓰는 품목(BASELINE)은 'AI 예측'이 아니므로 제목·문장을 따로 쓰고 팝업을 열지 않는다.
+ * 기준 가격 줄의 다섯 번째 칸. 지난 가격 4칸과 같은 줄에 두되, 점선 테두리와 "참고" 표시로 다른 종류(앞으로의 추측)라는 걸 드러낸다.
+ * 자세한 숫자·검증 실적·예측 요인은 "자세히"를 눌러 팝업으로 연다.
+ * 직전 가격을 쓰는 품목(BASELINE)은 'AI 예측'이 아니므로 이름을 따로 쓰고 팝업을 열지 않는다.
  */
-export function ForecastSection({ item }: { item: LivePrice }) {
+export function ForecastCell({ item }: { item: LivePrice }) {
   const [open, setOpen] = useState(false);
   const button = useRef<HTMLButtonElement>(null);
   const close = useCallback(() => setOpen(false), []);
   const baseline = item.status === "BASELINE" || item.quality === "BASELINE";
 
-  if (item.forecastPrice === null) return <section className="forecast-line" aria-labelledby="forecast-title">
+  if (item.forecastPrice === null) return <section className="forecast-cell" aria-labelledby="forecast-title">
     <h2 id="forecast-title" className="forecast-title">7일 뒤 가격<span className="fv-badge tone-ref">참고</span></h2>
+    <p className="forecast-value">정보 없음</p>
     <p className="forecast-text">{noForecastReason(item)}</p>
   </section>;
 
-  if (baseline) return <section className="forecast-line" aria-labelledby="forecast-title">
+  if (baseline) return <section className="forecast-cell" aria-labelledby="forecast-title">
     <h2 id="forecast-title" className="forecast-title">7일 뒤 값<span className="fv-badge tone-ref">직전 가격 · 참고</span></h2>
-    <p className="forecast-text"><strong className="fv-num">{won(item.forecastPrice)}</strong></p>
-    {/* 서버 문장은 끝맺음만 해요체로 바꿔 그대로 보여준다. 없을 때만 우리 문장을 쓴다. */}
-    <Notice>{item.aiSummary ? toHaeyo(item.aiSummary.headline) : "과거 검증에서 AI 모델이 직전 가격보다 덜 정확해서 직전 가격을 그대로 둬요."}</Notice>
+    <p className="forecast-value fv-num">{won(item.forecastPrice)}</p>
+    {/* 칸이 좁아 서버의 긴 문장 대신 짧게 말한다(이유는 판단 방식 화면에 있다). */}
+    <p className="forecast-text">AI 예측 대신 직전 가격이에요.</p>
   </section>;
 
-  return <section className="forecast-line" aria-labelledby="forecast-title">
+  return <section className="forecast-cell" aria-labelledby="forecast-title">
     <h2 id="forecast-title" className="forecast-title">AI 7일 예측<span className="fv-badge tone-ref">참고</span></h2>
-    <p className="forecast-text">{shortDate(item.forecastDate)} 예상 <strong className="fv-num tone-ref">{won(item.forecastPrice)}</strong> <ForecastChange value={item.forecastPercent} />{passed(item.forecastDate) && <span className="forecast-past"> · 이미 지난 날짜예요</span>}</p>
-    <button ref={button} type="button" className="fv-btn is-quiet forecast-open" aria-haspopup="dialog" onClick={() => setOpen(true)}>예측 자세히 보기</button>
+    <p className="forecast-value"><strong className="fv-num tone-ref">{won(item.forecastPrice)}</strong> <ForecastChange value={item.forecastPercent} /></p>
+    <p className="forecast-text"><span>{shortDate(item.forecastDate)} 예상{passed(item.forecastDate) && <span className="forecast-past"> · 지난 날짜</span>}</span>
+      <button ref={button} type="button" className="fv-link forecast-open" aria-haspopup="dialog" onClick={() => setOpen(true)}>자세히<span aria-hidden="true"> ›</span><span className="sr-only"> (AI 7일 예측)</span></button></p>
     {open && <Modal titleId="forecast-modal-title" title={`${item.name} AI 7일 예측`} badge={<span className="fv-badge tone-ref">참고</span>} onClose={close} returnTo={button}>
       <ForecastDetail item={item} />
     </Modal>}

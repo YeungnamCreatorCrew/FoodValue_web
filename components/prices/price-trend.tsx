@@ -11,7 +11,9 @@ import { ChartHover } from "./chart-hover";
 
 const PERIODS: { days: PriceHistoryPeriod; label: string }[] = [{ days: 30, label: "1개월" }, { days: 90, label: "3개월" }, { days: 180, label: "6개월" }, { days: 365, label: "1년" }];
 const PERIOD_WORD: Record<number, string> = { 30: "1개월", 90: "3개월", 180: "6개월", 365: "1년" };
-const H = 256, TOP = 36, BOTTOM = 204;
+const FULL_H = 256, FULL_TOP = 36, FULL_BOTTOM = 204;
+/** 상세 위 카드 안(bare)에서는 첫 화면에 결론·근거까지 들어오도록 그래프를 낮게 그린다. */
+const BARE_H = 172, BARE_TOP = 22, BARE_BOTTOM = 146;
 
 function useWidth() {
   const ref = useRef<HTMLDivElement>(null);
@@ -41,7 +43,8 @@ function describe(item: LivePrice, days: number, first: number | null, last: num
 
 /** 상세 가격 흐름 그래프: 실제 가격 = 실선, AI 7일 예측 = 점선 + 범위 띠 + '참고'. 기간을 바꿔도 높이가 그대로다. */
 /** yearHistory: 서버가 미리 받은 365일 이력. 있으면 기간을 바꿔도 다시 부르지 않고 잘라서 쓴다. */
-export function PriceTrend({ item, baseline, yearHistory = null }: { item: LivePrice; baseline: boolean; yearHistory?: { priceHistory: PricePoint[]; historyEndDate: string } | null }) {
+/** bare: 상세 위 카드 안에 넣을 때 카드 테두리 없이 그린다. */
+export function PriceTrend({ item, baseline, yearHistory = null, bare = false }: { item: LivePrice; baseline: boolean; yearHistory?: { priceHistory: PricePoint[]; historyEndDate: string } | null; bare?: boolean }) {
   // 기간은 주소(?period=)에 남겨 뒤로 가기로 돌아와도 그대로다. history.replaceState라 서버를 다시 부르지 않는다.
   const params = useSearchParams();
   const fromUrl = Number(params.get("period"));
@@ -58,6 +61,8 @@ export function PriceTrend({ item, baseline, yearHistory = null }: { item: LiveP
   const [kept, setKept] = useState(data);
   if (data && data !== kept) setKept(data);
   const history = data ?? kept;
+  const LABEL = bare ? 4 : 20;
+  const H = bare ? BARE_H : FULL_H, TOP = bare ? BARE_TOP : FULL_TOP, BOTTOM = bare ? BARE_BOTTOM : FULL_BOTTOM;
   const [ref, width] = useWidth();
   const right = width - 16;
   // 세로축 숫자 폭에 맞춰 왼쪽 여백을 잡는다(큰 값도 카드 밖으로 나가지 않게).
@@ -74,7 +79,7 @@ export function PriceTrend({ item, baseline, yearHistory = null }: { item: LiveP
   const forecastStart = fp.length ? chart.currentX : null;
   const actualDates = chart.points.filter(point => point.kind === "actual").map(point => Date.parse(`${point.date}T00:00:00Z`));
   const hasGap = actualDates.some((time, index) => index > 0 && time - actualDates[index - 1] > 4 * 86_400_000);
-  return <section className="fv-card trend" aria-labelledby="trend-title">
+  return <section className={bare ? "trend is-bare" : "fv-card trend"} aria-labelledby="trend-title">
     <div className="trend-head">
       <h2 id="trend-title" className="fv-h2">가격 흐름</h2>
       {item.status !== "NO_DATA" && <div className="fv-chips" role="group" aria-label="그래프 기간">
@@ -102,13 +107,13 @@ export function PriceTrend({ item, baseline, yearHistory = null }: { item: LiveP
           <path d={gapPath(chart.points.filter(point => point.kind === "actual"))} fill="none" stroke="var(--fv-chart-actual)" strokeWidth="2.5" strokeLinejoin="round" />
           <path d={chart.forecastPath} fill="none" stroke="var(--fv-ref)" strokeWidth="2.5" strokeDasharray="6 5" />
           {item.currentPrice !== null && chart.currentX >= LEFT && <circle cx={chart.currentX} cy={chart.y(chart.actual.at(-1)?.price ?? item.currentPrice)} r="5" fill="var(--fv-chart-actual)" stroke="var(--fv-bg)" strokeWidth="2" />}
-          {chart.points[0] && <text x={chart.points[0].x} y={H - 20} fontSize="12" fill="var(--fv-text-3)">{shortDate(chart.points[0].date)}</text>}
-          {chart.currentX >= LEFT && chart.currentX - chart.points[0]?.x > 64 && <text x={chart.currentX} y={H - 20} textAnchor={fp.length ? "end" : "middle"} fontSize="12" fontWeight="700" fill="var(--fv-text)">{shortDate(chart.actual.at(-1)?.date ?? null)}</text>}
-          {fp.length > 0 && right - chart.currentX > 48 && <text x={right} y={H - 20} textAnchor="end" fontSize="12" fill="var(--fv-ref)">{shortDate(fp.at(-1)!.date)}</text>}
+          {chart.points[0] && <text x={chart.points[0].x} y={H - LABEL} fontSize="12" fill="var(--fv-text-3)">{shortDate(chart.points[0].date)}</text>}
+          {chart.currentX >= LEFT && chart.currentX - chart.points[0]?.x > 64 && <text x={chart.currentX} y={H - LABEL} textAnchor={fp.length ? "end" : "middle"} fontSize="12" fontWeight="700" fill="var(--fv-text)">{shortDate(chart.actual.at(-1)?.date ?? null)}</text>}
+          {fp.length > 0 && right - chart.currentX > 48 && <text x={right} y={H - LABEL} textAnchor="end" fontSize="12" fill="var(--fv-ref)">{shortDate(fp.at(-1)!.date)}</text>}
           <ChartHover points={chart.points.map(point => ({ date: point.date, value: point.price, x: point.x, y: point.y, kind: point.kind,
             previous: point.previous && { date: point.previous.date, value: point.previous.price } }))} left={LEFT} right={right} top={TOP + 16} bottom={BOTTOM} color="var(--fv-chart-actual)" unit={`원(${item.unit})`} />
         </svg>}
     </div>
-    {(chart.actual.length > 0 || fp.length > 0) && <p className="fv-cap trend-note">{summary} <span className="nowrap">주말·공휴일은</span> 건너뛰어요.{hasGap && " 4일 넘게 조사가 없던 구간은 선을 끊었어요."}</p>}
+    {!bare && (chart.actual.length > 0 || fp.length > 0) && <p className="fv-cap trend-note">{summary} <span className="nowrap">주말·공휴일은</span> 건너뛰어요.{hasGap && " 4일 넘게 조사가 없던 구간은 선을 끊었어요."}</p>}
   </section>;
 }

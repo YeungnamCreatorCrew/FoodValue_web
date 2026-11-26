@@ -42,9 +42,6 @@
 @media (max-width: 899px) { .hero-card { padding: var(--sp-5); } .ref-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: var(--sp-4); } .ref-cell:nth-child(3) { padding-left: 0; border-left: 0; } }
 
 /* 아래 2단: 왼쪽 판단 근거, 오른쪽 가격 흐름 + AI 7일 예측 */
-.detail-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--sp-6); align-items: start; }
-.detail-side { display: flex; flex-direction: column; gap: var(--sp-6); min-width: 0; }
-@media (max-width: 1023px) { .detail-grid { grid-template-columns: minmax(0, 1fr); } }
 
 /* 판단 근거 카드: 질문 + 큰 답, 누르면 숫자·그림·설명 */
 .evidence { scroll-margin-top: calc(var(--header-h) + var(--sp-4)); min-width: 0; }
@@ -59,7 +56,6 @@
 .ev-mark { font-weight: 700; }
 .ev-chevron { grid-area: chev; color: var(--fv-text-3); transition: transform .2s; }
 .ev-card.is-open .ev-chevron { transform: rotate(180deg); }
-.ev-body { display: flex; flex-direction: column; gap: var(--sp-4); padding: 0 var(--sp-5) var(--sp-5); }
 .ev-key { display: flex; flex-direction: column; gap: var(--sp-2); padding: var(--sp-4); border-radius: var(--r-sm); background: var(--fv-subtle); font-variant-numeric: tabular-nums; }
 .ev-key-now { display: flex; align-items: baseline; flex-wrap: wrap; gap: var(--sp-2); }
 .ev-key-now strong { font-size: var(--fs-sub); font-weight: 800; }
@@ -94,14 +90,9 @@
 .detail-page .trend { padding: var(--sp-5); box-shadow: none; border: 1px solid var(--fv-line); }
 
 /* AI 7일 예측(참고): 본문에는 한 줄, 자세한 내용은 팝업 */
-.forecast-line { display: flex; align-items: center; flex-wrap: wrap; gap: var(--sp-3) var(--sp-6); padding: var(--sp-5) var(--sp-6); border: 1.5px dashed var(--fv-line-strong); border-radius: var(--r-lg); }
-.forecast-line > .fv-notice { flex-basis: 100%; }
 .forecast-title { display: inline-flex; align-items: center; gap: var(--sp-2); font-size: var(--fs-sub); font-weight: 750; }
 .forecast-text { display: inline-flex; align-items: baseline; gap: var(--sp-2); color: var(--fv-text-2); }
 .forecast-text strong { font-size: var(--fs-sub); font-weight: 800; }
-.forecast-open { margin-left: auto; }
-.detail-side .forecast-line { padding: var(--sp-5); }
-@media (max-width: 767px) { .forecast-line { padding: var(--sp-4); } .forecast-open { margin-left: 0; width: 100%; } }
 .forecast-figures { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--sp-3); }
 .forecast-figures > div { padding: var(--sp-4) var(--sp-5); border-radius: var(--r-sm); background: var(--fv-subtle); }
 .forecast-figures dt { font-size: var(--fs-cap); color: var(--fv-text-2); }
@@ -198,19 +189,61 @@
 .modal-close { margin-left: auto; }
 .modal-body { display: flex; flex-direction: column; gap: var(--sp-5); }
 @media (max-width: 767px) { .modal-layer { padding: 0; align-items: end; } .modal-panel { max-height: 92vh; padding: var(--sp-4); border-radius: var(--r-lg) var(--r-lg) 0 0; } .modal-head { margin: calc(var(--sp-4) * -1) calc(var(--sp-4) * -1) var(--sp-4); padding: var(--sp-4); top: calc(var(--sp-4) * -1); } }
-/* 오른쪽 칸에서는 제목·한 줄을 왼쪽에, 버튼을 오른쪽에 둬 버튼만 혼자 줄바꿈되지 않게 한다. */
-@media (min-width: 768px) {
-  .detail-side .forecast-line { display: grid; grid-template-columns: 1fr auto; column-gap: var(--sp-4); row-gap: var(--sp-2); align-items: center; }
-  .detail-side .forecast-line > .forecast-title { grid-column: 1; }
-  .detail-side .forecast-line > .forecast-text { grid-column: 1; margin: 0; }
-  .detail-side .forecast-line > .forecast-open { grid-column: 2; grid-row: 1 / span 2; margin: 0; }
-  .detail-side .forecast-line > .fv-notice { grid-column: 1 / -1; }
-}
-/* 근거 카드를 펼쳐 왼쪽이 길어져도 그래프·예측이 화면에 남게 오른쪽 칸을 붙여 둔다(오른쪽이 화면보다 짧을 때만 의미 있음). */
-@media (min-width: 1024px) { .detail-side { position: sticky; top: calc(var(--header-h) + var(--sp-4)); align-self: start; } }
 .hero-price strong, .ref-price { white-space: nowrap; }
 /* 팝업은 body에 그려져 .fv-shell의 줄바꿈 설정을 못 받는다. 한글 단어가 중간에 끊기지 않게 다시 준다. */
 .modal-layer, .help-layer { word-break: keep-all; overflow-wrap: break-word; font-size: var(--fs-body); line-height: var(--lh-body); color: var(--fv-text); }
 .forecast-past { font-size: var(--fs-cap); color: var(--fv-text-2); white-space: nowrap; }
 .forecast-validation { margin-top: var(--sp-3); font-size: var(--fs-cap); color: var(--fv-text-2); }
 .forecast-validation b { color: var(--fv-text); }
+
+/* ---------- 상세 v3 ---------- */
+.hero-card { gap: var(--sp-4); padding: var(--sp-5) var(--sp-6); }
+.detail-page { gap: var(--sp-5); padding-top: var(--sp-5); }
+.evidence .section-head { margin-bottom: var(--sp-3); align-items: center; }
+.hero.has-trend .hero-item { justify-content: flex-start; gap: var(--sp-2); }
+.trend.is-bare .trend-head { gap: var(--sp-2); }
+/* 위 카드: 왼쪽 품목·현재가, 오른쪽 가격 흐름(테두리 없이 카드 안에). */
+.hero.has-trend { grid-template-columns: minmax(0, 4fr) minmax(0, 7fr); gap: var(--sp-8); }
+.hero-trend { min-width: 0; padding-left: var(--sp-8); border-left: 1px solid var(--fv-line); }
+.detail-page .trend.is-bare { padding: 0; border: 0; gap: var(--sp-2); }
+.trend.is-bare .trend-plot { min-height: 172px; }
+.trend.is-bare .trend-note { font-size: var(--fs-cap); }
+/* 한 줄 결론: 카드 폭 전체를 쓰는 띠. */
+.hero-card .hero-verdict { flex-direction: row; align-items: center; gap: var(--sp-4); padding: var(--sp-3) var(--sp-5); }
+.hero-card .hero-eyebrow { flex: none; padding: var(--sp-1) var(--sp-3); border-radius: 999px; background: var(--fv-bg); }
+.hero-card .hero-headline { font-size: var(--fs-sub); }
+/* 기준 가격 4칸 + AI 7일 예측 1칸. 예측 칸만 점선으로 다른 종류임을 보인다. */
+.ref-row { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 1.25fr); gap: var(--sp-4); align-items: stretch; padding-top: var(--sp-4); border-top: 1px solid var(--fv-line); }
+.ref-row .ref-strip { padding-top: 0; border-top: 0; }
+.forecast-cell { display: flex; flex-direction: column; gap: 0; padding: var(--sp-2) var(--sp-4); border: 1.5px dashed var(--fv-line-strong); border-radius: var(--r-lg); background: var(--fv-subtle); }
+.forecast-cell .forecast-title { font-size: var(--fs-cap); font-weight: 600; color: var(--fv-text-2); }
+.forecast-value { display: flex; align-items: baseline; flex-wrap: wrap; gap: var(--sp-2); font-size: var(--fs-sub); font-weight: 800; }
+.forecast-value strong { font-size: var(--fs-sub); font-weight: 800; }
+.forecast-cell .forecast-text { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0 var(--sp-2); font-size: var(--fs-cap); }
+.forecast-cell .forecast-open { margin-left: auto; min-height: 32px; }
+/* 판단 근거: 카드 가로 한 줄, 펼친 내용은 그 아래 전체 폭. */
+.section-sub { margin-left: var(--sp-3); font-size: var(--fs-cap); font-weight: 500; color: var(--fv-text-2); }
+.ev-stack { display: flex; flex-direction: column; gap: var(--sp-3); }
+.evidence .ev-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--sp-3); align-items: start; }
+.evidence .ev-card.is-open { border: 2px solid var(--fv-brand); }
+.ev-body { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: var(--sp-8); padding: var(--sp-6); border: 1px solid var(--fv-line); border-radius: var(--r-lg); background: var(--fv-bg); }
+.ev-body-main, .ev-body-side { display: flex; flex-direction: column; gap: var(--sp-4); min-width: 0; }
+.ev-body-q { font-size: var(--fs-cap); color: var(--fv-text-2); }
+@media (max-width: 1023px) {
+  .hero.has-trend { grid-template-columns: minmax(0, 1fr); gap: var(--sp-5); }
+  .hero-trend { padding-left: 0; border-left: 0; padding-top: var(--sp-5); border-top: 1px solid var(--fv-line); }
+  .ref-row { grid-template-columns: minmax(0, 1fr); }
+  .ev-body { grid-template-columns: minmax(0, 1fr); gap: var(--sp-5); }
+}
+@media (max-width: 767px) {
+  .evidence .ev-cards { grid-template-columns: minmax(0, 1fr); }
+  .hero-card .hero-verdict { flex-direction: column; align-items: flex-start; gap: var(--sp-2); padding: var(--sp-4); }
+  .section-sub { display: block; margin: var(--sp-1) 0 0; }
+  .ev-body { padding: var(--sp-4); }
+  .forecast-cell .forecast-open { min-height: 44px; }
+}
+.ev-body.is-single { grid-template-columns: minmax(0, 1fr); }
+.ev-body.is-single .ev-body-main { width: 100%; max-width: 760px; margin: 0 auto; }
+.ev-year { display: flex; flex-direction: column; gap: var(--sp-2); margin: 0; }
+.ev-year svg { display: block; height: auto; }
+.ev-year-note { font-size: var(--fs-cap); color: var(--fv-text-2); }
