@@ -28,9 +28,10 @@
   --fv-ref-up: #b4505a; /* 예측 방향(참고): 실제 빨강보다 옅게 */
   --fv-ref-down: #4a72a8; /* 예측 방향(참고): 실제 파랑보다 옅게 */
   /* 1년 중 위치 막대: 판단이 아니라서 옅게. 왼쪽(싼 날 쪽) 연한 파랑 → 회색 → 오른쪽(비싼 날 쪽) 연한 빨강 */
-  --fv-range-low: #a7c6f0;
-  --fv-range-mid: #d9dde2;
-  --fv-range-high: #f0b0b6;
+  --fv-range-low: #c9dcf5;
+  --fv-range-mid: #e1e4e8;
+  --fv-range-high: #f4ccd0;
+  --fv-spark-line: #8b95a1; /* 홈 8주 흐름선(끝점만 방향 색) */
   --fv-chart-actual: #333d4b;
   --fv-chart-grid: #e5e8eb;
   --fv-chart-band: #eceef1;

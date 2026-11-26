@@ -28,7 +28,7 @@ type State = { id: string; points?: { date: string; price: number }[]; failed?: 
 
 /**
  * 홈 표의 '최근 8주' 작은 흐름선. 목록 응답에 이력이 없어 보이는 품목마다 90일 이력을 받아 최근 56일만 그린다.
- * 선 색은 8주 동안의 변화 방향: 1% 넘게 오르면 빨강, 내리면 파랑, 그 사이는 회색(지난주 대비 열과 같은 색 규칙).
+ * 선은 회색, 끝점만 8주 동안의 변화 방향 색(1% 넘게 오르면 빨강, 내리면 파랑, 그 사이 회색). 표 한 줄에 진한 색이 몰리지 않게 한다.
  * 받기 전에도 같은 크기 칸을 잡아 화면이 튀지 않는다.
  * 가벼운 api 함수만 써서 홈 JS에 가격 변환 코드 전체가 딸려 오지 않게 한다.
  */
@@ -59,7 +59,7 @@ export function Sparkline({ id, name }: { id: string; name: string }) {
   const tone = change > FLAT ? "is-up" : change < -FLAT ? "is-down" : "is-flat";
   const word = tone === "is-up" ? "올랐어요" : tone === "is-down" ? "내렸어요" : "비슷해요";
   return <svg className={`spark ${tone}`} viewBox={`0 0 ${W} ${H}`} width={W} height={H} role="img" aria-label={`${name} 최근 8주 ${won(first)}에서 ${won(last)}으로 ${word}`}>
-    <path d={path} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" vectorEffect="non-scaling-stroke" />
-    <circle cx={x(points.length - 1)} cy={y(last)} r="3" fill="currentColor" />
+    <path d={path} fill="none" stroke="var(--fv-spark-line)" strokeWidth="1.8" strokeLinejoin="round" vectorEffect="non-scaling-stroke" />
+    <circle cx={x(points.length - 1)} cy={y(last)} r="3.5" fill="currentColor" />
   </svg>;
 }
