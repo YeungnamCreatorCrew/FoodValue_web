@@ -1,0 +1,57 @@
+/*
+ * FoodValue 디자인 토큰. 홈·시세·상세 화면은 이 변수만 쓴다(색 값을 화면 코드에 직접 쓰지 않는다).
+ * 색은 의미가 하나씩: 초록 = 브랜드·버튼, 빨강 = 가격 상승, 파랑 = 가격 하락, 회색 = 보합·참고(AI 예측).
+ */
+:root {
+  /* 색 — 중립 */
+  --fv-bg: #ffffff;
+  --fv-subtle: #f6f7f9;
+  --fv-line: #e5e8eb;
+  --fv-line-strong: #d1d6db;
+  --fv-text: #191f28;
+  --fv-text-2: #4e5968;
+  --fv-text-3: #4e5968; /* 흰 배경 대비 7:1 — 보조 글자의 가장 연한 값(프로젝터에서도 또렷하게) */
+  /* 색 — 의미 */
+  --fv-brand: #14532d;
+  --fv-brand-hover: #166534;
+  --fv-brand-soft: #edf7f0;
+  --fv-on-brand: #ffffff;
+  --fv-up: #c0343f;
+  --fv-up-soft: #fdeff0;
+  --fv-down: #1f5fae;
+  --fv-down-soft: #ecf3fc;
+  --fv-flat: #55606f;
+  --fv-flat-soft: #eff1f4;
+  --fv-ref: #4e5968; /* AI 예측(참고) */
+  --fv-chart-actual: #333d4b;
+  --fv-chart-grid: #e5e8eb;
+  --fv-chart-band: #eceef1;
+  --fv-chart-past: #c9ced5;
+  --fv-tooltip-bg: #191f28;
+  --fv-tooltip-text: #ffffff;
+  --fv-tooltip-sub: #d1d6db;
+  --fv-focus: #14532d;
+
+  /* 간격 — 4의 배수 */
+  --sp-1: 4px; --sp-2: 8px; --sp-3: 12px; --sp-4: 16px; --sp-5: 20px; --sp-6: 24px; --sp-8: 32px; --sp-10: 40px; --sp-12: 48px; --sp-16: 64px;
+  /* 모서리 · 그림자 (카드 2종, 떠 있는 상자 1종) */
+  --r-sm: 8px; --r-lg: 16px; --r-pill: 999px;
+  --sh-card: 0 1px 2px #191f2810;
+  --sh-float: 0 12px 32px #191f2824;
+
+  /* 글자 크기 5단계: 가격 숫자 · 제목 · 소제목 · 본문 · 보조 */
+  --fs-hero: 34px; --fs-num: 30px; --fs-title: 26px; --fs-sub: 18px; --fs-body: 16px; --fs-cap: 14px;
+  --lh-tight: 1.3; --lh-body: 1.6;
+
+  --fs-chart: 13px;
+  --content-max: 1200px;
+  --header-h: 64px;
+  --tabbar-h: calc(60px + env(safe-area-inset-bottom, 0px));
+}
+@media (min-width: 1024px) {
+  /* PC(주 화면): 본문 17 · 보조 15 · 가장 작은 글자 13 */
+  :root { --fs-hero: 48px; --fs-num: 34px; --fs-title: 30px; --fs-sub: 20px; --fs-body: 17px; --fs-cap: 15px; --fs-chart: 14px; }
+}
+@media (max-width: 767px) {
+  :root { --fs-num: 26px; --fs-title: 22px; --fs-sub: 17px; --fs-body: 15px; --header-h: 56px; }
+}

@@ -10,7 +10,7 @@ const SPLASH_GATE = `try{if(sessionStorage.getItem("fv-splash-seen"))document.do
 
 export const metadata: Metadata = {
   title: "FoodValue",
-  description: "AI 식자재 시세 예측 및 구매 시점 지원 서비스",
+  description: "농산물 소매가를 지난 가격 지표로 판단하고, AI 7일 예측은 참고로 보여주는 시세 서비스",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

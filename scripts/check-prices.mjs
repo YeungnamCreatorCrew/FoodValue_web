@@ -20,10 +20,8 @@ const { mapSummary, mapDetail, withForecast, mapIndicators } = require("../lib/p
 const { getPriceChart, resolveFavoriteId, resolvePriceRoute } = require("../lib/prices/service.ts");
 const { forecastChart } = require("../lib/prices/forecast-chart.ts");
 const { favoriteIdentity } = require("../lib/prices/identity.ts");
-const { priceChartStyle } = require("../lib/prices/chart-style.ts");
 const { won } = require("../lib/prices/format.ts");
 const { mapDataFactors } = require("../lib/prices/factors.ts");
-const { priceNotices, missingForecastReason } = require("../lib/prices/status.ts");
 const { mapShapAnalysis, mapAiSummary, unavailableText } = require("../lib/prices/shap.ts");
 const { getPriceFactors, getFactorTrend } = require("../lib/prices/service.ts");
 
@@ -63,23 +61,21 @@ try {
     params = calls.at(-1).url.searchParams;
     assert.equal(params.get("category"), "ETC"); assert.equal(params.get("sort"), "forecast"); assert.equal(params.get("size"), "50");
   });
-  await test("nullable summary prices stay absent, with neutral chart color", () => {
+  await test("nullable summary prices stay absent", () => {
     const item = mapSummary({ ...summary, currentPrice: null, forecastPrice: null, priceDate: null, forecastBaseDate: null, forecastTargetDate: null });
     assert.equal(item.currentPrice, null); assert.equal(item.forecastPrice, null);
     assert.equal(item.forecastDelta, null); assert.equal(item.forecastPercent, null); assert.equal(item.forecastDirection, null);
     assert.equal(item.baseDate, null); assert.equal(won(item.currentPrice), "-");
-    assert.deepEqual(priceChartStyle(item), { "--price-chart-color": "var(--color-price-flat)" });
   });
   await test("nested detail uses seven daily points and the server guide; factors stay observations, fridge excluded", () => {
     const item = mapDetail(detail);
     assert.equal(item.id, "901"); assert.equal(item.forecastPoints.length, 7);
     assert.equal(item.forecastPoints[1].price, 2910); assert.equal(item.forecastPoints[0].lower, null);
-    assert.equal(item.guide.title, "지금 구매 추천"); // Downward prices must not replace the server's guide.
+    assert.equal(item.guide.recommendation, "BUY_NOW"); assert.equal("title" in item.guide, false); // 서버 원값만 남기고 판정 문구는 만들지 않는다.
     assert.equal("factors" in item, false); assert.equal("fridge" in item, false);
     assert.equal(item.forecastStatus, "READY"); assert.equal(item.dataFactors.length, 1);
     assert.deepEqual(item.dataFactors[0].facts, [{ label: "최근 가격", value: "3,000원" }]);
     assert.equal(item.forecastDirection, "down");
-    assert.deepEqual(priceChartStyle(item), { "--price-chart-color": "var(--color-price-down)" });
   });
   await test("empty forecast removes summary predictions instead of falling back", () => {
     const item = mapDetail({ ...detail, forecast: { ...forecast, points: [] }, guide: null });
@@ -105,19 +101,12 @@ try {
     for (const factor of factors) assert.equal("shapValue" in factor || "direction" in factor, false);
     assert.deepEqual(mapDataFactors(undefined), []); assert.deepEqual(mapDataFactors({}), []);
   });
-  await test("status notices explain missing, stale, insufficient and baseline data", () => {
-    assert.deepEqual(priceNotices({ status: "READY", quality: "VALIDATED", forecastStatus: "READY" }), []);
-    assert.deepEqual(priceNotices({ status: "NO_DATA", quality: null, forecastStatus: "NO_FORECAST" }).length, 1);
-    assert.equal(priceNotices({ status: "NO_FORECAST", quality: null, forecastStatus: null })[0], "아직 이 품목의 AI 예측이 없습니다.");
-    const insufficient = priceNotices({ status: "NO_FORECAST", quality: null, forecastStatus: "INSUFFICIENT_DATA" });
-    assert.deepEqual(insufficient, ["가격 데이터가 부족해 AI 예측을 만들지 못했습니다."]);
-    assert.equal(priceNotices({ status: "STALE", quality: "BASELINE", forecastStatus: "STALE" }).length, 2);
-    assert.equal(priceNotices({ status: "BASELINE", quality: "BASELINE" }).length, 1);
-    assert.equal(missingForecastReason({ status: "NO_FORECAST", quality: null, forecastStatus: "INSUFFICIENT_DATA" }), insufficient[0]);
-    assert.match(missingForecastReason({ status: "NO_DATA", quality: null }), /관측된 가격이 없어/);
+  // 상태 안내 문구는 화면 컴포넌트(detail-hero, forecast-section)로 옮겨 화면 검사에서 확인한다.
+  await test("detail without forecast maps empty factors and MERGED source reads as KAMIS", () => {
     const item = mapDetail({ ...detail, item: { ...summary, status: "NO_FORECAST", currentPrice: 3000, forecastPrice: null },
       forecast: { ...forecast, status: "INSUFFICIENT_DATA", points: [] }, guide: null });
-    assert.deepEqual(item.dataFactors, []); assert.deepEqual(priceNotices(item), insufficient);
+    assert.deepEqual(item.dataFactors, []); assert.equal(item.forecastStatus, "INSUFFICIENT_DATA");
+    assert.equal(mapDetail({ ...detail, item: { ...summary, source: "MERGED" } }).source, "KAMIS");
   });
   await test("history preserves nulls and passes each supported days value with the actual item ID", async () => {
     globalThis.fetch = async (url, options) => {
@@ -194,7 +183,7 @@ try {
   await test("factors: baseline runs are not explained and keep a reason", () => {
     const analysis = mapShapAnalysis({ itemId: 60, market: "RETAIL", baseDate: "2026-11-05", status: "STALE", explained: false, unavailableReason: "BASELINE_MODEL",
       modelName: "LAST_PRICE", evaluationStart: "2026-09-07", evaluationEnd: "2026-10-29", method: null, horizonDays: null, targetDate: null, currentPrice: null, basePrice: null, predictedPrice: null, summary: null, categories: [], factors: [] });
-    assert.equal(analysis.explained, false); assert.match(unavailableText(analysis.unavailableReason), /기준 모델/);
+    assert.equal(analysis.explained, false); assert.match(unavailableText(analysis.unavailableReason), /직전 가격/);
     assert.equal(analysis.evaluationStart, "2026-09-07"); assert.equal(analysis.evaluationEnd, "2026-10-29");
     assert.equal(mapAiSummary(null), null);
   });

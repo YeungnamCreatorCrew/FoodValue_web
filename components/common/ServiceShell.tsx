@@ -1,18 +1,37 @@
 ﻿"use client";
 
 import type { ReactNode } from "react";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { FloatingMenu } from "./FloatingMenu";
+import { FvIcon, LogoMark } from "@/components/fv/icons";
+import { isTabActive, TABS } from "./tabs";
+import { HelpDrawer } from "./help-drawer";
 
+const TAB_ICON = { home: "home", about: "info" } as const;
+
+/** 홈·상세·판단 방식의 틀: 위 헤더(메뉴 + 지표 읽는 법) + 모바일 하단 탭 2개. 범위 밖 화면(로그인 등)은 예전 틀을 그대로 쓴다. */
 export function ServiceShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
-  if (pathname === "/auth" || pathname.startsWith("/auth/")) {
-    return <div className="flex min-h-dvh flex-col">{children}</div>;
+  const priceArea = pathname === "/" || pathname === "/about" || pathname === "/prices" || pathname.startsWith("/prices/");
+  if (!priceArea) {
+    return <div className="service-shell flex min-h-dvh flex-col"><div className="mx-auto flex w-full max-w-[430px] flex-1 flex-col bg-slate-50 md:max-w-[720px] lg:max-w-[960px]">{children}</div></div>;
   }
-  return <div className="service-shell price-service-shell">
-    <FloatingMenu key={pathname} />
-    <div className={`mx-auto flex min-h-[calc(100dvh-72px)] w-full flex-col ${pathname === "/" || pathname === "/prices" || pathname.startsWith("/prices/") ? "max-w-[1560px]" : "max-w-[430px] bg-slate-50 md:max-w-[720px] lg:max-w-[960px]"}`}>
-      <div className="flex min-w-0 flex-1 flex-col">{children}</div>
-    </div>
+  return <div className="fv-shell">
+    <a href="#main-content" className="fv-skip">본문 바로가기</a>
+    <header className="fv-header">
+      <div className="fv-header-inner">
+        <Link href="/" className="fv-logo" aria-label="FoodValue 홈"><LogoMark />FoodValue</Link>
+        <nav aria-label="주 메뉴" className="fv-nav">
+          {TABS.map(tab => <Link key={tab.key} href={tab.href} prefetch={false} aria-current={isTabActive(pathname, tab.href) ? "page" : undefined}>{tab.label}</Link>)}
+        </nav>
+        <div className="fv-header-tools"><HelpDrawer /></div>
+      </div>
+    </header>
+    {children}
+    <nav aria-label="하단 메뉴" className="fv-tabbar">
+      {TABS.map(tab => <Link key={tab.key} href={tab.href} prefetch={false} aria-current={isTabActive(pathname, tab.href) ? "page" : undefined}>
+        <FvIcon name={TAB_ICON[tab.key as keyof typeof TAB_ICON] ?? "home"} size={22} />{tab.label}
+      </Link>)}
+    </nav>
   </div>;
 }

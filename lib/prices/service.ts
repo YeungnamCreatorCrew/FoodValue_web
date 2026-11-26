@@ -14,6 +14,11 @@ export async function getPriceChart(id: string, days: PriceHistoryPeriod, signal
   return { priceHistory: history.points.map(point => ({ date: point.date, price: point.price })), historyEndDate: history.endDate,
     forecast: mapForecast(forecast), forecastBaseDate: forecast.baseDate };
 }
+/** 가격 추이 그래프용 실제 가격만. 7일 예측은 상세 응답(getPrice)에 이미 있어서 기간을 바꿀 때 다시 부르지 않는다. */
+export async function getPriceHistory(id: string, days: PriceHistoryPeriod, signal?: AbortSignal) {
+  const history = await pricesApi.history(id, days, signal);
+  return { priceHistory: history.points.map(point => ({ date: point.date, price: point.price })), historyEndDate: history.endDate };
+}
 /** Resolve old localStorage/demo slugs through returned catalog IDs, never a numeric guess. */
 export async function resolveFavoriteId(id: string, signal?: AbortSignal): Promise<string | null> {
   if (id.startsWith("was:")) return id.slice(4);

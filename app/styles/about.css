@@ -1,0 +1,20 @@
+/* 판단 방식 */
+.about-page { gap: var(--sp-10); }
+.about-page > * { max-width: 960px; }
+.about-head { display: flex; flex-direction: column; gap: var(--sp-3); }
+.about-lead { font-size: var(--fs-sub); max-width: 34em; word-break: keep-all; }
+.about-section { display: flex; flex-direction: column; gap: var(--sp-4); }
+.about-section > p { max-width: 40em; word-break: keep-all; }
+.about-rules { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--sp-4); }
+.about-rule { display: flex; flex-direction: column; gap: var(--sp-3); padding: var(--sp-5); box-shadow: none; word-break: keep-all; }
+.about-rule h3 { display: flex; align-items: center; flex-wrap: wrap; gap: var(--sp-2); font-size: var(--fs-sub); font-weight: 750; }
+.about-rule-line { padding: var(--sp-3); border-radius: var(--r-sm); background: var(--fv-subtle); font-size: var(--fs-cap); color: var(--fv-text-2); }
+.about-rule-line b { display: block; color: var(--fv-text); }
+.about-table { width: 100%; max-width: 640px; border-collapse: collapse; }
+.about-table th, .about-table td { padding: var(--sp-2) var(--sp-3); border-bottom: 1px solid var(--fv-line); text-align: left; }
+.about-table thead th { font-size: var(--fs-cap); color: var(--fv-text-2); background: var(--fv-subtle); }
+.about-table .num { text-align: right; }
+.about-table tbody th { font-weight: 600; }
+.about-table tbody th .fv-link { display: flex; width: 100%; }
+.about-list { display: flex; flex-direction: column; gap: var(--sp-2); padding-left: var(--sp-5); list-style: disc; max-width: 40em; }
+@media (max-width: 899px) { .about-rules { grid-template-columns: minmax(0, 1fr); } }
