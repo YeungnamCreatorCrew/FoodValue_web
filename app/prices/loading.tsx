@@ -1,3 +1,10 @@
+import { LoadingRegion, Skeleton } from "@/components/fv/state";
+
+/** 상세로 넘어가는 동안 최종 화면과 같은 자리에 뼈대를 그린다. */
 export default function Loading() {
-  return <main id="main-content" aria-busy="true" className="px-5 py-8"><p role="status" className="text-sm text-muted">시세를 불러오고 있습니다.</p><div className="mt-4 flex animate-pulse flex-col gap-3">{[1, 2, 3, 4].map(n => <div key={n} className="h-[134px] rounded-xl bg-slate-200" />)}</div></main>;
+  return <main id="main-content" className="fv-page detail-page">
+    <LoadingRegion label="시세를 불러오는 중이에요">
+      <div className="loading-stack"><Skeleton className="loading-crumb" /><Skeleton className="loading-summary" /><Skeleton className="loading-trend" /></div>
+    </LoadingRegion>
+  </main>;
 }

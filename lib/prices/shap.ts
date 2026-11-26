@@ -1,5 +1,5 @@
 // WAS GET /prices/items/{id}/factors → view model. SHAP is a contribution to the model's 7-day forecast, not a cause.
-import type { FactorHistoryDto, PriceFactorsDto, PriceSummaryTextDto } from "./dto";
+import type { FactorHistoryDto, PriceFactorsDto, PriceSummaryTextDto, ValidationDto } from "./dto";
 
 export type ShapDirection = "up" | "down" | "neutral";
 export interface AiSummary { headline: string; detail: string; categories: Record<string, string>; generator: string | null }
@@ -25,6 +25,8 @@ export interface ShapAnalysis {
   /** 과거 검증(최종 평가) 구간. 기준 모델 안내 문구에 쓴다. */
   evaluationStart: string | null;
   evaluationEnd: string | null;
+  /** 과거 검증 실적(v2만). 없으면 null. */
+  validation: ValidationDto | null;
   targetDate: string | null;
   basePrice: number | null;
   predictedPrice: number | null;
@@ -44,15 +46,15 @@ export function mapAiSummary(dto: PriceSummaryTextDto | null | undefined): AiSum
 }
 
 function categoryText(label: string, value: ShapDirection) {
-  return value === "neutral" ? `${label}의 SHAP 기여 합계는 중립입니다.`
-    : `${label}은(는) 이번 모델 예측에서 가격을 ${value === "down" ? "낮추는" : "높이는"} 방향으로 작용했습니다.`;
+  return value === "neutral" ? `${label}의 영향 합은 중립이에요.`
+    : `${label}은(는) 예측을 ${value === "down" ? "낮추는" : "높이는"} 쪽으로 작용했어요.`;
 }
 
 export function mapShapAnalysis(dto: PriceFactorsDto): ShapAnalysis {
   const summary = mapAiSummary(dto.summary);
   return {
     explained: dto.explained && dto.factors.length > 0, unavailableReason: dto.unavailableReason,
-    baseDate: dto.baseDate, evaluationStart: dto.evaluationStart ?? null, evaluationEnd: dto.evaluationEnd ?? null, targetDate: dto.targetDate, basePrice: dto.basePrice, predictedPrice: dto.predictedPrice, summary,
+    baseDate: dto.baseDate, evaluationStart: dto.evaluationStart ?? null, evaluationEnd: dto.evaluationEnd ?? null, validation: dto.validation ?? null, targetDate: dto.targetDate, basePrice: dto.basePrice, predictedPrice: dto.predictedPrice, summary,
     categories: dto.categories.map(row => ({ category: row.category, label: row.label, contribution: row.contribution,
       direction: direction(row.direction), description: row.description ?? summary?.categories[row.category] ?? categoryText(row.label, direction(row.direction)) })),
     factors: dto.factors.map(row => ({ ...row, categoryLabel: categoryLabels[row.category] ?? row.category, direction: direction(row.direction) })),
@@ -66,7 +68,7 @@ export function mapFactorTrend(dto: FactorHistoryDto): FactorTrend {
 }
 
 export function unavailableText(reason: string | null) {
-  if (reason === "BASELINE_MODEL") return "과거 검증에서 학습 모델이 기준 모델(직전 가격 유지)보다 정확하지 않아, 이번 예측은 기준 모델로 만들어졌습니다. 그래서 변수별 영향은 제공되지 않습니다.";
-  if (reason === "NO_FORECAST") return "아직 이 품목의 AI 예측이 없어 변수별 영향을 표시할 수 없습니다.";
-  return "이번 예측의 변수별 영향 정보가 없습니다.";
+  if (reason === "BASELINE_MODEL") return "이번 7일 값은 직전 가격을 그대로 둔 값이라 요인별 영향이 없어요.";
+  if (reason === "NO_FORECAST") return "이 품목은 AI 예측이 없어 요인별 영향도 없어요.";
+  return "이번 예측의 요인별 영향 정보가 없어요.";
 }

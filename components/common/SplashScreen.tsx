@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 
 const SEEN_KEY = "fv-splash-seen";
-const SHOW_MS = 1900;
+const SHOW_MS = 1200;
 const SHOW_MS_REDUCED = 600;
 const LEAVE_MS = 700;
 
@@ -60,7 +60,7 @@ export function SplashScreen() {
         <svg className="splash-mark" viewBox="0 0 96 96" aria-hidden="true">
           <rect width="96" height="96" rx="26" fill="#ffffff" />
           <path className="splash-mark-line" d="M22 62 L40 44 L54 54 L74 32" stroke="#14532d" strokeWidth="8" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-          <circle className="splash-mark-dot" cx="74" cy="32" r="7" fill="#84cc16" />
+          <circle className="splash-mark-dot" cx="74" cy="32" r="7" fill="var(--fv-brand)" />
         </svg>
         <div>
           <p className="splash-word" aria-hidden="true">
@@ -68,11 +68,11 @@ export function SplashScreen() {
               <span key={index} style={{ animationDelay: `${0.35 + index * 0.035}s` }}>{char}</span>
             ))}
           </p>
-          <p className="splash-tagline">일주일 뒤 장바구니, 미리 보세요</p>
+          <p className="splash-tagline">장바구니 시세, 한눈에 보세요</p>
         </div>
       </div>
       <div className="splash-footer" aria-hidden="true">
-        <span>KAMIS 시세 · 7일 가격 예측</span>
+        <span>KAMIS 시세 · 7일 가격 예측(참고)</span>
         <span className="splash-skip">클릭하거나 Enter를 누르면 바로 시작</span>
       </div>
     </div>

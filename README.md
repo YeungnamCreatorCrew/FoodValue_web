@@ -17,6 +17,34 @@
 
 ---
 
+## 시세 화면
+
+판단은 지난 가격 지표로 하고, AI 7일 예측은 참고로만 따로 보여 줍니다.
+
+| 경로 | 화면 |
+| --- | --- |
+| `/` | 홈: 품목 표(현재가·지난주 대비·평년 대비·최근 8주·1년 중 위치) |
+| `/prices/[itemId]` | 품목 상세: 결론·기준 가격 → 판단 근거 / 가격 흐름·AI 7일 예측(팝업) |
+| `/about` | 판단 방식: 지표별 판단 기준과 예측 모델 |
+
+- 화면 구성·표시 규칙: [`PRICE_IMPLEMENTATION.md`](PRICE_IMPLEMENTATION.md)
+- WAS API 연결·실행·검증: [`PRICE_API_INTEGRATION.md`](PRICE_API_INTEGRATION.md)
+
+### 실행
+
+```powershell
+# WAS (C:\FoodValue_was): http://localhost:8000
+uv run uvicorn app.main:app --reload --port 8000
+
+# WEB (이 저장소): http://localhost:3000
+npm install
+npm run dev
+```
+
+WAS 주소가 다르면 `.env.local`에 `NEXT_PUBLIC_API_BASE_URL`을 넣습니다(`.env.example` 참고). WAS는 기본으로 `localhost:3000`의 요청만 허용합니다.
+
+---
+
 ## 커밋 · PR 규칙
 
 ### 커밋 메시지

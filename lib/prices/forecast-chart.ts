@@ -1,3 +1,4 @@
+import { niceScale } from "./ticks";
 import { dateNumber, historyForPeriod } from "./history";
 import type { PriceChartData } from "./model";
 
@@ -18,6 +19,7 @@ export interface ChartPoint {
  * survey (weekends, holidays, gaps) take no space and are never drawn or labeled. No price is created for those days.
  * Daily WAS forecasts follow the last observation, also one slot per day.
  */
+
 export function forecastChart(item: PriceChartData, days: number, bounds: { left: number; right: number; top: number; bottom: number }) {
   const reference = item.historyEndDate ?? item.baseDate ?? item.priceDate ?? item.forecastDate;
   const past = reference ? historyForPeriod(item.priceHistory, reference, days) : [];
@@ -35,10 +37,11 @@ export function forecastChart(item: PriceChartData, days: number, bounds: { left
   const lastActual = actual.at(-1) ?? null;
   const future = forecast.filter(point => !lastActual || point.date > lastActual.date);
 
-  const values = [...actual.map(point => point.price), ...future.map(point => point.price)];
+  // 예측 범위 띠(하한·상한)까지 축에 담는다. 축은 1·2·5 단위 눈금이 데이터 전체를 감싸게 잡는다.
+  const band = forecastRaw.flatMap(point => { const range = point as { lower?: number | null; upper?: number | null }; return [range.lower, range.upper].filter((value): value is number => typeof value === "number"); });
+  const values = [...actual.map(point => point.price), ...future.map(point => point.price), ...band];
   const low = values.length ? Math.min(...values) : 0, high = values.length ? Math.max(...values) : 100;
-  const padding = (high - low || 100) * .25;
-  const min = low - padding, max = high + padding;
+  const { min, max, ticks } = niceScale(low, high, 4, 0);
   const slots = actual.length + future.length;
   const xAt = (index: number) => slots <= 1 ? (bounds.left + bounds.right) / 2 : bounds.left + index / (slots - 1) * (bounds.right - bounds.left);
   const y = (price: number) => bounds.bottom - (price - min) / (max - min) * (bounds.bottom - bounds.top);
@@ -57,7 +60,7 @@ export function forecastChart(item: PriceChartData, days: number, bounds: { left
   // Nothing observed in the window → currentX < left, which hides the observation marker.
   const currentX = lastActual ? x(lastActual.date) : bounds.left - 1;
   const forecastX = item.forecastDate ? x(item.forecastDate) : bounds.right;
-  return { past, actual, forecast: future, points, min, max, x, y, currentX, forecastX,
+  return { past, actual, forecast: future, points, min, max, ticks, x, y, currentX, forecastX,
     actualPath: line(actualPoints),
     forecastPath: line(actualPoints.length && forecastPoints.length ? [actualPoints.at(-1)!, ...forecastPoints] : forecastPoints) };
 }
