@@ -104,7 +104,7 @@
 
 /* 1년 범위 막대 */
 .indicator-range { display: flex; flex-direction: column; gap: var(--sp-1); }
-.range-track { position: relative; height: 8px; border-radius: var(--r-pill); background: var(--fv-line-strong); }
+.range-track { position: relative; height: 8px; border-radius: var(--r-pill); background: linear-gradient(90deg, var(--fv-range-low) 0%, var(--fv-range-mid) 50%, var(--fv-range-high) 100%); }
 .range-dot { position: absolute; top: 50%; width: 16px; height: 16px; transform: translate(-50%, -50%); border-radius: 50%; background: var(--fv-text); border: 3px solid var(--fv-bg); box-shadow: 0 0 0 1px var(--fv-text-3); }
 .range-zone { position: absolute; top: 0; bottom: 0; width: 2px; transform: translateX(-50%); background: var(--fv-bg); }
 .range-labels span { white-space: nowrap; }
