@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
-import type { IndicatorCard, IndicatorNotice, IndicatorSignal, IndicatorState, LevelEvidence, LivePrice, PriceIndicators } from "@/lib/prices/model";
-import { formatNumber, longDate, won } from "@/lib/prices/format";
+import type { IndicatorCard, IndicatorNotice, IndicatorSignal, IndicatorState, LevelEvidence, LivePrice, PriceIndicators, PricePoint } from "@/lib/prices/model";
+import { formatNumber, longDate, shortDate, won } from "@/lib/prices/format";
 import { EmptyState, ErrorState, LoadingRegion, Skeleton } from "@/components/fv/state";
 import { INDICATOR_HELP } from "@/components/prices/indicator-help";
 import { PercentileBar } from "@/components/prices/indicator-ui";
@@ -162,37 +162,91 @@ function answerOf(card: IndicatorCard, verdict: Verdict | null) {
   return byState?.[card.state ?? ""] ?? byState?.[verdict.label] ?? verdict.label;
 }
 
-function EvidenceCard({ card, unit, signal }: { card: IndicatorCard; unit: string; signal: IndicatorSignal | null }) {
-  const [open, setOpen] = useState(false);
-  const [recordOpen, setRecordOpen] = useState(false);
+type CardProps = { card: IndicatorCard; unit: string; signal: IndicatorSignal | null };
+
+/**
+ * 1년 중 위치 카드의 오른쪽 그래프: 최근 1년 가격 선 위에 최저·최고 선과 지금 점을 찍는다.
+ * 막대(백분위)만으로는 "언제 비쌌고 지금 어디쯤인지"가 안 보여서 같은 365일 이력으로 그린다.
+ */
+function YearPlaceChart({ history, unit }: { history: PricePoint[]; unit: string }) {
+  const points = history.filter((point): point is { date: string; price: number } => point.price !== null);
+  if (points.length < 2) return null;
+  const W = 600, H = 220, L = 64, R = 12, T = 20, B = 186;
+  const prices = points.map(point => point.price);
+  const low = Math.min(...prices), high = Math.max(...prices), span = high - low || 1;
+  const start = Date.parse(`${points[0].date}T00:00:00Z`), end = Date.parse(`${points.at(-1)!.date}T00:00:00Z`) || start + 1;
+  const x = (date: string) => L + (Date.parse(`${date}T00:00:00Z`) - start) / Math.max(1, end - start) * (W - L - R);
+  const y = (price: number) => B - (price - low) / span * (B - T);
+  const path = points.map((point, index) => `${index ? "L" : "M"}${x(point.date).toFixed(1)},${y(point.price).toFixed(1)}`).join("");
+  const last = points.at(-1)!;
+  const lowPoint = points.find(point => point.price === low)!, highPoint = points.find(point => point.price === high)!;
+  return <figure className="ev-year">
+    <figcaption className="ev-label">최근 1년 가격과 지금 위치</figcaption>
+    <svg viewBox={`0 0 ${W} ${H}`} width="100%" role="img" aria-label={`최근 1년 최저 ${won(low)}(${shortDate(lowPoint.date)}), 최고 ${won(high)}(${shortDate(highPoint.date)}), 지금 ${won(last.price)}`}>
+      <line x1={L} x2={W - R} y1={y(high)} y2={y(high)} stroke="var(--fv-line-strong)" strokeDasharray="4 4" />
+      <line x1={L} x2={W - R} y1={y(low)} y2={y(low)} stroke="var(--fv-line-strong)" strokeDasharray="4 4" />
+      <text x={L - 8} y={y(high) + 4} textAnchor="end" fontSize="12" fill="var(--fv-text-3)">최고</text>
+      <text x={L - 8} y={y(low) + 4} textAnchor="end" fontSize="12" fill="var(--fv-text-3)">최저</text>
+      <path d={path} fill="none" stroke="var(--fv-chart-actual)" strokeWidth="2" strokeLinejoin="round" />
+      <circle cx={x(highPoint.date)} cy={y(high)} r="3.5" fill="var(--fv-text-3)" />
+      <circle cx={x(last.date)} cy={y(last.price)} r="6" fill="var(--fv-chart-actual)" stroke="var(--fv-bg)" strokeWidth="2" />
+      <text x={L} y={H - 4} fontSize="12" fill="var(--fv-text-3)">{shortDate(points[0].date)}</text>
+      <text x={W - R} y={H - 4} textAnchor="end" fontSize="12" fontWeight="700" fill="var(--fv-text)">지금 {shortDate(last.date)}</text>
+    </svg>
+    <p className="ev-year-note">최고 {won(high)}({shortDate(highPoint.date)}) · 최저 {won(low)}({shortDate(lowPoint.date)}) · 가격 단위 {unit}</p>
+  </figure>;
+}
+const panelId = (card: IndicatorCard) => `ev-panel-${card.key.toLowerCase()}`;
+
+/** 가로 한 줄에 놓이는 근거 카드: 질문 + 큰 답. 누르면 그 줄 아래에 전체 폭 상세(EvidenceBody)가 열린다. */
+function EvidenceCard({ card, unit, signal, open, onToggle }: CardProps & { open: boolean; onToggle: () => void }) {
   const row = rowFor(card, unit, signal);
   if (!row) return null;
   const names = NAMES[card.key];
-  const help = INDICATOR_HELP[card.key];
-  const panel = `ev-panel-${card.key.toLowerCase()}`;
   const tone = row.verdict && !row.verdict.place ? row.verdict.tone : "tone-flat";
   return <article id={`ev-${card.key.toLowerCase()}`} className={`ev-card ${open ? "is-open" : ""}`}>
     <h3 className="ev-card-head">
-      <button type="button" className="ev-toggle" aria-expanded={open} aria-controls={panel} onClick={() => setOpen(value => !value)}>
+      <button type="button" className="ev-toggle" aria-expanded={open} aria-controls={panelId(card)} onClick={onToggle}>
         <span className="ev-q">{names.question.replace(/\?$/, "")}?<span className="sr-only"> ({names.name})</span></span>
         <span className={`ev-a ${tone}`}>{row.verdict && <span aria-hidden="true" className="ev-mark">{row.verdict.mark}</span>}{answerOf(card, row.verdict)}</span>
         <svg className="ev-chevron" width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="m5 7.5 5 5 5-5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
       </button>
     </h3>
-    {open && <div id={panel} className="ev-body">
+  </article>;
+}
+
+/** 펼친 근거: 카드 폭이 좁아 그래프·표가 답답하지 않게, 카드 줄 아래에 전체 폭으로 연다. 왼쪽 = 숫자·읽는 법, 오른쪽 = 그래프·기록. */
+function EvidenceBody({ card, unit, signal, history }: CardProps & { history: PricePoint[] }) {
+  const [recordOpen, setRecordOpen] = useState(false);
+  const row = rowFor(card, unit, signal);
+  if (!row) return null;
+  const names = NAMES[card.key];
+  const help = INDICATOR_HELP[card.key];
+  const panel = panelId(card);
+  const yearChart = card.key === "PRICE_POSITION" && !row.extra ? <YearPlaceChart history={history} unit={unit} /> : null;
+  // 오른쪽에 그래프가 없으면 한 단으로 둔다(오른쪽이 텅 비지 않게). 과거 기록은 그때 본문 아래로 온다.
+  const single = !row.extra && !yearChart;
+  const record = row.record && <div className="ev-recordbox">
+    <button type="button" className="fv-link ev-recordtoggle" aria-expanded={recordOpen} aria-controls={`${panel}-record`} onClick={() => setRecordOpen(value => !value)}>{recordOpen ? "과거 기록 접기" : "과거 기록 보기"}</button>
+    {recordOpen && <div id={`${panel}-record`} className="ev-recordbox">{row.record}<p className="ev-recordnote">‘평소’는 조건 없이 아무 때나 그랬던 비율이에요.</p></div>}
+  </div>;
+  return <div id={panel} className={`ev-body ${single ? "is-single" : ""}`} role="region" aria-label={`${names.name} 자세히`}>
+    <div className="ev-body-main">
+      <p className="ev-body-q">{names.question.replace(/\?$/, "")}?</p>
       <div className="ev-key"><span className="ev-key-now"><strong>{row.now}</strong><span>{row.nowNote}</span></span><span className="ev-key-basis">{row.basis}</span></div>
       {row.source && row.describes ? <p className="ev-read">{toHaeyo(row.source)}</p> : help && <p className="ev-read">{help.read}</p>}
-      {row.extra && <div className="ev-chart">{row.extra}</div>}
       {row.facts.length > 0 && <ul className="ev-facts">{row.facts.map(fact => <li key={fact}>{fact}</li>)}</ul>}
       {row.source && !row.describes && <div className="ev-source"><p className="ev-label">근거</p><p>{toHaeyo(row.source)}</p></div>}
-      {row.record && <div className="ev-recordbox">
-        <button type="button" className="fv-link ev-recordtoggle" aria-expanded={recordOpen} aria-controls={`${panel}-record`} onClick={() => setRecordOpen(value => !value)}>{recordOpen ? "과거 기록 접기" : "과거 기록 보기"}</button>
-        {recordOpen && <div id={`${panel}-record`} className="ev-recordbox">{row.record}<p className="ev-recordnote">‘평소’는 조건 없이 아무 때나 그랬던 비율이에요.</p></div>}
-      </div>}
       {help && <div className="ev-tipbox"><p className="ev-label">알아 둘 점</p><ul className="ev-tips">{help.tips.map(tip => <li key={tip}>{tip}</li>)}</ul></div>}
       {VERDICT_NOTE[card.verdict] && <p className="ev-kind">{VERDICT_NOTE[card.verdict]}</p>}
+      {single && record}
+    </div>
+    {!single && <div className="ev-body-side">
+      {row.extra && <div className="ev-chart">{row.extra}</div>}
+      {yearChart}
+      {record}
     </div>}
-  </article>;
+  </div>;
 }
 
 const NOTICE_NAME: Record<string, string> = { WHOLESALE_LEAD: "도매 흐름", VOLATILITY: "가격 출렁임", PRICE_POSITION: "1년 중 위치", SEASONAL: "평년 대비", RETAIL_WHOLESALE_GAP: "소매·도매 배수" };
@@ -204,23 +258,37 @@ function NoticeCard({ notice }: { notice: IndicatorNotice }) {
   </article>;
 }
 
-export function EvidenceCards({ item, data, loading, error, reload }: { item: LivePrice; data?: PriceIndicators; loading: boolean; error?: string; reload: () => void }) {
+export function EvidenceCards({ item, data, loading, error, reload, history = [] }: { item: LivePrice; data?: PriceIndicators; loading: boolean; error?: string; reload: () => void; history?: PricePoint[] }) {
   const [more, setMore] = useState(false);
+  // 한 번에 하나만 펼친다(펼친 내용이 카드 줄 아래 전체 폭을 쓰므로).
+  const [openKey, setOpenKey] = useState<string | null>(null);
   const pick = (keys: string[]) => data ? keys.flatMap(key => data.cards.find(card => card.key === key) ?? []) : [];
   const main = pick(MAIN), extra = pick(MORE);
   const notices = data ? data.notices.filter(notice => !data.cards.some(card => card.key === notice.key)) : [];
   const signal = (key: string) => data?.signals.find(entry => entry.key === key) ?? null;
+  const toggle = (key: string) => setOpenKey(value => value === key ? null : key);
+  const row = (cards: IndicatorCard[], withNotices: boolean) => {
+    const opened = cards.find(card => card.key === openKey);
+    return <>
+      <div className="ev-cards">
+        {cards.map(card => <EvidenceCard key={card.key} card={card} unit={item.unit} signal={signal(card.key)} open={openKey === card.key} onToggle={() => toggle(card.key)} />)}
+        {withNotices && notices.map(notice => <NoticeCard key={notice.key} notice={notice} />)}
+      </div>
+      {opened && <EvidenceBody card={opened} unit={item.unit} signal={signal(opened.key)} history={history} />}
+    </>;
+  };
   return <section className="evidence" aria-labelledby="evidence-title">
-    <div className="section-head"><h2 id="evidence-title" className="fv-h2">판단 근거{main.length > 0 && ` ${main.length}가지`}</h2>{(main.length > 0 || extra.length > 0) && <p className="fv-cap">누르면 숫자와 그래프가 나와요.</p>}</div>
+    <div className="section-head">
+      <h2 id="evidence-title" className="fv-h2">판단 근거{main.length > 0 && ` ${main.length}가지`}{(main.length > 0 || extra.length > 0) && <span className="section-sub">누르면 숫자와 그래프가 아래에 열려요</span>}</h2>
+      {extra.length > 0 && <button type="button" className="fv-link ev-more" aria-expanded={more} aria-controls="ev-extra" onClick={() => setMore(value => !value)}>
+        {more ? "다른 지표 접기" : `다른 지표 ${extra.length}개 더 보기`}<span aria-hidden="true"> ›</span></button>}
+    </div>
     {loading ? <LoadingRegion label="판단 근거를 불러오는 중이에요"><Skeleton className="evidence-skel" /></LoadingRegion>
       : error || !data ? <ErrorState message={error ?? ""} onRetry={reload} />
       : !main.length && !extra.length && !notices.length ? <EmptyState title="판단 근거 없음">{item.status === "NO_DATA" ? "최근 조사된 가격이 없어요." : "이 품목은 아직 판단 근거를 만들지 않았어요."}</EmptyState>
-      : <div className="ev-cards">
-        {main.map(card => <EvidenceCard key={card.key} card={card} unit={item.unit} signal={signal(card.key)} />)}
-        {notices.map(notice => <NoticeCard key={notice.key} notice={notice} />)}
-        {extra.length > 0 && <button type="button" className="fv-btn is-quiet ev-more" aria-expanded={more} aria-controls="ev-extra" onClick={() => setMore(value => !value)}>
-          {more ? "다른 지표 접기" : `다른 지표 ${extra.length}개 더 보기`}</button>}
-        {more && <div id="ev-extra" className="ev-cards">{extra.map(card => <EvidenceCard key={card.key} card={card} unit={item.unit} signal={signal(card.key)} />)}</div>}
+      : <div className="ev-stack">
+        {row(main, true)}
+        {more && <div id="ev-extra" className="ev-stack">{row(extra, false)}</div>}
       </div>}
   </section>;
 }
