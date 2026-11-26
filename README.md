@@ -1,9 +1,6 @@
 # FoodValue Frontend
 
-1~2인 가구를 위한 식자재 관리 서비스입니다.
-
-냉장고 재료를 관리하고, 보유한 재료를 기반으로 레시피를 추천하며,
-식자재 시세 및 AI 가격 예측 정보를 제공합니다.
+FoodValue는 식자재 시세, 7일 가격 예측, 구매 판단 지표를 제공합니다.
 
 ---
 
@@ -91,11 +88,7 @@ feat : 커뮤니티 목록 화면 구현
 main
 └─ dev
    ├─ feature/home
-   ├─ feature/fridge
    ├─ feature/prices
-   ├─ feature/recipes
-   ├─ feature/community
-   └─ feature/mypage
 ```
 
 - `main` : 최종 배포 및 안정 버전 브랜치
@@ -107,7 +100,7 @@ main
 ```bash
 git checkout dev
 git pull origin dev
-git checkout -b feature/community
+git checkout -b feature/prices
 ```
 
 작업이 끝난 후:
@@ -115,7 +108,7 @@ git checkout -b feature/community
 ```bash
 git add .
 git commit -m "feat : 커뮤니티 목록 화면 구현"
-git push origin feature/community
+git push origin feature/prices
 ```
 
 이후 GitHub에서 `dev` 브랜치를 대상으로 Pull Request를 생성합니다.

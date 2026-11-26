@@ -9,7 +9,6 @@ import { HelpDrawer } from "./help-drawer";
 
 const TAB_ICON = { home: "home", about: "info" } as const;
 
-/** 홈·상세·판단 방식의 틀: 위 헤더(메뉴 + 지표 읽는 법) + 모바일 하단 탭 2개. 범위 밖 화면(로그인 등)은 예전 틀을 그대로 쓴다. */
 export function ServiceShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const priceArea = pathname === "/" || pathname === "/about" || pathname === "/prices" || pathname.startsWith("/prices/");

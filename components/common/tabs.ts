@@ -1,6 +1,5 @@
 import type { IconName } from "@/components/ui/Icon";
 
-// 메뉴: 홈(품목 표 + 품목 상세) · 판단 방식. 다른 기능의 route는 그대로 둔다.
 export const TABS: { key: string; label: string; href: string; icon: IconName; activeIcon?: IconName }[] = [
   { key: "home", label: "홈", href: "/", icon: "nav-home" },
   { key: "about", label: "판단 방식", href: "/about", icon: "nav-price" },
