@@ -180,13 +180,15 @@ function YearPlaceChart({ history, unit }: { history: PricePoint[]; unit: string
   const path = points.map((point, index) => `${index ? "L" : "M"}${x(point.date).toFixed(1)},${y(point.price).toFixed(1)}`).join("");
   const last = points.at(-1)!;
   const lowPoint = points.find(point => point.price === low)!, highPoint = points.find(point => point.price === high)!;
-  return <figure className="ev-year">
+  const change = (last.price - points[0].price) / points[0].price;
+  return <figure className={`ev-year ${change > 0.01 ? "chart-up" : change < -0.01 ? "chart-down" : "chart-flat"}`}>
     <figcaption className="ev-label">최근 1년 가격과 지금 위치</figcaption>
     <svg viewBox={`0 0 ${W} ${H}`} width="100%" role="img" aria-label={`최근 1년 최저 ${won(low)}(${shortDate(lowPoint.date)}), 최고 ${won(high)}(${shortDate(highPoint.date)}), 지금 ${won(last.price)}`}>
       <line x1={L} x2={W - R} y1={y(high)} y2={y(high)} stroke="var(--fv-line-strong)" strokeDasharray="4 4" />
       <line x1={L} x2={W - R} y1={y(low)} y2={y(low)} stroke="var(--fv-line-strong)" strokeDasharray="4 4" />
       <text x={L - 8} y={y(high) + 4} textAnchor="end" fontSize="12" fill="var(--fv-text-3)">최고</text>
       <text x={L - 8} y={y(low) + 4} textAnchor="end" fontSize="12" fill="var(--fv-text-3)">최저</text>
+      <path d={`${path}L${x(last.date).toFixed(1)},${B}L${x(points[0].date).toFixed(1)},${B}Z`} fill="var(--fv-chart-actual)" fillOpacity="0.08" />
       <path d={path} fill="none" stroke="var(--fv-chart-actual)" strokeWidth="2" strokeLinejoin="round" />
       <circle cx={x(highPoint.date)} cy={y(high)} r="3.5" fill="var(--fv-text-3)" />
       <circle cx={x(last.date)} cy={y(last.price)} r="6" fill="var(--fv-chart-actual)" stroke="var(--fv-bg)" strokeWidth="2" />
@@ -204,7 +206,7 @@ function EvidenceCard({ card, unit, signal, open, onToggle }: CardProps & { open
   if (!row) return null;
   const names = NAMES[card.key];
   const tone = row.verdict && !row.verdict.place ? row.verdict.tone : "tone-flat";
-  return <article id={`ev-${card.key.toLowerCase()}`} className={`ev-card ${open ? "is-open" : ""}`}>
+  return <article id={`ev-${card.key.toLowerCase()}`} className={`ev-card ${tone} ${open ? "is-open" : ""}`}>
     <h3 className="ev-card-head">
       <button type="button" className="ev-toggle" aria-expanded={open} aria-controls={panelId(card)} onClick={onToggle}>
         <span className="ev-q">{names.question.replace(/\?$/, "")}?<span className="sr-only"> ({names.name})</span></span>
@@ -230,7 +232,9 @@ function EvidenceBody({ card, unit, signal, history }: CardProps & { history: Pr
     <button type="button" className="fv-link ev-recordtoggle" aria-expanded={recordOpen} aria-controls={`${panel}-record`} onClick={() => setRecordOpen(value => !value)}>{recordOpen ? "과거 기록 접기" : "과거 기록 보기"}</button>
     {recordOpen && <div id={`${panel}-record`} className="ev-recordbox">{row.record}<p className="ev-recordnote">‘평소’는 조건 없이 아무 때나 그랬던 비율이에요.</p></div>}
   </div>;
-  return <div id={panel} className={`ev-body ${single ? "is-single" : ""}`} role="region" aria-label={`${names.name} 자세히`}>
+  const tone = row.verdict && !row.verdict.place ? row.verdict.tone : "tone-flat";
+  const chartTone = tone === "tone-down" ? "chart-down" : tone === "tone-up" ? "chart-up" : "chart-flat";
+  return <div id={panel} className={`ev-body ${chartTone} ${single ? "is-single" : ""}`} role="region" aria-label={`${names.name} 자세히`}>
     <div className="ev-body-main">
       <p className="ev-body-q">{names.question.replace(/\?$/, "")}?</p>
       <div className="ev-key"><span className="ev-key-now"><strong>{row.now}</strong><span>{row.nowNote}</span></span><span className="ev-key-basis">{row.basis}</span></div>

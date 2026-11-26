@@ -16,10 +16,12 @@
   --fv-brand-hover: #166534;
   --fv-brand-soft: #edf7f0;
   --fv-on-brand: #ffffff;
-  --fv-up: #c0343f;
-  --fv-up-soft: #fdeff0;
-  --fv-down: #1f5fae;
-  --fv-down-soft: #ecf3fc;
+  --fv-up: #d9303c;
+  --fv-up-soft: #fdecee;
+  --fv-up-ink: #c0343f; /* 연한 빨강 바탕 위 글자(대비 4.5:1 이상) */
+  --fv-down: #1769d6;
+  --fv-down-soft: #e9f2fe;
+  --fv-wholesale: #14532d; /* 도매 선: 브랜드 초록(판단 색과 겹치지 않게) */
   --fv-flat: #55606f;
   --fv-flat-soft: #eff1f4;
   --fv-ref: #4e5968; /* AI 예측(참고) */

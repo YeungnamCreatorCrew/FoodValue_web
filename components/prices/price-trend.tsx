@@ -75,11 +75,17 @@ export function PriceTrend({ item, baseline, yearHistory = null, bare = false }:
   // 직전 가격 유지(BASELINE)는 AI 예측이 아니라서 범위 띠를 그리지 않는다(범례에 "AI 예측 범위"가 뜨면 거짓이 된다).
   const band = !baseline && range.length > 1 ? range.map((point, i) => `${i ? "L" : "M"}${chart.x(point.date).toFixed(1)},${chart.y(point.upper!).toFixed(1)}`).join("")
     + range.toReversed().map(point => `L${chart.x(point.date).toFixed(1)},${chart.y(point.lower!).toFixed(1)}`).join("") + "Z" : null;
+  // 기간 처음 대비 마지막이 1% 넘게 오르면 빨강, 내리면 파랑(홈 흐름선·지난주 대비와 같은 색 규칙). 선과 아래 면에 쓴다.
+  const first = chart.actual[0]?.price ?? null, lastPrice = chart.actual.at(-1)?.price ?? null;
+  const change = first && lastPrice ? (lastPrice - first) / first : 0;
+  const tone = change > 0.01 ? "chart-up" : change < -0.01 ? "chart-down" : "chart-flat";
+  const actualPoints = chart.points.filter(point => point.kind === "actual" && point.price !== null);
+  const area = actualPoints.length > 1 ? `M${actualPoints[0].x.toFixed(1)},${BOTTOM}` + actualPoints.map(point => `L${point.x.toFixed(1)},${point.y.toFixed(1)}`).join("") + `L${actualPoints.at(-1)!.x.toFixed(1)},${BOTTOM}Z` : null;
   const summary = describe(item, period, chart.actual[0]?.price ?? null, chart.actual.at(-1)?.price ?? null);
   const forecastStart = fp.length ? chart.currentX : null;
   const actualDates = chart.points.filter(point => point.kind === "actual").map(point => Date.parse(`${point.date}T00:00:00Z`));
   const hasGap = actualDates.some((time, index) => index > 0 && time - actualDates[index - 1] > 4 * 86_400_000);
-  return <section className={bare ? "trend is-bare" : "fv-card trend"} aria-labelledby="trend-title">
+  return <section className={`${bare ? "trend is-bare" : "fv-card trend"} ${tone}`} aria-labelledby="trend-title">
     <div className="trend-head">
       <h2 id="trend-title" className="fv-h2">가격 흐름</h2>
       {item.status !== "NO_DATA" && <div className="fv-chips" role="group" aria-label="그래프 기간">
@@ -104,6 +110,7 @@ export function PriceTrend({ item, baseline, yearHistory = null, bare = false }:
             <text x={LEFT - 8} y={chart.y(value) + 4} textAnchor="end" fontSize="12" fill="var(--fv-text-3)">{formatNumber(value)}</text></g>)}
           <text x={LEFT - 8} y={TOP - 8} textAnchor="end" fontSize="12" fill="var(--fv-text-3)">원</text>
           {band && <path d={band} fill="var(--fv-chart-band)" />}
+          {area && <path d={area} fill="var(--fv-chart-actual)" fillOpacity="0.08" />}
           <path d={gapPath(chart.points.filter(point => point.kind === "actual"))} fill="none" stroke="var(--fv-chart-actual)" strokeWidth="2.5" strokeLinejoin="round" />
           <path d={chart.forecastPath} fill="none" stroke="var(--fv-ref)" strokeWidth="2.5" strokeDasharray="6 5" />
           {item.currentPrice !== null && chart.currentX >= LEFT && <circle cx={chart.currentX} cy={chart.y(chart.actual.at(-1)?.price ?? item.currentPrice)} r="5" fill="var(--fv-chart-actual)" stroke="var(--fv-bg)" strokeWidth="2" />}

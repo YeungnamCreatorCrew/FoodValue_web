@@ -46,13 +46,13 @@ function Conclusion({ item, indicators }: { item: LivePrice; indicators: Indicat
   return <p className="hero-headline">{toHaeyo(data.headline)}</p>;
 }
 
-/** 기준 가격 한 칸: 그때 가격 + "지금이 ○원 비싸요/싸요". 판단이 아니라 단순 비교라 색을 쓰지 않는다(색은 판단에만). */
+/** 기준 가격 한 칸: 그때 가격 + "지금이 ○원 비싸요/싸요". 가격 변화라 지난주 대비와 같은 색(오르면 빨강, 내리면 파랑)을 쓴다. */
 function RefCell({ label, price, current, note }: { label: string; price: number | null; current: number | null; note?: string }) {
   const diff = price !== null && current !== null ? current - price : null;
   return <div className="ref-cell">
     <p className="ref-label">{label}</p>
     <p className="ref-price fv-num">{price === null ? "정보 없음" : won(price)}</p>
-    {note ? <p className="ref-diff">{note}</p> : diff !== null && <p className="ref-diff">
+    {note ? <p className="ref-diff">{note}</p> : diff !== null && <p className={`ref-diff ${diff > 0 ? "tone-up" : diff < 0 ? "tone-down" : ""}`}>
       {diff === 0 ? "지금과 같아요" : `지금이 ${won(Math.abs(diff))} ${diff > 0 ? "비싸요" : "싸요"}`}</p>}
   </div>;
 }
