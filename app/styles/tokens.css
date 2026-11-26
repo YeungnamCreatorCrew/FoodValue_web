@@ -16,13 +16,22 @@
   --fv-brand-hover: #166534;
   --fv-brand-soft: #edf7f0;
   --fv-on-brand: #ffffff;
-  --fv-up: #c0343f;
-  --fv-up-soft: #fdeff0;
-  --fv-down: #1f5fae;
-  --fv-down-soft: #ecf3fc;
+  --fv-up: #d9303c;
+  --fv-up-soft: #fdecee;
+  --fv-up-ink: #c0343f; /* 연한 빨강 바탕 위 글자(대비 4.5:1 이상) */
+  --fv-down: #1769d6;
+  --fv-down-soft: #e9f2fe;
+  --fv-wholesale: #14532d; /* 도매 선: 브랜드 초록(판단 색과 겹치지 않게) */
   --fv-flat: #55606f;
   --fv-flat-soft: #eff1f4;
   --fv-ref: #4e5968; /* AI 예측(참고) */
+  --fv-ref-up: #b4505a; /* 예측 방향(참고): 실제 빨강보다 옅게 */
+  --fv-ref-down: #4a72a8; /* 예측 방향(참고): 실제 파랑보다 옅게 */
+  /* 1년 중 위치 막대: 판단이 아니라서 옅게. 왼쪽(싼 날 쪽) 연한 파랑 → 회색 → 오른쪽(비싼 날 쪽) 연한 빨강 */
+  --fv-range-low: #c9dcf5;
+  --fv-range-mid: #e1e4e8;
+  --fv-range-high: #f4ccd0;
+  --fv-spark-line: #8b95a1; /* 홈 8주 흐름선(끝점만 방향 색) */
   --fv-chart-actual: #333d4b;
   --fv-chart-grid: #e5e8eb;
   --fv-chart-band: #eceef1;

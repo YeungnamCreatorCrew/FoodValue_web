@@ -46,7 +46,7 @@ function Conclusion({ item, indicators }: { item: LivePrice; indicators: Indicat
   return <p className="hero-headline">{toHaeyo(data.headline)}</p>;
 }
 
-/** 기준 가격 한 칸: 그때 가격 + "지금이 ○원 비싸요/싸요". 판단이 아니라 단순 비교라 색을 쓰지 않는다(색은 판단에만). */
+/** 기준 가격 한 칸: 그때 가격 + "지금이 ○원 비싸요/싸요". 바로 위 결론 띠의 판단 색과 부딪히지 않게 색을 쓰지 않는다. */
 function RefCell({ label, price, current, note }: { label: string; price: number | null; current: number | null; note?: string }) {
   const diff = price !== null && current !== null ? current - price : null;
   return <div className="ref-cell">

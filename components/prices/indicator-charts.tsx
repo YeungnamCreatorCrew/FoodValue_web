@@ -9,7 +9,7 @@ import { ChartHover } from "./chart-hover";
 import { josa } from "@/components/fv/text";
 
 // 계열 색은 상승·하락 뜻이 있는 빨강·파랑을 피한다(tokens.css).
-const COLORS = { current: "var(--fv-chart-actual)", mean: "var(--fv-text-3)", band: "var(--fv-chart-band)", past: "var(--fv-chart-past)", wholesale: "var(--fv-text-3)", retail: "var(--fv-chart-actual)" };
+const COLORS = { current: "var(--fv-chart-actual)", mean: "var(--fv-text-3)", band: "var(--fv-chart-band)", past: "var(--fv-chart-past)", wholesale: "var(--fv-wholesale)", retail: "var(--fv-chart-actual)" };
 
 function useWidth<T extends HTMLElement>(initial: number) {
   const ref = useRef<T>(null);

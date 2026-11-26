@@ -247,3 +247,18 @@
 .ev-year { display: flex; flex-direction: column; gap: var(--sp-2); margin: 0; }
 .ev-year svg { display: block; height: auto; }
 .ev-year-note { font-size: var(--fs-cap); color: var(--fv-text-2); }
+
+/* ---------- 색: 오르내림은 빨강·파랑, 중립은 브랜드 초록 바탕 ---------- */
+.chart-up { --fv-chart-actual: var(--fv-up); --fv-chart-band: #fbdfe2; }
+.chart-down { --fv-chart-actual: var(--fv-down); --fv-chart-band: #dbe9fc; }
+.ref-diff.tone-up { color: var(--fv-up); } .ref-diff.tone-down { color: var(--fv-down); }
+.hero-card .hero-verdict.tone-flat, .hero-card .hero-verdict:not(.tone-up):not(.tone-down) { background: var(--fv-brand-soft); }
+.hero-card .hero-verdict .hero-eyebrow { color: var(--fv-brand); }
+.hero-card .hero-verdict.tone-down .hero-eyebrow { color: var(--fv-down); } .hero-card .hero-verdict.tone-up .hero-eyebrow { color: var(--fv-up); }
+.evidence .ev-card.tone-down { background: var(--fv-down-soft); border-color: #c9ddf8; }
+.evidence .ev-card.tone-up { background: var(--fv-up-soft); border-color: #f6cdd2; }
+.evidence .ev-card.tone-down .ev-toggle:hover { background: #dceafc; } .evidence .ev-card.tone-up .ev-toggle:hover { background: #fbdde1; }
+.evidence .ev-card.tone-down.is-open { border-color: var(--fv-down); } .evidence .ev-card.tone-up.is-open { border-color: var(--fv-up); }
+.ev-body.chart-down .ev-key { background: var(--fv-down-soft); } .ev-body.chart-up .ev-key { background: var(--fv-up-soft); }
+.ev-body .ev-key { background: var(--fv-brand-soft); }
+.forecast-cell { background: #fafbfc; }

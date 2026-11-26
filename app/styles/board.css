@@ -33,6 +33,7 @@
 @media (min-width: 1024px) { .board-sub { white-space: nowrap; } }
 .board-forecast:not(:empty)::before { content: "·"; margin-inline: var(--sp-2); color: var(--fv-text-3); }
 .board-forecast .fv-change { font-size: var(--fs-cap); font-weight: 700; }
+.board-name .fv-change.ref-up span { color: var(--fv-ref-up); } .board-name .fv-change.ref-down span { color: var(--fv-ref-down); }
 .board-table thead th.col-judge { text-align: center; }
 .board-sort { display: inline-flex; align-items: center; gap: var(--sp-1); min-height: 44px; font: inherit; color: inherit; cursor: pointer; white-space: nowrap; }
 .board-sort:hover { color: var(--fv-text); }
