@@ -1,6 +1,5 @@
 ﻿import type { IconName } from "@/components/ui/Icon";
 
-// 가격 중심 PoC 메뉴. 기존 기능의 route는 유지한다.
 export const TABS: { key: string; label: string; href: string; icon: IconName; activeIcon?: IconName }[] = [
   { key: "home", label: "홈", href: "/", icon: "nav-home" },
   { key: "price", label: "시세", href: "/prices", icon: "nav-price" },

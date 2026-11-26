@@ -76,7 +76,6 @@ export interface PriceDetailDto {
   forecast: PriceForecastDto;
   guide: PriceGuideDto | null;
   summary?: PriceSummaryTextDto | null;
-  fridge: { ingredientCount: number; quantities: Record<string, string> } | null;
 }
 export type FactorDirectionDto = "UP" | "DOWN" | "NEUTRAL";
 /** GET /prices/items/{id}/factors — TreeSHAP contributions (won) of the published 7-day forecast. */

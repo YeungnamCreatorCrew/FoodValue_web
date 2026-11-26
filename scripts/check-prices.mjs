@@ -38,7 +38,7 @@ const points = Array.from({ length: 7 }, (_, index) => ({
   lowerPrice: index === 0 ? null : 2700, upperPrice: 3200,
 }));
 const forecast = { itemId: 901, market: "RETAIL", seriesId: 451, status: "READY", baseDate: "2026-11-09", points };
-const detail = { item: summary, forecast, guide: { recommendation: "BUY_NOW", buyAfterDays: null, expectedSaving: 0, mape: 2.5, factors: [{ name: "최근 가격", kind: "OBSERVATION", latestPrice: 3000 }] }, fridge: null };
+const detail = { item: summary, forecast, guide: { recommendation: "BUY_NOW", buyAfterDays: null, expectedSaving: 0, mape: 2.5, factors: [{ name: "최근 가격", kind: "OBSERVATION", latestPrice: 3000 }] } };
 const bounds = { left: 50, right: 350, top: 30, bottom: 200 };
 const originalFetch = globalThis.fetch;
 const calls = [];
@@ -70,12 +70,12 @@ try {
     assert.equal(item.baseDate, null); assert.equal(won(item.currentPrice), "-");
     assert.deepEqual(priceChartStyle(item), { "--price-chart-color": "var(--color-price-flat)" });
   });
-  await test("nested detail uses seven daily points and the server guide; factors stay observations, fridge excluded", () => {
+  await test("nested detail uses seven daily points and the server guide; factors stay observations", () => {
     const item = mapDetail(detail);
     assert.equal(item.id, "901"); assert.equal(item.forecastPoints.length, 7);
     assert.equal(item.forecastPoints[1].price, 2910); assert.equal(item.forecastPoints[0].lower, null);
-    assert.equal(item.guide.title, "지금 구매 추천"); // Downward prices must not replace the server's guide.
-    assert.equal("factors" in item, false); assert.equal("fridge" in item, false);
+    assert.equal(item.guide.recommendation, "BUY_NOW"); // Downward prices must not replace the server's guide.
+    assert.equal("factors" in item, false);
     assert.equal(item.forecastStatus, "READY"); assert.equal(item.dataFactors.length, 1);
     assert.deepEqual(item.dataFactors[0].facts, [{ label: "최근 가격", value: "3,000원" }]);
     assert.equal(item.forecastDirection, "down");

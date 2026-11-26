@@ -6,9 +6,6 @@ import { FloatingMenu } from "./FloatingMenu";
 
 export function ServiceShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
-  if (pathname === "/auth" || pathname.startsWith("/auth/")) {
-    return <div className="flex min-h-dvh flex-col">{children}</div>;
-  }
   return <div className="service-shell price-service-shell">
     <FloatingMenu key={pathname} />
     <div className={`mx-auto flex min-h-[calc(100dvh-72px)] w-full flex-col ${pathname === "/" || pathname === "/prices" || pathname.startsWith("/prices/") ? "max-w-[1560px]" : "max-w-[430px] bg-slate-50 md:max-w-[720px] lg:max-w-[960px]"}`}>
