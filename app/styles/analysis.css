@@ -75,7 +75,8 @@
   .an-stepbox:not(:last-child)::after { display: none; }
 }
 @media (max-width: 599px) { .an-steps { grid-template-columns: 1fr; } }
-.an-pcalcs { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--sp-4); }
+.an-pcalcs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--sp-4); }
+@media (max-width: 899px) { .an-pcalcs { grid-template-columns: minmax(0, 1fr); } }
 .an-pcalc-state { font-size: var(--fs-body); }
 
 /* 눈금자 */

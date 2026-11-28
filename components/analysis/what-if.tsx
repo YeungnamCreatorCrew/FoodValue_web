@@ -1,8 +1,8 @@
 "use client";
 
 import { useId, useMemo, useState } from "react";
-import type { PricePoint, SeasonalCard } from "@/lib/prices/model";
-import { formatNumber, formatWon } from "@/lib/prices/format";
+import type { PricePositionCard, PricePoint, SeasonalCard } from "@/lib/prices/model";
+import { formatNumber, formatWon, shortDate } from "@/lib/prices/format";
 import { POSITION_HIGH, POSITION_LOW, SEASONAL_BAND, lastYearPrices, percentileOf, positionState, seasonalState } from "@/lib/analysis/compute";
 import { toneClass } from "@/components/prices/indicator-ui";
 import { Ruler, SEASONAL_LABEL, diffToPosition } from "./judgment-flow";
@@ -43,8 +43,9 @@ function SeasonalWhatIf({ card }: { card: SeasonalCard }) {
 }
 
 const BINS = 24;
+
 /** 1년 가격 분포(막대) + 25%·75% 경계 + 지금 값. 오늘 가격을 바꾸면 그날 값만 바꿔 다시 센다(서버도 오늘을 분포에 넣는다). */
-function PositionWhatIf({ history, asOf }: { history: PricePoint[]; asOf: string | null }) {
+function PositionWhatIf({ history, asOf, server }: { history: PricePoint[]; asOf: string | null; server: PricePositionCard | null }) {
   const year = useMemo(() => lastYearPrices(history, asOf), [history, asOf]);
   const actual = year.at(-1)?.price ?? 0;
   const [value, setValue] = useState(actual);
@@ -79,19 +80,21 @@ function PositionWhatIf({ history, asOf }: { history: PricePoint[]; asOf: string
       <figcaption className="fv-cap">막대 = 최근 1년 {formatNumber(prices.length)}일 가격 분포(그 가격대였던 날 수)</figcaption>
     </figure>
     <p className="an-formula fv-num">{formatWon(value)}보다 싼 날 비율 = {formatNumber(p * 100, 1)}%</p>
+    {server?.fact.percentile != null && value === actual && Math.abs(server.fact.percentile - p) >= 0.0005 && <p className="fv-cap">
+      서버 계산은 {formatNumber(server.fact.percentile * 100, 1)}%예요. 화면이 받는 가격 이력은 오늘까지 1년이라, 기준일({shortDate(asOf)})까지 1년 중 앞쪽 며칠이 빠져 조금 달라요.</p>}
     <p className="an-whatif-result" aria-live="polite">자리: <b className={toneClass(state)}>{POSITION_LABEL[state]}</b>{state !== positionState(percentileOf(prices, actual) ?? 0) && <span className="fv-badge is-brand">실제와 달라져요</span>}</p>
     <p className="fv-cap"><b className="fv-num">{formatWon(q(POSITION_LOW))}</b> 언저리 아래면 싼 편, <b className="fv-num">{formatWon(q(POSITION_HIGH))}</b> 언저리 위면 비싼 편이에요.</p>
   </article>;
 }
 
-export function WhatIf({ seasonal, history, asOf, unit }: { seasonal: SeasonalCard | null; history: PricePoint[]; asOf: string | null; unit: string }) {
+export function WhatIf({ seasonal, position, history, asOf, unit }: { seasonal: SeasonalCard | null; position: PricePositionCard | null; history: PricePoint[]; asOf: string | null; unit: string }) {
   const hasSeasonal = seasonal?.fact.normalAvg != null && seasonal.fact.recentAvg != null;
   const hasYear = lastYearPrices(history, asOf).length >= 30;
   if (!hasSeasonal && !hasYear) return <p className="fv-notice">다시 계산할 가격 기록이 모자라요.</p>;
   return <>
     <div className="an-whatifs">
       {hasSeasonal && <SeasonalWhatIf card={seasonal!} />}
-      {hasYear && <PositionWhatIf history={history} asOf={asOf} />}
+      {hasYear && <PositionWhatIf history={history} asOf={asOf} server={position} />}
     </div>
     <p className="fv-cap">가격 단위: {unit}. 슬라이더는 화면에서만 다시 계산해요. 실제 판단은 바뀌지 않아요.</p>
   </>;

@@ -1,4 +1,4 @@
-import type { LivePrice, PriceIndicators, PricePoint, SeasonalCard } from "@/lib/prices/model";
+import type { LivePrice, PriceIndicators, PricePoint, PricePositionCard, SeasonalCard } from "@/lib/prices/model";
 import type { ShapAnalysis } from "@/lib/prices/shap";
 import { longDate } from "@/lib/prices/format";
 import { EmptyState } from "@/components/fv/state";
@@ -25,6 +25,7 @@ export function AnalysisRoom({ overview, item, indicators, factors, history }: {
   overview: OverviewItem[]; item: LivePrice; indicators: PriceIndicators | null; factors: ShapAnalysis | null; history: PricePoint[];
 }) {
   const seasonal = indicators?.cards.find((card): card is SeasonalCard => card.key === "SEASONAL") ?? null;
+  const position = indicators?.cards.find((card): card is PricePositionCard => card.key === "PRICE_POSITION") ?? null;
   const asOf = indicators?.asOfDate ?? item.priceDate;
   const noData = item.status === "NO_DATA" || !history.some(point => point.price !== null);
   return <main id="main-content" className="fv-page analysis-page">
@@ -51,7 +52,7 @@ export function AnalysisRoom({ overview, item, indicators, factors, history }: {
       </Section>
 
       <Section id="whatif" step={4} title="만약에 가격이 바뀌면?" lead="슬라이더로 가격을 움직이면 판단을 같은 규칙으로 바로 다시 계산해요. 어디서 판단이 바뀌는지 볼 수 있어요.">
-        <WhatIf seasonal={seasonal} history={history} asOf={indicators?.asOfDate ?? null} unit={item.unit} />
+        <WhatIf seasonal={seasonal} position={position} history={history} asOf={indicators?.asOfDate ?? null} unit={item.unit} />
       </Section>
 
       <Section id="calendar" step={5} title="지난 판단 달력과 성적표" lead="과거 주마다 평년 대비 판단을 다시 계산해 칠했어요. 그 판단 뒤 가격이 실제로 어떻게 움직였는지도 세어 봤어요.">

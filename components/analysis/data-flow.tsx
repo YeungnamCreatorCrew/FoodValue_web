@@ -31,7 +31,7 @@ export function DataFlow({ item, indicators, factors, history }: { item: LivePri
   const inputs = factors?.factors.filter(f => f.id !== ARIMA) ?? [];
   const hasArima = factors?.factors.some(f => f.id === ARIMA) ?? false;
   const groups = Object.entries(SOURCES).map(([key, value]) => ({ key, ...value, count: inputs.filter(f => f.category === key).length })).filter(g => g.count > 0);
-  const ensemble = factors?.modelName?.startsWith("v2") ?? false;
+  const ensemble = /^v2/i.test(factors?.modelName ?? "");
   const models = ensemble ? ["XGBoost", "LightGBM", ...(hasArima ? ["AutoARIMA"] : [])] : [factors?.modelName ?? "예측 모델"];
 
   return <div className="an-flow">
@@ -40,6 +40,7 @@ export function DataFlow({ item, indicators, factors, history }: { item: LivePri
       <div className="an-lane-row">
         <Node title="KAMIS 가격 기록">
           <p>일별 소매가 <b className="fv-num">{formatNumber(days)}일</b> (최근 1년)</p>
+          {cards.some(card => card.key === "WHOLESALE_LEAD" || card.key === "RETAIL_WHOLESALE_GAP") && <p>같은 기간 도매가</p>}
           {years.length > 0 && <p>연도별 주 평균 <b className="fv-num">{years[0].year}~{years.at(-1)!.year}년</b></p>}
         </Node>
         <Arrow />

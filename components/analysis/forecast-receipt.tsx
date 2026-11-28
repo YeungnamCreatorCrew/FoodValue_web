@@ -57,7 +57,7 @@ export function ForecastReceipt({ item, factors }: { item: LivePrice; factors: S
       </article>
       <article className="fv-card an-share">
         <h3 className="an-card-title">기준값이란?</h3>
-        <p className="fv-cap">모델이 요인을 하나도 보지 않았을 때 내놓는 값이에요. {factors.modelName?.startsWith("v2")
+        <p className="fv-cap">모델이 요인을 하나도 보지 않았을 때 내놓는 값이에요. {/^v2/i.test(factors.modelName ?? "")
           ? "트리 모델(XGBoost·LightGBM)은 학습한 평균 변화, AutoARIMA는 지금 가격에서 출발해요. 여기에 요인별 영향을 더하면 세 모델 평균 예측가가 돼요."
           : "여기에 요인별 영향을 더하면 예측가가 돼요."}</p>
         {factors.validation?.mape != null && <p className="fv-cap">과거 검증 평균 오차 {formatNumber(factors.validation.mape, 1)}%{factors.validation.within5Pct != null && ` · 실제 가격이 ±5% 안에 든 날 ${formatNumber(factors.validation.within5Pct, 0)}%`}</p>}

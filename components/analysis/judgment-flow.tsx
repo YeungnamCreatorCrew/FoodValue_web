@@ -1,4 +1,4 @@
-import type { IndicatorCard, IndicatorState, SeasonalCard } from "@/lib/prices/model";
+import type { IndicatorCard, IndicatorState, SeasonalCard, WholesaleLeadCard } from "@/lib/prices/model";
 import { formatNumber, formatWon } from "@/lib/prices/format";
 import { POSITION_HIGH, POSITION_LOW, SEASONAL_BAND, positionState, seasonalState } from "@/lib/analysis/compute";
 import { toneClass } from "@/components/prices/indicator-ui";
@@ -102,8 +102,10 @@ export function PercentileCalcs({ cards }: { cards: IndicatorCard[] }) {
     }
     return [];
   });
-  if (!rows.length) return null;
+  const lead = cards.find((card): card is WholesaleLeadCard => card.key === "WHOLESALE_LEAD" && card.verdict !== "WEAK" && card.fact.wholesaleChange2w !== null);
+  if (!rows.length && !lead) return null;
   return <div className="an-pcalcs">
+    {lead && <LeadCalc card={lead} />}
     {rows.map(row => <article key={row.key} className="fv-card an-pcalc">
       <h3 className="an-card-title">{row.title}{!row.colored && <span className="fv-badge tone-flat">자리만 알려줘요</span>}</h3>
       <p className="an-formula">{row.formula}</p>
@@ -112,4 +114,26 @@ export function PercentileCalcs({ cards }: { cards: IndicatorCard[] }) {
       <p className="fv-cap">{row.extra}</p>
     </article>)}
   </div>;
+}
+
+const LEAD_RANGE = 0.15; // 눈금자 양 끝: −15% ~ +15%
+const leadPosition = (value: number) => (value + LEAD_RANGE) / (LEAD_RANGE * 2);
+const LEAD_LABEL: Record<IndicatorState, string> = { down: "내림 신호", neutral: "신호 없음", up: "오름 신호" };
+
+/** 도매 흐름: 도매가 2주 변화가 ±기준(5%) 밖이면 신호. 과거에 그 뒤 소매가가 따라 움직인 비율(검증)을 같이 보여준다. */
+function LeadCalc({ card }: { card: WholesaleLeadCard }) {
+  const change = card.fact.wholesaleChange2w!;
+  const threshold = card.evidence?.threshold ?? 0.05;
+  const state: IndicatorState = card.state ?? (change >= threshold ? "up" : change <= -threshold ? "down" : "neutral");
+  const ev = card.evidence;
+  const rate = (value: number | null) => value === null ? "-" : `${formatNumber(value * 100, 0)}%`;
+  return <article className="fv-card an-pcalc">
+    <h3 className="an-card-title">도매 흐름 <span className="fv-cap">시장 도매가가 먼저 움직였나</span></h3>
+    <p className="an-formula">도매가 최근 2주 변화 (소매가는 같은 기간 {card.fact.retailChange2w === null ? "-" : pct(card.fact.retailChange2w)})</p>
+    <p className="an-step-v fv-num">= {pct(change)}<span className={`an-pcalc-state ${toneClass(state)}`}> → {LEAD_LABEL[state]}</span></p>
+    <Ruler position={leadPosition(change)} cuts={[leadPosition(-threshold), leadPosition(threshold)]}
+      labels={["내림 신호", "신호 없음", "오름 신호"]} ends={["−15%", "+15%"]} pin={pct(change)} />
+    <p className="fv-cap">기준: 2주 새 ±{formatNumber(threshold * 100, 0)}% 넘게 움직이면 신호</p>
+    {ev && <p className="fv-cap">과거 검증({ev.periodStart?.slice(0, 4) ?? "?"}~{ev.periodEnd?.slice(0, 4) ?? "?"}): 도매가가 {formatNumber(threshold * 100, 0)}% 넘게 오른 뒤 2주 안에 소매가가 오른 비율 <b className="fv-num">{rate(ev.upAfterRate)}</b>(평소 {rate(ev.baseUpRate)}), 내린 뒤 소매가가 내린 비율 <b className="fv-num">{rate(ev.downAfterRate)}</b>(평소 {rate(ev.baseDownRate)}).</p>}
+  </article>;
 }
