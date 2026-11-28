@@ -41,7 +41,7 @@ export const HelpPanel = forwardRef<HTMLDivElement, { onClose: () => void }>(fun
             <li><span className="fv-badge tone-up">↑ 비싼 편</span>평년보다 비싸요. 오른 값도 빨강이에요</li>
           </ul>
         </div>
-        <Link href="/about" className="fv-link" prefetch={false} onClick={() => setOpen(false)}>판단 기준 자세히 보기 ›</Link>
+        <Link href="/about" className="fv-link" prefetch={false} onClick={() => setOpen(false)}>판단 기준 전체 한 번에 보기 ›</Link>
       </div>
     </div>, document.body);
 });

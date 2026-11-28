@@ -144,3 +144,35 @@ a.fv-card:hover { border-color: var(--fv-line-strong); box-shadow: var(--sh-floa
 /* 연한 빨강 바탕 위 빨강 글자는 대비가 모자라 한 단계 진한 빨강을 쓴다. */
 .fv-badge.tone-up, .judge-pill.tone-up, .hero-verdict.tone-up .tone-up, .ev-card.tone-up .tone-up, .hero-card .hero-verdict.tone-up .hero-eyebrow { color: var(--fv-up-ink); }
 .fv-change.ref-up { color: var(--fv-ref-up); } .fv-change.ref-down { color: var(--fv-ref-down); }
+/* 지표 옆 (?) 도움말: 그 자리에서 판단 기준·믿을 만한가를 보여주는 작은 창 */
+.info-tip { display: inline-grid; place-items: center; flex: none; width: 28px; height: 28px; margin-left: 2px; border-radius: 50%; color: var(--fv-text-3); cursor: pointer; vertical-align: middle; }
+.info-tip:hover, .info-tip[aria-expanded=true] { background: var(--fv-subtle); color: var(--fv-brand); }
+.tip-panel { position: fixed; z-index: 70; width: min(360px, calc(100vw - 16px)); max-height: min(70vh, 560px); overflow-y: auto; display: flex; flex-direction: column; gap: var(--sp-3); padding: var(--sp-4) var(--sp-5); border: 1px solid var(--fv-line-strong); border-radius: var(--r-lg); background: var(--fv-bg); box-shadow: var(--sh-float); font-size: var(--fs-cap); font-weight: 400; line-height: var(--lh-body); color: var(--fv-text); text-align: left; white-space: normal; word-break: keep-all; }
+.tip-head { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-2); }
+.tip-title { font-size: var(--fs-body); font-weight: 800; }
+.tip-close { display: inline-grid; place-items: center; width: 32px; height: 32px; border-radius: var(--r-sm); color: var(--fv-text-2); cursor: pointer; }
+.tip-close:hover { background: var(--fv-subtle); }
+.tip-rule b, .tip-sub { display: block; font-weight: 750; color: var(--fv-text); }
+.tip-note { color: var(--fv-text-2); }
+.tip-trust-box { display: flex; flex-direction: column; gap: var(--sp-2); padding: var(--sp-3); border-radius: var(--r-sm); background: var(--fv-brand-soft); }
+.tip-sub { color: var(--fv-brand); }
+.tip-trust { display: flex; flex-direction: column; gap: var(--sp-2); }
+.tip-trust li { display: flex; flex-direction: column; gap: 2px; }
+.tip-trust b { font-size: var(--fs-body); font-weight: 800; }
+.tip-base { color: var(--fv-text-2); }
+.tip-lift { font-weight: 700; color: var(--fv-brand); }
+.tip-trust-none, .tip-foot { color: var(--fv-text-2); font-size: 13px; }
+.tip-ruler { position: relative; display: flex; flex-direction: column; gap: 2px; padding-top: 18px; }
+.tip-ruler-cuts { position: absolute; top: 0; left: 0; right: 0; height: 16px; font-size: 12px; font-weight: 700; color: var(--fv-text-2); }
+.tip-ruler-cuts span { position: absolute; transform: translateX(-50%); white-space: nowrap; }
+.tip-ruler-track { display: grid; gap: 2px; height: 10px; }
+.tip-ruler-track span:first-child { border-radius: var(--r-pill) 0 0 var(--r-pill); }
+.tip-ruler-track span:last-child { border-radius: 0 var(--r-pill) var(--r-pill) 0; }
+.tip-ruler .is-low { background: var(--fv-down-soft); } .tip-ruler .is-mid { background: var(--fv-flat-soft); } .tip-ruler .is-high { background: var(--fv-up-soft); }
+.tip-ruler.is-plain .is-low, .tip-ruler.is-plain .is-high { background: var(--fv-flat-soft); }
+.tip-ruler-zones { display: grid; gap: 2px; text-align: center; font-size: 12px; color: var(--fv-text-2); }
+.board-th { display: inline-flex; align-items: center; gap: 0; }
+.forecast-title .info-tip { width: 24px; height: 24px; }
+.ev-body-q .info-tip { margin-left: var(--sp-1); }
+.board-filter-tip { display: none; align-items: center; }
+@media (max-width: 767px) { .board-filter-tip { display: inline-flex; } .board-filter-tip .info-tip { width: 44px; height: 44px; } }

@@ -9,6 +9,7 @@ import { PercentileBar } from "@/components/prices/indicator-ui";
 import { toHaeyo } from "@/components/fv/haeyo";
 import { IndexedChart, SeasonalChart } from "@/components/prices/indicator-charts";
 import { reasonLine, ruleLine } from "@/lib/prices/why";
+import { RuleTip } from "@/components/fv/judgment-tip";
 
 /**
  * 판단 근거 카드. 지표마다 '질문 + 큰 답' 한 장. 누르면 핵심 숫자 · 그림 · 짧은 설명이 펼쳐진다.
@@ -239,7 +240,7 @@ function EvidenceBody({ card, unit, signal, history }: CardProps & { history: Pr
   const chartTone = tone === "tone-down" ? "chart-down" : tone === "tone-up" ? "chart-up" : "chart-flat";
   return <div id={panel} className={`ev-body ${chartTone} ${single ? "is-single" : ""}`} role="region" aria-label={`${names.name} 자세히`}>
     <div className="ev-body-main">
-      <p className="ev-body-q">{names.question.replace(/\?$/, "")}?</p>
+      <p className="ev-body-q">{names.question.replace(/\?$/, "")}?<RuleTip ruleKey={card.key} card={card} scope="이 품목 과거 기록" /></p>
       <div className="ev-key"><span className="ev-key-now"><strong>{row.now}</strong><span>{row.nowNote}</span></span><span className="ev-key-basis">{row.basis}</span></div>
       {ruleLine(card) && <p className="ev-rule"><b>이렇게 판단했어요</b>{ruleLine(card)}</p>}
       {row.source && row.describes ? <p className="ev-read">{toHaeyo(row.source)}</p> : help && <p className="ev-read">{help.read}</p>}

@@ -13,6 +13,7 @@ import { Modal } from "@/components/common/modal";
 import type { PriceModelTrack } from "@/lib/prices/dto";
 import { TRACKS, trackLabel } from "@/lib/prices/track-meta";
 import { ModelSwitch } from "./model-switch";
+import { InfoTip } from "@/components/fv/judgment-tip";
 
 /** 예측 요인 표는 팝업을 열 때 받는다(첫 화면 JS를 줄인다). */
 const ShapFactorView = dynamic(() => import("@/components/prices/shap-factors").then(module => module.ShapFactorView), {
@@ -66,6 +67,20 @@ function passed(date: string | null | undefined) {
   return date < today;
 }
 
+/** AI 예측 도움말: 어떤 모델인지, 판단에 안 쓴다는 것, 과거에 얼마나 맞았는지(WAS 검증 기록, 10개 가격 계열 평균). */
+const MODEL_TRUST: Record<PriceModelTrack, string> = {
+  ENSEMBLE: "24.11~25.10 검증에서 직전 가격 그대로 쓸 때보다 오차가 7.2% 적었어요(평균 오차 4.56% vs 4.91%).",
+  STRUCT: "24.11~25.10 검증에서 소매 가격은 직전 가격보다 오차가 6.3% 적었어요. 도매는 직전 가격과 같아 도매에는 쓰지 않아요.",
+};
+function ForecastTip({ track }: { track: PriceModelTrack }) {
+  return <InfoTip label={`AI 7일 예측(${trackLabel(track)}) 설명`} title={`AI 7일 예측 · ${trackLabel(track)}`}>
+    <p>{TRACKS.find(t => t.key === track)?.about}</p>
+    <p className="tip-rule"><b>판단에는 쓰지 않아요</b> 싼 편·비싼 편 판단은 지난 가격 지표로만 하고, 예측은 참고로만 보여드려요.</p>
+    <div className="tip-trust-box"><p className="tip-sub">믿을 만한가요?</p><p>{MODEL_TRUST[track]}</p>
+      <p className="tip-foot">이 품목의 과거 성적은 ‘자세히’에서 볼 수 있어요. 직전 가격보다 덜 정확했던 품목은 AI 값 대신 직전 가격을 보여드려요.</p></div>
+  </InfoTip>;
+}
+
 /**
  * 기준 가격 줄의 다섯 번째 칸. 지난 가격 4칸과 같은 줄에 두되, 점선 테두리와 "참고" 표시로 다른 종류(앞으로의 추측)라는 걸 드러낸다.
  * 자세한 숫자·검증 실적·예측 요인은 "자세히"를 눌러 팝업으로 연다.
@@ -82,7 +97,7 @@ export function ForecastCell({ item, track = "ENSEMBLE", onTrack, pending = null
   const button = useRef<HTMLButtonElement>(null);
   const close = useCallback(() => setOpen(false), []);
   const switcher = onTrack && <ModelSwitch value={track} onChange={onTrack} className="forecast-switch" />;
-  const title = (text: string, badge: string) => <h2 id="forecast-title" className="forecast-title">{text}<span className="fv-badge tone-ref">{badge}</span></h2>;
+  const title = (text: string, badge: string) => <h2 id="forecast-title" className="forecast-title">{text}<span className="fv-badge tone-ref">{badge}</span><ForecastTip track={track} /></h2>;
 
   if (!item) return <section className="forecast-cell" aria-labelledby="forecast-title" aria-busy={!pending?.error}>
     {title("AI 7일 예측", "참고")}{switcher}
