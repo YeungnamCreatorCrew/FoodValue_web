@@ -13,6 +13,7 @@ import { Modal } from "@/components/common/modal";
 import type { PriceModelTrack } from "@/lib/prices/dto";
 import { TRACKS, trackLabel } from "@/lib/prices/track-meta";
 import { InfoTip } from "@/components/fv/judgment-tip";
+import { BaselineBasis } from "@/components/prices/baseline-basis";
 
 /** 예측 요인 표는 팝업을 열 때 받는다(첫 화면 JS를 줄인다). */
 const ShapFactorView = dynamic(() => import("@/components/prices/shap-factors").then(module => module.ShapFactorView), {
@@ -111,11 +112,15 @@ export function ForecastCell({ item, track = "ENSEMBLE", pending = null }: {
     <p className="forecast-text">{noForecastReason(item, track)}</p>
   </section>;
 
+  // 직전 가격을 쓰는 품목도 숨기지 않고 '왜?'로 근거(후보별 과거 오차 비교)를 연다. 근거를 못 받았으면 한 줄만.
   if (baseline) return <section className="forecast-cell" aria-labelledby="forecast-title">
     {title("7일 뒤 값", "직전 가격 · 참고")}
     <p className="forecast-value fv-num">{won(item.forecastPrice)}</p>
-    {/* 칸이 좁아 서버의 긴 문장 대신 짧게 말한다(이유는 판단 방식 화면에 있다). */}
-    <p className="forecast-text">AI 예측 대신 직전 가격이에요.</p>
+    <p className="forecast-text"><span>AI 예측 대신 직전 가격이에요.</span>
+      {item.forecastBasis && <button ref={button} type="button" className="fv-link forecast-open" aria-haspopup="dialog" onClick={() => setOpen(true)}>왜?<span aria-hidden="true"> ›</span><span className="sr-only"> 직전 가격을 보여주는 이유</span></button>}</p>
+    {open && item.forecastBasis && <Modal titleId="forecast-modal-title" title={`${item.name} 7일 뒤 값 · 직전 가격인 이유`} badge={<span className="fv-badge tone-ref">참고</span>} onClose={close} returnTo={button}>
+      <BaselineBasis basis={item.forecastBasis} currentPrice={item.currentPrice} />
+    </Modal>}
   </section>;
 
   return <section className="forecast-cell" aria-labelledby="forecast-title">

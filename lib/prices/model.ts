@@ -45,6 +45,24 @@ export interface LivePrice extends PriceChartData {
   aiSummary: AiSummary | null;
   /** List only: 지표 칩과 1년 가격대(서버 스냅샷). 없으면 null. */
   listIndicators: ListIndicators | null;
+  /** Detail only: 7일 뒤 값이 직전 가격(BASELINE)일 때 그렇게 정한 근거(forecast.metrics). 아니면 null. */
+  forecastBasis: ForecastBasis | null;
+}
+
+/** 후보 모델 하나의 과거 성적. mape = 평균 오차율(%). */
+export interface BasisRow { model: string; label: string; ai: boolean; mape: number | null; mae: number | null }
+/**
+ * 직전 가격으로 정한 근거. WAS 응답 모양이 둘이다:
+ * - 후보 비교(v5): 고르는 구간(selection)에서 후보별 오차를 비교해 가장 작은 것을 쓴다. recent = 그 뒤 따로 떼어 둔 검증 구간.
+ * - 검증 판정(v2): AI 모델이 검증을 통과하지 못하면 직전 가격. 직전 가격 오차와 AI가 계산했던 값만 온다.
+ */
+export interface ForecastBasis {
+  kind: "compare" | "verdict";
+  rows: BasisRow[];
+  samples: number | null;
+  recent: { start: string | null; end: string | null; rows: BasisRow[] } | null;
+  naiveMape: number | null;
+  aiPrice: number | null;
 }
 export interface ListIndicators { asOfDate: string; stale: boolean; headline: string | null; signals: IndicatorSignal[]; yearRange: { low: number | null; high: number | null; percentile: number | null } | null }
 export interface PriceListQuery {

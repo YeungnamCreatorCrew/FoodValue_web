@@ -4,6 +4,7 @@ import { unavailableText } from "@/lib/prices/shap";
 import { formatNumber, formatWon, shortDate } from "@/lib/prices/format";
 import { receipt } from "@/lib/analysis/compute";
 import { FactorMap } from "./factor-map";
+import { BaselineBasis } from "@/components/prices/baseline-basis";
 
 /** 원 단위 기여: +12원 / −5원. 0.5원 미만은 0원(중립)으로 보여준다(상세 요인 표와 같은 기준). */
 function signedWon(value: number) {
@@ -14,6 +15,8 @@ function signedWon(value: number) {
 const tone = (value: number) => Math.round(value) > 0 ? "ref-up" : Math.round(value) < 0 ? "ref-down" : "";
 
 export function ForecastReceipt({ item, factors }: { item: LivePrice; factors: ShapAnalysis | null }) {
+  // 직전 가격을 쓰는 품목은 분해할 모델이 없으니, 대신 직전 가격으로 정한 근거를 보여준다.
+  if (item.forecastBasis) return <article className="fv-card an-share"><BaselineBasis basis={item.forecastBasis} currentPrice={item.currentPrice} /></article>;
   if (!factors || !factors.explained || factors.basePrice === null || factors.predictedPrice === null) {
     return <p className="fv-notice">{factors ? unavailableText(factors.unavailableReason) : "이번 예측의 요인 정보를 불러오지 못했어요."}</p>;
   }
@@ -57,9 +60,7 @@ export function ForecastReceipt({ item, factors }: { item: LivePrice; factors: S
       </article>
       <article className="fv-card an-share">
         <h3 className="an-card-title">기준값이란?</h3>
-        <p className="fv-cap">모델이 요인을 하나도 보지 않았을 때 내놓는 값이에요. {/^v2/i.test(factors.modelName ?? "")
-          ? "트리 모델(XGBoost·LightGBM)은 학습한 평균 변화, AutoARIMA는 지금 가격에서 출발해요. 여기에 요인별 영향을 더하면 세 모델 평균 예측가가 돼요."
-          : "여기에 요인별 영향을 더하면 예측가가 돼요."}</p>
+        <p className="fv-cap">모델이 요인을 하나도 보지 않았을 때 내놓는 값이에요. 여기에 요인별 영향을 더하고 빼면 예측가가 돼요.</p>
         {factors.validation?.mape != null && <p className="fv-cap">과거 검증 평균 오차 {formatNumber(factors.validation.mape, 1)}%{factors.validation.within5Pct != null && ` · 실제 가격이 ±5% 안에 든 날 ${formatNumber(factors.validation.within5Pct, 0)}%`}</p>}
       </article>
     </div>
