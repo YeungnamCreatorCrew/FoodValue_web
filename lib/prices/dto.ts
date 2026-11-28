@@ -43,6 +43,15 @@ export interface PriceHistoryDto {
   endDate: string;
   points: { date: string; price: number | null }[];
 }
+/** WAS GET /prices/items/history?ids=…: 여러 품목 이력 묶음. items는 요청 순서, 각 항목은 단건 /history와 같은 형식. */
+export interface PriceHistoriesDto {
+  market: PriceMarketDto;
+  days: number;
+  startDate: string;
+  endDate: string;
+  items: PriceHistoryDto[];
+  missingItemIds: number[];
+}
 export interface PriceForecastDto {
   itemId: number;
   market: PriceMarketDto;

@@ -1,4 +1,4 @@
-import type { FactorHistoryDto, PriceDetailDto, PriceFactorsDto, PriceForecastDto, PriceHistoryDto, PriceIndicatorsDto, PriceModelTrack, PricePageDto, PriceSortDto } from "./dto";
+import type { FactorHistoryDto, PriceDetailDto, PriceFactorsDto, PriceForecastDto, PriceHistoriesDto, PriceHistoryDto, PriceIndicatorsDto, PriceModelTrack, PricePageDto, PriceSortDto } from "./dto";
 import type { PriceListQuery, HistoryPeriod, PriceHistoryPeriod } from "./model";
 
 // Uvicorn's default port; override before next dev/build for another WAS host.
@@ -62,6 +62,12 @@ export const pricesApi = {
   history(id: string, days: PriceHistoryPeriod, signal?: AbortSignal) {
     const params = marketParams(); params.set("days", String(days));
     return get<PriceHistoryDto>(`${itemPath(id)}/history`, params, signal);
+  },
+  /** 여러 품목 이력을 한 요청으로(WAS 묶음 이력 API). 품목마다 /history를 부르면 공유 DB 동시 접속 한도를 빨리 채운다. */
+  histories(ids: string[], days: PriceHistoryPeriod, signal?: AbortSignal) {
+    ids.forEach(itemPath);  // 잘못된 id는 보내지 않는다
+    const params = marketParams(); params.set("ids", ids.join(",")); params.set("days", String(days));
+    return get<PriceHistoriesDto>("/history", params, signal);
   },
   forecast(id: string, signal?: AbortSignal, track: PriceModelTrack = "ENSEMBLE") {
     return get<PriceForecastDto>(`${itemPath(id)}/forecast`, trackParams(track), signal).then(dto => requireTrack(dto, track));

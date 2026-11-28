@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { AnalysisRoom, type OverviewItem } from "@/components/analysis/analysis-room";
-import { getPrice, getPriceFactors, getPriceHistory, getPriceIndicators, listPrices } from "@/lib/prices/service";
+import { getPrice, getPriceFactors, getPriceHistories, getPriceIndicators, listPrices } from "@/lib/prices/service";
 import { EmptyState } from "@/components/fv/state";
 
 export const metadata: Metadata = { title: "분석실 | FoodValue" };
@@ -23,14 +23,16 @@ export default async function AnalysisPage({ searchParams }: PageProps<"/analysi
     <EmptyState title="품목이 없어요">시세를 제공하는 품목이 아직 없어요.</EmptyState>
   </main>;
 
-  // 품목 한눈에 보기용 1년 이력은 품목마다 한 번씩 부른다. 고른 품목은 그 값을 같이 쓴다.
+  // 품목 한눈에 보기용 1년 이력은 묶음 API 한 번으로 받는다(품목마다 부르면 공유 DB 동시 접속을 품목 수만큼 쓴다).
+  // 고른 품목은 그 값을 같이 쓴다. 실패하면 미니 그래프만 비고 나머지 분석은 그대로 보여준다.
+  const shown = page.items.slice(0, 12);
   const [histories, detail, indicators, factors] = await Promise.all([
-    Promise.all(page.items.slice(0, 12).map(item => getPriceHistory(item.id, 365).catch(() => null))),
+    getPriceHistories(shown.map(item => item.id), 365).catch(() => new Map()),
     getPrice(selected.id).catch(() => selected),
     getPriceIndicators(selected.id).catch(() => null),
     getPriceFactors(selected.id).catch(() => null),
   ]);
-  const overview: OverviewItem[] = page.items.slice(0, 12).map((item, index) => ({ item, history: histories[index]?.priceHistory ?? [] }));
+  const overview: OverviewItem[] = shown.map(item => ({ item, history: histories.get(item.id) ?? [] }));
   const history = overview.find(row => row.item.id === selected.id)?.history ?? [];
   return <AnalysisRoom overview={overview} item={detail} indicators={indicators} factors={factors} history={history} />;
 }

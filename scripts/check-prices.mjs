@@ -17,7 +17,7 @@ require.extensions[".ts"] = (module, filename) => {
 const { pricesApi, PriceApiError } = require("../lib/prices/api.ts");
 const { itemImage } = require("../lib/prices/item-images.ts");
 const { mapSummary, mapDetail, withForecast, mapIndicators } = require("../lib/prices/mapper.ts");
-const { getPriceChart, resolveFavoriteId, resolvePriceRoute } = require("../lib/prices/service.ts");
+const { getPriceChart, getPriceHistories, resolveFavoriteId, resolvePriceRoute } = require("../lib/prices/service.ts");
 const { forecastChart } = require("../lib/prices/forecast-chart.ts");
 const { favoriteIdentity } = require("../lib/prices/identity.ts");
 const { won } = require("../lib/prices/format.ts");
@@ -128,6 +128,33 @@ try {
       assert.equal((chart.forecastPath.match(/L/g) ?? []).length, 7);
       assert.equal(/NaN|Infinity/.test(chart.actualPath + chart.forecastPath), false);
     }
+  });
+  await test("batch histories call one request with ids and map by item id", async () => {
+    const point = price => ({ date: "2026-11-09", price });
+    respond({ market: "RETAIL", days: 365, startDate: "2025-11-10", endDate: "2026-11-09", missingItemIds: [903],
+      items: [{ itemId: 902, market: "RETAIL", days: 365, points: [point(null)] }, { itemId: 901, market: "RETAIL", days: 365, points: [point(3000)] }] });
+    const before = calls.length;
+    const map = await getPriceHistories(["901", "902", "903"], 365);
+    assert.equal(calls.length - before, 1);
+    const request = calls.at(-1).url;
+    assert.equal(request.pathname, "/api/v1/prices/items/history");
+    assert.equal(request.searchParams.get("ids"), "901,902,903"); assert.equal(request.searchParams.get("days"), "365");
+    assert.equal(request.searchParams.get("market"), "RETAIL");
+    assert.deepEqual(map.get("901"), [point(3000)]); assert.deepEqual(map.get("902"), [point(null)]); assert.equal(map.has("903"), false);
+    await assert.rejects(() => getPriceHistories(["901", "abc"], 365), (error) => error instanceof PriceApiError && error.status === 404);
+    assert.equal((await getPriceHistories([], 365)).size, 0);
+  });
+  await test("batch histories fall back to per-item calls on an older WAS without the batch route", async () => {
+    globalThis.fetch = async (url, options) => {
+      const parsed = new URL(url); calls.push({ url: parsed, options });
+      if (parsed.pathname.endsWith("/items/history")) return new Response("{}", { status: 400 });
+      if (parsed.pathname.includes("/902/")) return new Response("{}", { status: 500 });
+      return new Response(JSON.stringify({ itemId: 901, endDate: "2026-11-09", points: [{ date: "2026-11-09", price: 3000 }] }));
+    };
+    const map = await getPriceHistories(["901", "902"], 365);
+    assert.deepEqual(map.get("901"), [{ date: "2026-11-09", price: 3000 }]); assert.equal(map.has("902"), false);
+    respond({}, 503);
+    await assert.rejects(() => getPriceHistories(["901"], 365), (error) => error instanceof PriceApiError && error.status === 503);
   });
   await test("all-null history, missing dates and absent predictions produce no invented points", () => {
     const item = { ...mapSummary({ ...summary, currentPrice: null, forecastPrice: null, priceDate: null, forecastBaseDate: null, forecastTargetDate: null }),
