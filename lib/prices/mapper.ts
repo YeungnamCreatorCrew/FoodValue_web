@@ -1,5 +1,5 @@
 import type { IndicatorCardDto, PriceDetailDto, PriceForecastDto, PriceGuideDto, PriceIndicatorsDto, PriceSummaryDto } from "./dto";
-import type { BuyingGuide, ForecastPoint, IndicatorCard, IndicatorSignal, IndicatorState, IndicatorVerdict, LevelEvidence, LivePrice, PriceIndicators } from "./model";
+import type { BuyingGuide, ForecastBasis, ForecastPoint, IndicatorCard, IndicatorSignal, IndicatorState, IndicatorVerdict, LevelEvidence, LivePrice, PriceIndicators } from "./model";
 import { mapDataFactors } from "./factors";
 import { mapAiSummary } from "./shap";
 import { itemImage } from "./item-images";
@@ -23,7 +23,7 @@ export function mapSummary(dto: PriceSummaryDto): LivePrice {
     currentPrice: dto.currentPrice, weeklyChangeRate: dto.weeklyChangePercent,
     forecastDate: dto.forecastTargetDate, forecastPrice: dto.forecastPrice,
     ...priceChanges(dto.currentPrice, dto.forecastPrice, dto.forecastChangePercent),
-    priceHistory: [], forecastPoints: [], guide: null, forecastStatus: null, dataFactors: [], aiSummary: null,
+    priceHistory: [], forecastPoints: [], guide: null, forecastStatus: null, dataFactors: [], aiSummary: null, forecastBasis: null,
     listIndicators: dto.indicators ? { asOfDate: dto.indicators.asOfDate, stale: dto.indicators.stale, headline: dto.indicators.headline ?? null, yearRange: dto.indicators.yearRange,
       signals: dto.indicators.signals.map(s => ({ key: s.key, label: s.label, state: indicatorState(s.state), stateLabel: s.stateLabel })) } : null,
   };
@@ -47,7 +47,39 @@ export function withForecast(item: LivePrice, points: ForecastPoint[], baseDate:
 }
 export function mapDetail(dto: PriceDetailDto): LivePrice {
   return { ...withForecast(mapSummary(dto.item), mapForecast(dto.forecast), dto.forecast.baseDate), guide: mapGuide(dto.guide),
-    forecastStatus: dto.forecast.status, dataFactors: mapDataFactors(dto.guide?.factors), aiSummary: mapAiSummary(dto.summary) };
+    forecastStatus: dto.forecast.status, dataFactors: mapDataFactors(dto.guide?.factors), aiSummary: mapAiSummary(dto.summary),
+    forecastBasis: dto.forecast.quality === "BASELINE" ? mapForecastBasis(dto.forecast.metrics) : null };
+}
+
+/** 후보 모델 이름 → 화면 이름. 처음 보는 이름은 그대로 둔다. */
+const MODEL_LABEL: Record<string, string> = {
+  LAST_PRICE: "직전 가격 그대로", MEAN_7: "최근 7일 평균", XGBOOST: "AI · 가격 흐름만", XGBOOST_EXT: "AI · 가격 + 날씨·도매·명절",
+  XGBOOST_WEIGHTED: "AI · 외부 요인 가중", V2_ENSEMBLE: "AI 앙상블",
+};
+const BASELINE_MODELS = new Set(["LAST_PRICE", "MEAN_7"]);
+function basisRows(table: unknown) {
+  if (!table || typeof table !== "object") return [];
+  return Object.entries(table as Record<string, Record<string, unknown>>)
+    .map(([model, score]) => ({ model, label: MODEL_LABEL[model] ?? model, ai: !BASELINE_MODELS.has(model), mape: num(score?.mape), mae: num(score?.mae) }))
+    .filter(row => row.mape !== null)
+    .toSorted((a, b) => a.mape! - b.mape!);
+}
+/** forecast.metrics(모양이 열린 JSON)에서 직전 가격으로 정한 근거만 꺼낸다. 읽을 게 없으면 null. */
+export function mapForecastBasis(metrics: Record<string, unknown> | null): ForecastBasis | null {
+  if (!metrics) return null;
+  const rows = basisRows(metrics.selection);
+  if (rows.length) {
+    const firstSample = Object.values(metrics.selection as Record<string, Record<string, unknown>>)[0];
+    const recentRows = basisRows(metrics.evaluation);
+    return { kind: "compare", rows, samples: num(firstSample?.samples), naiveMape: rows.find(r => r.model === "LAST_PRICE")?.mape ?? null, aiPrice: null,
+      recent: recentRows.length ? { start: text(metrics.evaluationStart), end: text(metrics.evaluationEnd), rows: recentRows } : null };
+  }
+  const validation = metrics.validation as Record<string, unknown> | undefined;
+  const modelPrices = (metrics.ensemblePrices ?? metrics.structPrices) as unknown;
+  const aiPrice = Array.isArray(modelPrices) ? num(modelPrices.at(-1)) : null;
+  const naiveMape = num(validation?.naiveMape);
+  if (naiveMape === null && aiPrice === null) return null;
+  return { kind: "verdict", rows: [], samples: num(validation?.points), recent: null, naiveMape, aiPrice: aiPrice === null ? null : Math.round(aiPrice) };
 }
 
 // ---- Judgement-aid indicators (draft contract). All DTO field names are read here only, so a rename touches this block. ----
