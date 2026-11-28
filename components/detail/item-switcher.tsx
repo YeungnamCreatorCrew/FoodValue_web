@@ -10,7 +10,7 @@ export function ItemSwitcher({ currentId }: { currentId: string }) {
   const router = useRouter();
   const items = data?.items ?? [];
   return <nav aria-label="품목 바꾸기" className="switcher">
-    <Link href="/" prefetch={false} className="fv-link switcher-home">‹ 전체 품목</Link>
+    <Link href="/prices" prefetch={false} className="fv-link switcher-home">‹ 전체 품목</Link>
     {items.length > 1 && items.length <= 8 && <ul className="switcher-list">
       {items.map(item => <li key={item.id}>
         <Link href={`/prices/${item.id}`} prefetch={false} className="switcher-item" aria-current={item.id === currentId ? "page" : undefined}>{item.name}</Link>
