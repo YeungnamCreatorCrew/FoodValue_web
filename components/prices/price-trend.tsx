@@ -44,7 +44,7 @@ function describe(item: LivePrice, days: number, first: number | null, last: num
 /** 상세 가격 흐름 그래프: 실제 가격 = 실선, AI 7일 예측 = 점선 + 범위 띠 + '참고'. 기간을 바꿔도 높이가 그대로다. */
 /** yearHistory: 서버가 미리 받은 365일 이력. 있으면 기간을 바꿔도 다시 부르지 않고 잘라서 쓴다. */
 /** bare: 상세 위 카드 안에 넣을 때 카드 테두리 없이 그린다. */
-export function PriceTrend({ item, baseline, yearHistory = null, bare = false }: { item: LivePrice; baseline: boolean; yearHistory?: { priceHistory: PricePoint[]; historyEndDate: string } | null; bare?: boolean }) {
+export function PriceTrend({ item, baseline, yearHistory = null, bare = false, forecastName }: { item: LivePrice; baseline: boolean; yearHistory?: { priceHistory: PricePoint[]; historyEndDate: string } | null; bare?: boolean; /** 범례의 예측 이름(기본 "AI 7일 예측"). */ forecastName?: string }) {
   // 기간은 주소(?period=)에 남겨 뒤로 가기로 돌아와도 그대로다. history.replaceState라 서버를 다시 부르지 않는다.
   const params = useSearchParams();
   const fromUrl = Number(params.get("period"));
@@ -69,7 +69,7 @@ export function PriceTrend({ item, baseline, yearHistory = null, bare = false }:
   const LEFT = Math.max(56, formatNumber(Math.round(Math.max(item.currentPrice ?? 0, ...(history?.priceHistory ?? []).map(point => point.price ?? 0), ...item.forecastPoints.map(point => point.upper ?? point.price ?? 0)))).length * 9 + 16);
   const chartItem = history ? { ...item, priceHistory: history.priceHistory, historyEndDate: history.historyEndDate } : item;
   const chart = forecastChart(chartItem, period, { left: LEFT, right, top: TOP + 16, bottom: BOTTOM });
-  const forecastLabel = baseline ? "직전 가격 유지" : "AI 7일 예측";
+  const forecastLabel = baseline ? "직전 가격 유지" : forecastName ?? "AI 7일 예측";
   const fp = chart.points.filter(point => point.kind === "forecast");
   const range = item.forecastPoints.filter(point => point.lower !== null && point.upper !== null && fp.some(slot => slot.date === point.date));
   // 직전 가격 유지(BASELINE)는 AI 예측이 아니라서 범위 띠를 그리지 않는다(범례에 "AI 예측 범위"가 뜨면 거짓이 된다).
@@ -95,7 +95,7 @@ export function PriceTrend({ item, baseline, yearHistory = null, bare = false }:
     {(chart.actual.length > 0 || fp.length > 0) && <ul className="trend-legend" aria-hidden="true">
       <li><i className="is-actual" />실제 가격</li>
       {fp.length > 0 && <li><i className="is-forecast" />{forecastLabel} · 참고</li>}
-      {band && <li><i className="is-band" />AI 7일 예측 범위</li>}
+      {band && <li><i className="is-band" />{forecastName ?? "AI 7일 예측"} 범위</li>}
     </ul>}
     <div ref={ref} className="trend-plot" aria-busy={loading}>
       {error && !history ? <ErrorState message={error} onRetry={reload} /> : !history ? <Skeleton className="trend-skel" />

@@ -275,3 +275,13 @@
 .supply-factor h3 { font-weight: 700; overflow-wrap: anywhere; }
 .supply-factor p, .supply-factor time, .supply-factor .fv-link { font-size: var(--fs-cap); }
 .supply-factor p, .supply-factor time { color: var(--fv-text-2); }
+
+/* 예측 모델 고르기(앙상블 / 구조식): 예측 칸 제목 아래 작은 두 칸 */
+.model-switch { display: inline-flex; padding: 2px; border-radius: var(--r-sm); background: var(--fv-line); gap: 2px; }
+.model-switch button { min-height: 28px; padding: 0 var(--sp-3); border-radius: 6px; font-size: 13px; font-weight: 700; color: var(--fv-text-2); cursor: pointer; white-space: nowrap; }
+.model-switch button:hover { color: var(--fv-text); }
+.model-switch button[aria-pressed=true] { background: var(--fv-bg); color: var(--fv-text); box-shadow: var(--sh-card); }
+.forecast-cell .forecast-switch { align-self: flex-start; margin: var(--sp-1) 0; }
+.forecast-skel { height: 28px; width: 70%; margin: var(--sp-1) 0; }
+.forecast-model-name { color: var(--fv-text); }
+@media (max-width: 767px) { .model-switch button { min-height: 36px; } }

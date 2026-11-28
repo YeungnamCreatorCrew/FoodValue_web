@@ -1,5 +1,6 @@
 import { pricesApi } from "./api";
 import { mapDetail, mapForecast, mapIndicators, mapSummary } from "./mapper";
+import type { PriceModelTrack } from "./dto";
 import type { HistoryPeriod, PriceChartResult, PriceHistoryPeriod, PriceListPage, PriceListQuery } from "./model";
 import { legacyIngredient, sameIngredientName } from "./identity";
 import { mapFactorTrend, mapShapAnalysis } from "./shap";
@@ -8,7 +9,7 @@ export async function listPrices(query: PriceListQuery = {}, signal?: AbortSigna
   const page = await pricesApi.list(query, signal);
   return { ...page, items: page.items.map(mapSummary) };
 }
-export async function getPrice(id: string, signal?: AbortSignal) { return mapDetail(await pricesApi.detail(id, signal)); }
+export async function getPrice(id: string, signal?: AbortSignal, track: PriceModelTrack = "ENSEMBLE") { return mapDetail(await pricesApi.detail(id, signal, track)); }
 export async function getPriceChart(id: string, days: PriceHistoryPeriod, signal?: AbortSignal): Promise<PriceChartResult> {
   const [history, forecast] = await Promise.all([pricesApi.history(id, days, signal), pricesApi.forecast(id, signal)]);
   return { priceHistory: history.points.map(point => ({ date: point.date, price: point.price })), historyEndDate: history.endDate,
@@ -33,8 +34,8 @@ export async function resolvePriceRoute(id: string, signal?: AbortSignal) {
   // Numeric routes now always mean the actual backend ID; old textual slugs can be resolved by name.
   return /^\d+$/.test(id) ? id : resolveFavoriteId(id, signal);
 }
-export async function getPriceFactors(id: string, signal?: AbortSignal) { return mapShapAnalysis(await pricesApi.factors(id, signal)); }
-export async function getFactorTrend(id: string, factorId: string, days: HistoryPeriod, signal?: AbortSignal) {
-  return mapFactorTrend(await pricesApi.factorHistory(id, factorId, days, signal));
+export async function getPriceFactors(id: string, signal?: AbortSignal, track: PriceModelTrack = "ENSEMBLE") { return mapShapAnalysis(await pricesApi.factors(id, signal, track)); }
+export async function getFactorTrend(id: string, factorId: string, days: HistoryPeriod, signal?: AbortSignal, track: PriceModelTrack = "ENSEMBLE") {
+  return mapFactorTrend(await pricesApi.factorHistory(id, factorId, days, signal, track));
 }
 export async function getPriceIndicators(id: string, signal?: AbortSignal) { return mapIndicators(await pricesApi.indicators(id, signal)); }

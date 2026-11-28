@@ -1,4 +1,4 @@
-import type { FactorHistoryDto, PriceDetailDto, PriceFactorsDto, PriceForecastDto, PriceHistoryDto, PriceIndicatorsDto, PricePageDto, PriceSortDto } from "./dto";
+import type { FactorHistoryDto, PriceDetailDto, PriceFactorsDto, PriceForecastDto, PriceHistoryDto, PriceIndicatorsDto, PriceModelTrack, PricePageDto, PriceSortDto } from "./dto";
 import type { PriceListQuery, HistoryPeriod, PriceHistoryPeriod } from "./model";
 
 // Uvicorn's default port; override before next dev/build for another WAS host.
@@ -27,6 +27,17 @@ function itemPath(id: string) {
 }
 const mockFlag = () => typeof window === "undefined" ? null : new URLSearchParams(window.location.search).get("mock");
 const marketParams = () => new URLSearchParams({ market: "RETAIL" });
+/** 기본(앙상블)은 예전과 같은 주소로 부르고, 구조식일 때만 model=STRUCT를 붙인다(WAS #73). */
+const trackParams = (track: PriceModelTrack = "ENSEMBLE") => {
+  const params = marketParams();
+  if (track === "STRUCT") params.set("model", "STRUCT");
+  return params;
+};
+/** #73 이전 WAS는 model을 모르고 앙상블을 그대로 준다. 그 값을 구조식이라고 보여주면 안 되니 막는다. */
+function requireTrack<T extends { modelTrack?: PriceModelTrack }>(dto: T, track: PriceModelTrack): T {
+  if (track === "STRUCT" && dto.modelTrack !== "STRUCT") throw new PriceApiError(501, "이 가격 서버는 구조식 모델을 아직 지원하지 않아요. WAS를 최신으로 받아 주세요.");
+  return dto;
+}
 const sorts: Record<NonNullable<PriceListQuery["sort"]>, PriceSortDto> = { name: "name", "price-drop": "change", "forecast-drop": "forecast" };
 export const pricesApi = {
   async list(query: PriceListQuery = {}, signal?: AbortSignal): Promise<PricePageDto> {
@@ -44,16 +55,24 @@ export const pricesApi = {
     }
     return page;
   },
-  detail(id: string, signal?: AbortSignal) { return get<PriceDetailDto>(itemPath(id), marketParams(), signal); },
+  // 잘못된 id는 기다리지 않고 바로 던진다(itemPath를 먼저 부른다).
+  detail(id: string, signal?: AbortSignal, track: PriceModelTrack = "ENSEMBLE") {
+    return get<PriceDetailDto>(itemPath(id), trackParams(track), signal).then(dto => { requireTrack(dto.forecast, track); return dto; });
+  },
   history(id: string, days: PriceHistoryPeriod, signal?: AbortSignal) {
     const params = marketParams(); params.set("days", String(days));
     return get<PriceHistoryDto>(`${itemPath(id)}/history`, params, signal);
   },
-  forecast(id: string, signal?: AbortSignal) { return get<PriceForecastDto>(`${itemPath(id)}/forecast`, marketParams(), signal); },
-  factors(id: string, signal?: AbortSignal) { return get<PriceFactorsDto>(`${itemPath(id)}/factors`, marketParams(), signal); },
-  factorHistory(id: string, factorId: string, days: HistoryPeriod, signal?: AbortSignal) {
-    if (!/^[A-Za-z0-9]{1,40}$/.test(factorId)) throw new PriceApiError(404, "올바른 요인 ID가 아닙니다.");
-    const params = marketParams(); params.set("days", String(days));
+  forecast(id: string, signal?: AbortSignal, track: PriceModelTrack = "ENSEMBLE") {
+    return get<PriceForecastDto>(`${itemPath(id)}/forecast`, trackParams(track), signal).then(dto => requireTrack(dto, track));
+  },
+  factors(id: string, signal?: AbortSignal, track: PriceModelTrack = "ENSEMBLE") {
+    return get<PriceFactorsDto>(`${itemPath(id)}/factors`, trackParams(track), signal).then(dto => requireTrack(dto, track));
+  },
+  /** 요인 id에는 밑줄이 들어간다(v2 nat_temp_mean7, 구조식 counter_change7). WAS #73과 같은 규칙. */
+  factorHistory(id: string, factorId: string, days: HistoryPeriod, signal?: AbortSignal, track: PriceModelTrack = "ENSEMBLE") {
+    if (!/^[A-Za-z0-9_]{1,40}$/.test(factorId)) throw new PriceApiError(404, "올바른 요인 ID가 아닙니다.");
+    const params = trackParams(track); params.set("days", String(days));
     return get<FactorHistoryDto>(`${itemPath(id)}/factors/${factorId}/history`, params, signal);
   },
   /**

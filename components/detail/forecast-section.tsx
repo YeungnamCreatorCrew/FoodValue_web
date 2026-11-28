@@ -10,14 +10,18 @@ import { ForecastChange } from "@/components/fv/change";
 import { LoadingRegion, Skeleton } from "@/components/fv/state";
 import { toHaeyo } from "@/components/fv/haeyo";
 import { Modal } from "@/components/common/modal";
+import type { PriceModelTrack } from "@/lib/prices/dto";
+import { TRACKS, trackLabel } from "@/lib/prices/track-meta";
+import { ModelSwitch } from "./model-switch";
 
 /** 예측 요인 표는 팝업을 열 때 받는다(첫 화면 JS를 줄인다). */
 const ShapFactorView = dynamic(() => import("@/components/prices/shap-factors").then(module => module.ShapFactorView), {
   loading: () => <LoadingRegion label="예측 요인을 불러오는 중이에요"><Skeleton className="shap-skel" /></LoadingRegion>,
 });
 
-function noForecastReason(item: LivePrice) {
+function noForecastReason(item: LivePrice, track: PriceModelTrack) {
   if (item.status === "NO_DATA") return "최근 조사된 가격이 없어 예측할 수 없어요.";
+  if (track === "STRUCT") return "이 품목은 구조식 모델 예측이 없어요.";
   if (item.forecastStatus === "INSUFFICIENT_DATA") return "가격 기록이 부족해 예측을 만들지 못했어요.";
   return "이번 기준일에는 이 품목의 예측이 만들어지지 않았어요.";
 }
@@ -35,14 +39,14 @@ function ValidationLine({ validation }: { validation: ValidationDto }) {
 const monthLabel = (date: string) => `${date.slice(2, 4)}.${date.slice(5, 7)}`;
 
 /** 팝업 안: 숫자 3개 → 서버 요약 한 문장 → 예측 요인 표. */
-function ForecastDetail({ item }: { item: LivePrice }) {
+function ForecastDetail({ item, track }: { item: LivePrice; track: PriceModelTrack }) {
   const last = item.forecastPoints.at(-1);
-  const factors = usePriceFactors(item.id);
+  const factors = usePriceFactors(item.id, track);
   const validation = factors.data?.validation ?? null;
   // v2는 검증 실적의 평균 오차를 쓰고, 예전 모델은 가이드의 값을 쓴다.
   const mape = validation?.mape ?? item.guide?.mape ?? null;
   return <>
-    <p className="fv-cap">모델이 계산한 값이라 틀릴 수 있어요. 판단(싼 편·비싼 편)에는 쓰지 않아요.</p>
+    <p className="fv-cap"><b className="forecast-model-name">{trackLabel(track)} 모델</b> {TRACKS.find(t => t.key === track)?.about} 모델이 계산한 값이라 틀릴 수 있고, 판단(싼 편·비싼 편)에는 쓰지 않아요.</p>
     <dl className="forecast-figures">
       <div><dt>{shortDate(item.forecastDate)} 예상 가격{passed(item.forecastDate) && " (지난 날짜)"}</dt><dd><strong className="fv-num tone-ref">{won(item.forecastPrice)}</strong><ForecastChange value={item.forecastPercent} /></dd></div>
       {last?.lower != null && last.upper != null && <div><dt>예상 범위</dt><dd><strong className="fv-num tone-ref">{won(last.lower)} ~ {won(last.upper)}</strong></dd></div>}
@@ -67,32 +71,48 @@ function passed(date: string | null | undefined) {
  * 자세한 숫자·검증 실적·예측 요인은 "자세히"를 눌러 팝업으로 연다.
  * 직전 가격을 쓰는 품목(BASELINE)은 'AI 예측'이 아니므로 이름을 따로 쓰고 팝업을 열지 않는다.
  */
-export function ForecastCell({ item }: { item: LivePrice }) {
+export function ForecastCell({ item, track = "ENSEMBLE", onTrack, pending = null }: {
+  /** 고른 모델의 예측이 들어간 품목. 구조식을 받는 중이거나 실패하면 null. */
+  item: LivePrice | null;
+  track?: PriceModelTrack;
+  onTrack?: (track: PriceModelTrack) => void;
+  pending?: { error: string | null; reload: () => void } | null;
+}) {
   const [open, setOpen] = useState(false);
   const button = useRef<HTMLButtonElement>(null);
   const close = useCallback(() => setOpen(false), []);
+  const switcher = onTrack && <ModelSwitch value={track} onChange={onTrack} className="forecast-switch" />;
+  const title = (text: string, badge: string) => <h2 id="forecast-title" className="forecast-title">{text}<span className="fv-badge tone-ref">{badge}</span></h2>;
+
+  if (!item) return <section className="forecast-cell" aria-labelledby="forecast-title" aria-busy={!pending?.error}>
+    {title("AI 7일 예측", "참고")}{switcher}
+    {pending?.error ? <><p className="forecast-value">불러오지 못함</p>
+      <p className="forecast-text"><span>{pending.error}</span><button type="button" className="fv-link forecast-open" onClick={pending.reload}>다시 시도</button></p></>
+      : <><Skeleton className="forecast-skel" /><p className="forecast-text">{trackLabel(track)} 예측을 불러오는 중이에요.</p></>}
+  </section>;
+
   const baseline = item.status === "BASELINE" || item.quality === "BASELINE";
 
   if (item.forecastPrice === null) return <section className="forecast-cell" aria-labelledby="forecast-title">
-    <h2 id="forecast-title" className="forecast-title">7일 뒤 가격<span className="fv-badge tone-ref">참고</span></h2>
+    {title("7일 뒤 가격", "참고")}{switcher}
     <p className="forecast-value">정보 없음</p>
-    <p className="forecast-text">{noForecastReason(item)}</p>
+    <p className="forecast-text">{noForecastReason(item, track)}</p>
   </section>;
 
   if (baseline) return <section className="forecast-cell" aria-labelledby="forecast-title">
-    <h2 id="forecast-title" className="forecast-title">7일 뒤 값<span className="fv-badge tone-ref">직전 가격 · 참고</span></h2>
+    {title("7일 뒤 값", "직전 가격 · 참고")}{switcher}
     <p className="forecast-value fv-num">{won(item.forecastPrice)}</p>
     {/* 칸이 좁아 서버의 긴 문장 대신 짧게 말한다(이유는 판단 방식 화면에 있다). */}
     <p className="forecast-text">AI 예측 대신 직전 가격이에요.</p>
   </section>;
 
   return <section className="forecast-cell" aria-labelledby="forecast-title">
-    <h2 id="forecast-title" className="forecast-title">AI 7일 예측<span className="fv-badge tone-ref">참고</span></h2>
+    {title("AI 7일 예측", "참고")}{switcher}
     <p className="forecast-value"><strong className="fv-num tone-ref">{won(item.forecastPrice)}</strong> <ForecastChange value={item.forecastPercent} /></p>
     <p className="forecast-text"><span>{shortDate(item.forecastDate)} 예상{passed(item.forecastDate) && <span className="forecast-past"> · 지난 날짜</span>}</span>
-      <button ref={button} type="button" className="fv-link forecast-open" aria-haspopup="dialog" onClick={() => setOpen(true)}>자세히<span aria-hidden="true"> ›</span><span className="sr-only"> (AI 7일 예측)</span></button></p>
-    {open && <Modal titleId="forecast-modal-title" title={`${item.name} AI 7일 예측`} badge={<span className="fv-badge tone-ref">참고</span>} onClose={close} returnTo={button}>
-      <ForecastDetail item={item} />
+      <button ref={button} type="button" className="fv-link forecast-open" aria-haspopup="dialog" onClick={() => setOpen(true)}>자세히<span aria-hidden="true"> ›</span><span className="sr-only"> (AI 7일 예측, {trackLabel(track)})</span></button></p>
+    {open && <Modal titleId="forecast-modal-title" title={`${item.name} AI 7일 예측 · ${trackLabel(track)}`} badge={<span className="fv-badge tone-ref">참고</span>} onClose={close} returnTo={button}>
+      <ForecastDetail item={item} track={track} />
     </Modal>}
   </section>;
 }

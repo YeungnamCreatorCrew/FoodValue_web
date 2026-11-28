@@ -2,6 +2,8 @@
 export type PriceCategoryDto = "VEGETABLE" | "GRAIN" | "FRUIT" | "MEAT" | "SEAFOOD" | "ETC";
 export type PriceMarketDto = "RETAIL" | "WHOLESALE";
 export type PriceSortDto = "name" | "change" | "forecast";
+/** 예측 모델 트랙(WAS #73). ENSEMBLE이 기본, STRUCT는 구조식(구조적 가격 전달) 모델. */
+export type PriceModelTrack = "ENSEMBLE" | "STRUCT";
 export interface PriceSummaryDto {
   id: number;
   name: string;
@@ -45,6 +47,8 @@ export interface PriceForecastDto {
   itemId: number;
   market: PriceMarketDto;
   seriesId: number;
+  /** WAS #73부터. 이전 서버 응답에는 없다. */
+  modelTrack?: PriceModelTrack;
   status: string;
   baseDate: string | null;
   dataDate: string | null;
@@ -101,6 +105,8 @@ export interface FactorCategoryDto {
 export interface PriceFactorsDto {
   itemId: number;
   market: PriceMarketDto;
+  /** WAS #73부터. 이전 서버 응답에는 없다. */
+  modelTrack?: PriceModelTrack;
   baseDate: string | null;
   status: string;
   explained: boolean;

@@ -2,7 +2,8 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { getFactorTrend, getPrice, getPriceChart, getPriceHistory, getPriceFactors, getPriceIndicators, listPrices } from "./service";
-import type { PriceHistoryPeriod, PriceIndicators, PriceListQuery } from "./model";
+import type { LivePrice, PriceHistoryPeriod, PriceIndicators, PriceListQuery } from "./model";
+import type { PriceModelTrack } from "./dto";
 
 /** Keyed results prevent a late response from showing another item's data. */
 export function usePriceResource<T>(key: string, load: (signal: AbortSignal) => Promise<T>, skip = false) {
@@ -51,14 +52,22 @@ function remember<T>(key: string, fetcher: () => Promise<T>): Promise<T> {
   once.set(key, promise);
   return promise;
 }
-export function usePriceFactors(id: string) {
-  const load = useCallback(() => remember(`factors:${id}`, () => getPriceFactors(id)), [id]);
-  return usePriceResource(`factors:${id}`, load);
+export function usePriceFactors(id: string, track: PriceModelTrack = "ENSEMBLE") {
+  const load = useCallback(() => remember(`factors:${track}:${id}`, () => getPriceFactors(id, undefined, track)), [id, track]);
+  return usePriceResource(`factors:${track}:${id}`, load);
 }
 /** Loads 90 days once; shorter periods are sliced on the client. */
-export function useFactorTrend(id: string, factorId: string) {
-  const load = useCallback(() => remember(`factor:${id}:${factorId}`, () => getFactorTrend(id, factorId, 90)), [id, factorId]);
-  return usePriceResource(`factor:${id}:${factorId}`, load);
+export function useFactorTrend(id: string, factorId: string, track: PriceModelTrack = "ENSEMBLE") {
+  const load = useCallback(() => remember(`factor:${track}:${id}:${factorId}`, () => getFactorTrend(id, factorId, 90, undefined, track)), [id, factorId, track]);
+  return usePriceResource(`factor:${track}:${id}:${factorId}`, load);
+}
+/**
+ * 구조식 모델의 상세(예측 칸·그래프 예측선에 쓴다). 앙상블은 서버가 이미 준 상세를 쓰므로 부르지 않는다.
+ * 서버가 미리 불러온 값(initial)이 있으면 그걸 쓰고, 한 번 받은 값은 화면이 살아 있는 동안 재사용한다.
+ */
+export function useTrackDetail(id: string, track: PriceModelTrack, initial: LivePrice | null = null) {
+  const load = useCallback(() => remember(`detail:${track}:${id}`, () => initial ? Promise.resolve(initial) : getPrice(id, undefined, track)), [id, track, initial]);
+  return usePriceResource(`detail:${track}:${id}`, load, track === "ENSEMBLE");
 }
 /** Judgement-aid indicator cards (mock until WAS /indicators exists). */
 export function usePriceIndicators(id: string, initial: PriceIndicators | null = null) {

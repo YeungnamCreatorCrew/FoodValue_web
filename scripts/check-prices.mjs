@@ -161,6 +161,19 @@ try {
     await assert.rejects(pricesApi.detail("901", controller.signal), error => error.name === "AbortError");
     assert.equal(calls.some(call => call.url.pathname.includes("/factors")), false);
   });
+  await test("model track: default calls stay unchanged, STRUCT adds model=STRUCT, an old WAS reply is refused", async () => {
+    respond({ itemId: 901, market: "RETAIL", seriesId: 1, status: "SUCCESS", points: [] });
+    await pricesApi.forecast("901");
+    assert.equal(calls.at(-1).url.searchParams.get("model"), null);
+    respond({ itemId: 901, market: "RETAIL", seriesId: 1, modelTrack: "STRUCT", status: "SUCCESS", points: [] });
+    await pricesApi.forecast("901", undefined, "STRUCT");
+    assert.equal(calls.at(-1).url.searchParams.get("model"), "STRUCT");
+    respond({ itemId: 901, market: "RETAIL", seriesId: 1, status: "SUCCESS", points: [] });
+    await assert.rejects(pricesApi.forecast("901", undefined, "STRUCT"), error => error.status === 501);
+    respond({ itemId: 901, market: "RETAIL", factorId: "nat_temp_mean7", label: "x", unit: "", baseDate: "2026-11-09", days: 90, points: [] });
+    await pricesApi.factorHistory("901", "nat_temp_mean7", 90);
+    assert.equal(calls.at(-1).url.pathname, "/api/v1/prices/items/901/factors/nat_temp_mean7/history");
+  });
   await test("factors: SHAP rows keep server order/values; category sentences come from the server summary", async () => {
     const summaryText = { headline: "현재 3,000원인 대파 소매가격은 7일 후 2,800원으로 약 6.7% 낮아질 것으로 예측되었습니다.",
       detail: "기상 조건은 하락 방향으로 작용했습니다.", categories: { WEATHER: "기상 조건은 가격을 낮추는 방향으로 작용했습니다." }, generator: "GEMINI" };
