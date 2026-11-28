@@ -2,7 +2,7 @@ import { notFound, redirect } from "next/navigation";
 import { cache, Suspense } from "react";
 import { PriceDetail } from "@/components/detail/price-detail";
 import { DetailError } from "@/components/detail/detail-error";
-import { SupplyFactors } from "@/components/detail/supply-factors";
+import { PriceWhy } from "@/components/detail/price-why";
 import { getPrice, getPriceHistory, getPriceIndicators, resolvePriceRoute } from "@/lib/prices/service";
 import { PriceApiError } from "@/lib/prices/api";
 import { parseTrack } from "@/lib/prices/track-meta";
@@ -40,5 +40,5 @@ export default async function PriceDetailPage({ params, searchParams }: PageProp
   if (loaded.id !== itemId) redirect("/prices/" + loaded.id + (track === "STRUCT" ? "?model=struct" : ""));
   const initialStruct = await structPromise;
   return <PriceDetail item={loaded.item} initialIndicators={indicators} yearHistory={yearHistory} initialTrack={track} initialStruct={initialStruct}
-    supplyFactors={<Suspense fallback={null}><SupplyFactors itemName={loaded.item.name} /></Suspense>} />;
+    supplyFactors={<Suspense fallback={null}><PriceWhy item={loaded.item} indicators={indicators} /></Suspense>} />;
 }

@@ -1,7 +1,7 @@
 import { getFoodNews } from "../news/food-news";
 
 type Source = { name: string; date: string; url: string };
-type SupplyFactor = { label: string; detail: string; source: Source };
+export type SupplyFactor = { label: string; detail: string; source: Source };
 
 const kimchiSupply: Source = {
   name: "농림축산식품부",

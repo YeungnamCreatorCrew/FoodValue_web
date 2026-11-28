@@ -285,3 +285,35 @@
 .forecast-skel { height: 28px; width: 70%; margin: var(--sp-1) 0; }
 .forecast-model-name { color: var(--fv-text); }
 @media (max-width: 767px) { .model-switch button { min-height: 36px; } }
+
+/* 판단 근거 카드 앞면의 "왜" 한 줄, 펼친 내용의 판단 과정 */
+.ev-toggle { grid-template-areas: "q chev" "a chev" "why chev"; }
+.ev-why { grid-area: why; font-size: 13px; color: var(--fv-text-2); word-break: keep-all; }
+.ev-rule { padding: var(--sp-3) var(--sp-4); border-left: 3px solid var(--fv-brand); border-radius: 0 var(--r-sm) var(--r-sm) 0; background: var(--fv-brand-soft); font-size: var(--fs-cap); word-break: keep-all; }
+.ev-rule b { display: block; margin-bottom: 2px; color: var(--fv-brand); }
+
+/* 왜 이렇게 나왔을까요? */
+.why-card { display: flex; flex-direction: column; gap: var(--sp-5); padding: var(--sp-6); box-shadow: none; }
+.why-step { flex: none; display: inline-flex; align-items: center; min-height: 24px; padding: 0 var(--sp-2); border-radius: var(--r-sm); background: var(--fv-text); color: var(--fv-bg); font-size: 13px; font-weight: 800; }
+.why-now, .why-so { display: flex; align-items: baseline; gap: var(--sp-3); word-break: keep-all; }
+.why-so { padding-top: var(--sp-4); border-top: 1px solid var(--fv-line); font-weight: 700; }
+.why-so .why-step { background: var(--fv-brand); }
+.why-forces { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--sp-4); }
+.why-col { display: flex; flex-direction: column; gap: var(--sp-3); padding: var(--sp-4) var(--sp-5); border-radius: var(--r-sm); }
+.why-col.is-down { background: var(--fv-down-soft); }
+.why-col.is-up { background: var(--fv-up-soft); }
+.why-col h3 { display: flex; align-items: center; gap: var(--sp-2); font-weight: 800; }
+.why-col.is-down h3 { color: var(--fv-down); }
+.why-col.is-up h3 { color: var(--fv-up-ink); }
+.why-col h3 .fv-num { margin-left: auto; font-size: var(--fs-cap); color: var(--fv-text-2); }
+.why-list { display: flex; flex-direction: column; gap: var(--sp-3); }
+.why-list li { display: flex; flex-direction: column; gap: 2px; padding: var(--sp-3); border-radius: var(--r-sm); background: var(--fv-bg); word-break: keep-all; }
+.why-item-title { font-weight: 700; }
+.why-item-detail { font-size: var(--fs-cap); color: var(--fv-text-2); }
+.why-item-why { font-size: var(--fs-cap); font-weight: 600; color: var(--fv-text); }
+.why-item-source { font-size: 13px; color: var(--fv-text-3); }
+.why-empty { font-size: var(--fs-cap); color: var(--fv-text-2); }
+.why-other summary { cursor: pointer; font-weight: 700; color: var(--fv-brand); min-height: 32px; }
+.why-other .why-list li { background: var(--fv-subtle); }
+.why-note { font-size: 13px; color: var(--fv-text-3); }
+@media (max-width: 767px) { .why-forces { grid-template-columns: minmax(0, 1fr); } .why-card { padding: var(--sp-4); } .why-now, .why-so { flex-direction: column; gap: var(--sp-1); } }

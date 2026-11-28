@@ -8,6 +8,7 @@ import { INDICATOR_HELP } from "@/components/prices/indicator-help";
 import { PercentileBar } from "@/components/prices/indicator-ui";
 import { toHaeyo } from "@/components/fv/haeyo";
 import { IndexedChart, SeasonalChart } from "@/components/prices/indicator-charts";
+import { reasonLine, ruleLine } from "@/lib/prices/why";
 
 /**
  * 판단 근거 카드. 지표마다 '질문 + 큰 답' 한 장. 누르면 핵심 숫자 · 그림 · 짧은 설명이 펼쳐진다.
@@ -211,6 +212,8 @@ function EvidenceCard({ card, unit, signal, open, onToggle }: CardProps & { open
       <button type="button" className="ev-toggle" aria-expanded={open} aria-controls={panelId(card)} onClick={onToggle}>
         <span className="ev-q">{names.question.replace(/\?$/, "")}?<span className="sr-only"> ({names.name})</span></span>
         <span className={`ev-a ${tone}`}>{row.verdict && <span aria-hidden="true" className="ev-mark">{row.verdict.mark}</span>}{answerOf(card, row.verdict)}</span>
+        {/* 답만 두면 "왜?"가 남는다. 판단에 쓴 숫자를 앞면에서 바로 보여준다. */}
+        {reasonLine(card) && <span className="ev-why fv-num">{reasonLine(card)}</span>}
         <svg className="ev-chevron" width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="m5 7.5 5 5 5-5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
       </button>
     </h3>
@@ -238,6 +241,7 @@ function EvidenceBody({ card, unit, signal, history }: CardProps & { history: Pr
     <div className="ev-body-main">
       <p className="ev-body-q">{names.question.replace(/\?$/, "")}?</p>
       <div className="ev-key"><span className="ev-key-now"><strong>{row.now}</strong><span>{row.nowNote}</span></span><span className="ev-key-basis">{row.basis}</span></div>
+      {ruleLine(card) && <p className="ev-rule"><b>이렇게 판단했어요</b>{ruleLine(card)}</p>}
       {row.source && row.describes ? <p className="ev-read">{toHaeyo(row.source)}</p> : help && <p className="ev-read">{help.read}</p>}
       {row.facts.length > 0 && <ul className="ev-facts">{row.facts.map(fact => <li key={fact}>{fact}</li>)}</ul>}
       {row.source && !row.describes && <div className="ev-source"><p className="ev-label">근거</p><p>{toHaeyo(row.source)}</p></div>}
