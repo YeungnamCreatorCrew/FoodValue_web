@@ -25,7 +25,7 @@ const loadRoutePrice = cache(async (itemId: string) => {
 
 export async function generateMetadata({ params }: PageProps<"/prices/[itemId]">) {
   const loaded = await loadRoutePrice((await params).itemId);
-  return { title: loaded.failed ? "시세 | FoodValue" : `${loaded.item.name} 시세 | FoodValue` };
+  return { title: loaded.failed ? "시세 | 食널" : `${loaded.item.name} 시세 | 食널` };
 }
 
 /** 지표도 서버에서 같이 불러 첫 화면에 결론이 바로 보이게 한다. 지표만 실패하면 화면에서 다시 시도한다. */

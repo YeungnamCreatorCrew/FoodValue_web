@@ -1,9 +1,10 @@
-﻿"use client";
+"use client";
 
 import type { ReactNode } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { FvIcon, LogoMark } from "@/components/fv/icons";
+import { FvIcon } from "@/components/fv/icons";
 import { isTabActive, TABS } from "./tabs";
 import { HelpDrawer } from "./help-drawer";
 
@@ -18,7 +19,7 @@ export function ServiceShell({ children }: { children: ReactNode }) {
     <a href="#main-content" className="fv-skip">본문 바로가기</a>
     <header className="fv-header">
       <div className="fv-header-inner">
-        <Link href="/" className="fv-logo" aria-label="FoodValue 홈"><LogoMark />FoodValue</Link>
+        <Link href="/" className="fv-logo" aria-label="식널 홈"><Image src="/brand/siknal-brush-v1.png" alt="食널" width={78} height={52} preload className="fv-brand-image" /></Link>
         <nav aria-label="주 메뉴" className="fv-nav">
           {TABS.map(tab => <Link key={tab.href} href={tab.href} prefetch={false} aria-current={isTabActive(pathname, tab.href) ? "page" : undefined}>{tab.label}</Link>)}
         </nav>

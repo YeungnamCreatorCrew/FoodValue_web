@@ -3,7 +3,7 @@ import { AnalysisRoom, type OverviewItem } from "@/components/analysis/analysis-
 import { getPrice, getPriceFactors, getPriceHistories, getPriceIndicators, listPrices } from "@/lib/prices/service";
 import { EmptyState } from "@/components/fv/state";
 
-export const metadata: Metadata = { title: "분석실 | FoodValue" };
+export const metadata: Metadata = { title: "분석실 | 食널" };
 
 /**
  * 분석실: 판단과 AI 예측이 어떤 값으로 어떻게 계산됐는지 펼쳐 보는 화면.

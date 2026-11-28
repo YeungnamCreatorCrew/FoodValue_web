@@ -6,10 +6,10 @@ import { SplashScreen } from "@/components/common/SplashScreen";
 
 const pretendard = localFont({ src: "./fonts/PretendardVariable.woff2", display: "swap", variable: "--font-pretendard", weight: "45 920" });
 
-const SPLASH_GATE = `try{if(sessionStorage.getItem("fv-splash-seen"))document.documentElement.dataset.splash="off"}catch(e){}`;
+const SPLASH_GATE = `try{if(sessionStorage.getItem("siknal-brush-splash-seen-v3"))document.documentElement.dataset.splash="off"}catch(e){}`;
 
 export const metadata: Metadata = {
-  title: "FoodValue",
+  title: "食널",
   description: "농산물 소매가를 지난 가격 지표로 판단하고, AI 7일 예측은 참고로 보여주는 시세 서비스",
 };
 

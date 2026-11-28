@@ -8,6 +8,7 @@
 .fv-header-inner { max-width: var(--content-max); height: 100%; margin: 0 auto; padding: 0 var(--sp-6); display: flex; align-items: center; gap: var(--sp-8); }
 .fv-logo { display: inline-flex; align-items: center; gap: var(--sp-2); min-height: 44px; font-size: var(--fs-sub); font-weight: 800; letter-spacing: -0.02em; color: var(--fv-brand); }
 .fv-logo svg { flex: none; }
+.fv-brand-image { display: block; width: 72px; height: 48px; object-fit: contain; flex: none; }
 .fv-nav { display: flex; gap: var(--sp-1); }
 .fv-nav a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 var(--sp-4); border-radius: var(--r-sm); font-weight: 600; color: var(--fv-text-2); }
 .fv-nav a:hover { background: var(--fv-subtle); color: var(--fv-text); }
