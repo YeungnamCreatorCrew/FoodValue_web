@@ -1,5 +1,0 @@
-2026/11/02-17:18:08.275 8390 Creating DB C:\foodvalue_web\.tmp-figma\edge-home-2\Default\EdgeCoupons/coupons_data.db since it was missing.
-2026/11/02-17:18:08.314 8390 Reusing MANIFEST C:\foodvalue_web\.tmp-figma\edge-home-2\Default\EdgeCoupons/coupons_data.db/MANIFEST-000001
-2026/11/02-17:18:08.969 63f4 Level-0 table #5: started
-2026/11/02-17:18:08.971 63f4 Level-0 table #5: 683273 bytes OK
-2026/11/02-17:18:08.972 63f4 Delete type=0 #3
