@@ -22,9 +22,11 @@ FoodValue는 식자재 시세, 7일 가격 예측, 구매 판단 지표를 제�
 | --- | --- |
 | `/` | 홈: 품목 표(현재가·지난주 대비·평년 대비·최근 8주·1년 중 위치) |
 | `/prices/[itemId]` | 품목 상세: 결론·기준 가격 → 판단 근거 / 가격 흐름·AI 7일 예측(팝업) |
+| `/analysis?item=ID` | 분석실: 품목 한눈에 · 데이터 흐름도 · 판단 계산 단계 · "만약에" 슬라이더 · 판단 달력/성적표 · AI 예측 영수증형 분해 |
 | `/about` | 판단 방식: 지표별 판단 기준과 예측 모델 |
 
 - 화면 구성·표시 규칙: [`PRICE_IMPLEMENTATION.md`](PRICE_IMPLEMENTATION.md)
+- 분석실은 WAS를 고치지 않고 지금 API(목록·상세·지표·요인·365일 이력)만 씁니다. 다시 계산하는 식은 `lib/analysis/compute.ts`에 있고, 기준 숫자는 WAS `app/core/constants.py`와 같습니다. 판단 달력·성적표는 연도별 주 평균으로 다시 계산한 근사치입니다(이번 주 칸만 서버 값).
 - WAS API 연결·실행·검증: [`PRICE_API_INTEGRATION.md`](PRICE_API_INTEGRATION.md)
 
 ### 실행

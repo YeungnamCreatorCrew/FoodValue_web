@@ -2,6 +2,7 @@ import type { IconName } from "@/components/ui/Icon";
 
 export const TABS: { key: string; label: string; href: string; icon: IconName; activeIcon?: IconName }[] = [
   { key: "home", label: "홈", href: "/", icon: "nav-home" },
+  { key: "analysis", label: "분석실", href: "/analysis", icon: "line-chart" },
   { key: "about", label: "판단 방식", href: "/about", icon: "nav-price" },
 ];
 
