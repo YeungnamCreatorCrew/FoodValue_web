@@ -6,7 +6,7 @@ import { longDate } from "@/lib/prices/format";
 import { NewsThumbnail } from "./news-thumbnail";
 import styles from "./news.module.css";
 
-export const metadata: Metadata = { title: "주요 뉴스 | FoodValue" };
+export const metadata: Metadata = { title: "주요 뉴스 | 食널" };
 
 // 각 사진은 해당 농림축산식품부 보도자료의 현장 사진 첨부본에서 가져왔습니다.
 const articlePhotos = new Map([

@@ -6,7 +6,7 @@ import { EvidenceSection } from "@/components/about/evidence";
 import { ItemPerformance, ModelCompare, ModelHistory, ModelStructure } from "@/components/about/models";
 import { SourceMatrix } from "@/components/about/sources";
 
-export const metadata: Metadata = { title: "판단 방식 | FoodValue" };
+export const metadata: Metadata = { title: "판단 방식 | 食널" };
 
 /**
  * 판단 방식 = 품목과 상관없는 '규칙서': 어떤 규칙인지, 믿을 만한지(과거 검증), AI 모델은 무엇이고 어떻게 골랐는지, 어떤 자료를 쓰는지.
@@ -26,7 +26,7 @@ export default async function AboutPage() {
     <header className="about-head">
       <p className="board-date">{date ? <><time dateTime={date}>{longDate(date)}</time> 기준</> : "기준일 정보 없음"}</p>
       <h1 className="fv-h1">판단 방식</h1>
-      <p className="about-lead">FoodValue는 지난 가격 지표로 싼 편·비싼 편을 판단해요. AI 7일 예측은 판단에 쓰지 않고 참고로만 보여드려요. 품목별 실제 계산은 분석실에서 볼 수 있어요.</p>
+      <p className="about-lead">食널은 지난 가격 지표로 싼 편·비싼 편을 판단해요. AI 7일 예측은 판단에 쓰지 않고 참고로만 보여드려요. 품목별 실제 계산은 분석실에서 볼 수 있어요.</p>
     </header>
 
     <Section id="rules" title="지표와 판단 기준" lead="눈금자는 기준선 위치를 보여 주는 그림이에요. 품목마다 지금 어디에 있는지는 분석실에서 볼 수 있어요.">
