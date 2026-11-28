@@ -3,7 +3,8 @@
 import type { ReactNode } from "react";
 import type { IndicatorSignal, LivePrice, PriceIndicators, PricePoint } from "@/lib/prices/model";
 import { priceNear, REFERENCES } from "@/lib/prices/reference";
-import { longDate, shortDate, won } from "@/lib/prices/format";
+import { formatNumber, longDate, shortDate, won } from "@/lib/prices/format";
+import { reasonLine, ruleLine } from "@/lib/prices/why";
 import { WeeklyChange } from "@/components/fv/change";
 import { Skeleton } from "@/components/fv/state";
 import { toHaeyo } from "@/components/fv/haeyo";
@@ -46,6 +47,38 @@ function Conclusion({ item, indicators }: { item: LivePrice; indicators: Indicat
   return <p className="hero-headline">{toHaeyo(data.headline)}</p>;
 }
 
+function JudgmentExplanation({ indicators }: { indicators: Indicators }) {
+  const data = indicators.data;
+  if (indicators.loading || indicators.error || !data) return null;
+  const seasonal = data.cards.find(card => card.key === "SEASONAL");
+  const position = data.cards.find(card => card.key === "PRICE_POSITION");
+  const lead = data.cards.find(card => card.key === "WHOLESALE_LEAD");
+  const fact = seasonal?.fact;
+  const comparison = fact?.recentAvg != null && fact.normalAvg != null && fact.normalAvg > 0 && fact.diffRate != null;
+
+  return <details className="judgment-explanation">
+    <summary>왜 이렇게 판단했나요?</summary>
+    <div className="judgment-explanation-body">
+      {comparison && fact.diffRate !== null && <dl className="judgment-comparison">
+        <div><dt>최근 {fact.windowDays ?? 28}일 평균</dt><dd className="fv-num">{won(fact.recentAvg)}</dd></div>
+        <div><dt>평년 같은 시기 평균</dt><dd className="fv-num">{won(fact.normalAvg)}</dd></div>
+        <div><dt>평년과의 차이</dt><dd className="fv-num">{fact.diffRate > 0 ? "+" : fact.diffRate < 0 ? "−" : ""}{formatNumber(Math.abs(fact.diffRate * 100), 1)}%</dd></div>
+      </dl>}
+      {comparison && <p className="judgment-formula">({won(fact.recentAvg)} − {won(fact.normalAvg)}) ÷ {won(fact.normalAvg)} × 100으로 비교했어요.</p>}
+      {seasonal && <p>{ruleLine(seasonal) ?? "평년과 비교할 가격 기록이 충분하지 않아 판단을 보류했어요."}</p>}
+      {comparison && <p className="fv-cap">
+        평년 평균은 {fact.normalYears.length ? `${fact.normalYears.join("·")}년` : "과거 연도"}의 같은 시기 가격을 사용했어요.
+        {" "}현재 하루 가격과 최근 기간의 평균 가격은 다를 수 있어요.
+      </p>}
+      {!seasonal && <p>평년 대비 지표가 없어 같은 시기의 가격 수준을 판단할 자료가 부족해요.</p>}
+      {position && <div><h3>최근 1년에서는 어느 위치인가요?</h3><p>{ruleLine(position) ?? "1년 중 위치를 계산할 가격 기록이 부족해요."}</p></div>}
+      {lead && <div><h3>도매 흐름도 함께 살펴보세요</h3><p>{reasonLine(lead) ?? "최근 도매 흐름의 비교 수치가 없어요."}</p></div>}
+      {data.asOfDate && <p className="fv-cap">지표 기준일 <time dateTime={data.asOfDate}>{longDate(data.asOfDate)}</time></p>}
+      <a className="fv-link" href="#why-title">관련 수급 소식과 설명 보기 <span aria-hidden="true">↓</span></a>
+    </div>
+  </details>;
+}
+
 /** 기준 가격 한 칸: 그때 가격 + "지금이 ○원 비싸요/싸요". 바로 위 결론 띠의 판단 색과 부딪히지 않게 색을 쓰지 않는다. */
 function RefCell({ label, price, current, note }: { label: string; price: number | null; current: number | null; note?: string }) {
   const diff = price !== null && current !== null ? current - price : null;
@@ -86,7 +119,7 @@ function References({ item, indicators, history }: { item: LivePrice; indicators
  * 상세 맨 위 카드(v3): 왼쪽 품목·현재가, 오른쪽 가격 흐름 → 한 줄 결론 띠 → 기준 가격 4칸 + AI 7일 예측 1칸(참고).
  * 가격과 추세를 한눈에 보이게 그래프를 현재가 옆에 둔다. 가격이 없으면(NO_DATA) 그래프와 예측 칸은 그리지 않는다.
  */
-export function DetailHero({ item, indicators, history = [], trend, forecast }: { item: LivePrice; indicators: Indicators; history?: PricePoint[]; trend?: ReactNode; forecast?: ReactNode }) {
+export function DetailHero({ item, indicators, history = [], trend, forecast, forecastControls }: { item: LivePrice; indicators: Indicators; history?: PricePoint[]; trend?: ReactNode; forecast?: ReactNode; forecastControls?: ReactNode }) {
   const tags = statusTags(item, indicators.data);
   const seasonal = judge(indicators.data?.signals ?? []);
   return <section className="hero-card" aria-labelledby="item-title">
@@ -107,9 +140,13 @@ export function DetailHero({ item, indicators, history = [], trend, forecast }: 
       <p className="hero-eyebrow">한 줄 결론</p>
       <Conclusion item={item} indicators={indicators} />
     </div>
+    {item.status !== "NO_DATA" && <JudgmentExplanation indicators={indicators} />}
     <div className="ref-row">
       <References item={item} indicators={indicators.data} history={history} />
-      {forecast}
     </div>
+    {forecast && <div className="forecast-panel">
+      <div className="forecast-controls"><p>예측 모델 선택</p>{forecastControls}</div>
+      {forecast}
+    </div>}
   </section>;
 }

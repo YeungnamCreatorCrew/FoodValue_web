@@ -2,8 +2,8 @@ import type { FvIconName } from "@/components/fv/icons";
 
 export const TABS: { label: string; href: string; icon: FvIconName }[] = [
   { label: "홈", href: "/", icon: "home" },
-  { label: "분석실", href: "/analysis", icon: "chart" },
   { label: "주요 뉴스", href: "/news", icon: "news" },
+  { label: "분석실", href: "/analysis", icon: "chart" },
 ];
 
 /** 품목 상세(/prices/…)는 홈에서 들어가는 화면이라 홈 메뉴를 켠다. */
