@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { RuleTip } from "@/components/fv/judgment-tip";
+import { loadAllIndicatorCards } from "@/lib/prices/all-indicators";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import type { LivePrice, PriceListPage } from "@/lib/prices/model";
 import { useTransition } from "react";
@@ -18,13 +20,13 @@ const SORT_LABEL: Record<SortKey, string> = { seasonal: "평년보다 싼 순", 
 const pick = <T extends string>(value: string | null, options: readonly T[], fallback: T) => options.includes(value as T) ? value as T : fallback;
 
 /** 정렬할 수 있는 열 머리글. 현재가는 품목마다 단위가 달라 정렬하지 않는다. */
-const COLUMNS: { key: SortKey | null; label: string; className: string }[] = [
+const COLUMNS: { key: SortKey | null; label: string; className: string; rule?: string }[] = [
   { key: "name", label: "품목", className: "col-item" },
   { key: null, label: "현재가", className: "col-price" },
   { key: "change", label: "지난주 대비", className: "col-change" },
-  { key: "seasonal", label: "평년 대비", className: "col-judge" },
+  { key: "seasonal", label: "평년 대비", className: "col-judge", rule: "SEASONAL" },
   { key: null, label: "최근 8주", className: "col-spark" },
-  { key: "position", label: "1년 중 위치", className: "col-position" },
+  { key: "position", label: "1년 중 위치", className: "col-position", rule: "PRICE_POSITION" },
 ];
 
 /** 7일 뒤 예측은 판단이 아니라 참고라서 표 열이 아니라 품목 이름 아래 작은 글씨로 둔다. */
@@ -125,6 +127,8 @@ export function PriceBoard({ initial }: { initial: PriceListPage | null }) {
         <div className="fv-chips" role="group" aria-label="평년 대비로 거르기">
           {FILTERS.map(entry => <button key={entry.key} type="button" className="fv-chip" aria-pressed={filter === entry.key}
             onClick={() => update({ f: entry.key === "all" ? null : entry.key })}>{entry.label} <span className="count">{counts[entry.key]}</span></button>)}
+          {/* 모바일은 표 머리글이 없어서 판단(평년 대비) 도움말을 거르기 버튼 옆에도 둔다. */}
+          <span className="board-filter-tip"><RuleTip ruleKey="SEASONAL" loadCards={() => loadAllIndicatorCards(items.map(item => item.id))} scope={`품목 ${items.length}개 과거 기록 합산`} /></span>
         </div>
         {many && <label className="fv-search board-search"><FvIcon name="search" size={18} /><span className="sr-only">품목 이름으로 찾기</span>
           <input type="search" defaultValue={keyword} placeholder="품목 이름으로 찾기" maxLength={50}
@@ -148,8 +152,9 @@ export function PriceBoard({ initial }: { initial: PriceListPage | null }) {
           <caption className="sr-only">품목별 시세 표예요. 7일 뒤 예측은 품목 이름 아래에 참고로 적었어요. {SORT_NOTE[sort]}</caption>
           <thead><tr>{COLUMNS.map(column => <th key={column.label} scope="col" className={column.className}
             aria-sort={column.key && column.key === sort ? "ascending" : undefined}>
-            {column.key ? <button type="button" className="board-sort" aria-pressed={column.key === sort} onClick={() => update({ sort: column.key === "seasonal" ? null : column.key })}>
+            <span className="board-th">{column.key ? <button type="button" className="board-sort" aria-pressed={column.key === sort} onClick={() => update({ sort: column.key === "seasonal" ? null : column.key })}>
               {column.label}<span aria-hidden="true" className="board-sort-mark">{column.key === sort ? "▲" : "↕"}</span></button> : column.label}
+              {column.rule && <RuleTip ruleKey={column.rule} loadCards={() => loadAllIndicatorCards(items.map(item => item.id))} scope={`품목 ${items.length}개 과거 기록 합산`} />}</span>
           </th>)}</tr></thead>
           <tbody>{visible.map(item => <Row key={item.id} item={item} href={detailHref(item)} latest={date} />)}</tbody>
         </table>}
@@ -159,6 +164,6 @@ export function PriceBoard({ initial }: { initial: PriceListPage | null }) {
           aria-pressed={number === current} onClick={() => update({ p: number === 1 ? null : String(number) })}>{number}</button>)}
       </nav>}
     </section>
-    <p className="fv-footnote">판단(싼 편·평년 수준·비싼 편)은 지난 가격으로 만든 지표로 해요. 7일 뒤 예측은 AI 모델이 계산한 참고값이라 판단에 쓰지 않아요. <Link href="/about" prefetch={false} className="fv-inline-link">판단 방식 보기 ›</Link></p>
+    <p className="fv-footnote">판단(싼 편·평년 수준·비싼 편)은 지난 가격으로 만든 지표로 해요. 7일 뒤 예측은 AI 모델이 계산한 참고값이라 판단에 쓰지 않아요. 표 머리글의 <span aria-hidden="true">?</span> 를 누르면 지표마다 판단 기준을 볼 수 있어요.</p>
   </>;
 }
