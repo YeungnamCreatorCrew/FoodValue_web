@@ -1,6 +1,18 @@
-import { redirect } from "next/navigation";
+import { Suspense } from "react";
+import type { Metadata } from "next";
+import { PriceBoard } from "@/components/board/price-board";
+import { LoadingRegion, Skeleton } from "@/components/fv/state";
+import { listPrices } from "@/lib/prices/service";
 
-/** 품목 표는 홈으로 합쳤다. 예전 주소(/prices)로 오면 홈으로 보낸다. */
+export const metadata: Metadata = { title: "전체 시세 | 食널" };
+
+async function BoardWithData() {
+  const initial = await listPrices({ size: 50, sort: "name" }).catch(() => null);
+  return <PriceBoard initial={initial} />;
+}
+
 export default function PricesPage() {
-  redirect("/");
+  return <main id="main-content" className="fv-page board-page">
+    <Suspense fallback={<LoadingRegion label="품목 시세를 불러오는 중이에요"><div className="board-skel"><Skeleton className="skel-head" /><Skeleton className="skel-chips" /><Skeleton className="skel-table" /></div></LoadingRegion>}><BoardWithData /></Suspense>
+  </main>;
 }

@@ -6,6 +6,8 @@
 @import "./styles/about.css";
 @import "./styles/analysis.css";
 
+.market-home-page { gap: var(--sp-6); }
+
 :root {
   /* 중립색: 토스(TDS) grey 단계. 배경은 흰색, 구분선 grey200, 글자는 grey900/700/600/500 */
   --grey-50: #f9fafb; --grey-100: #f2f4f6; --grey-200: #e5e8eb; --grey-300: #d1d6db; --grey-400: #b0b8c1;
