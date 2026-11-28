@@ -131,3 +131,38 @@ export function receipt(analysis: ShapAnalysis, topPerGroup = 4) {
   const rounding = computed !== null && analysis.predictedPrice !== null ? analysis.predictedPrice - computed : null;
   return { groups: result, sum, computed, rounding, count: analysis.factors.length };
 }
+
+// ---- 요인 지도(트리맵): 넓이 = |기여|. squarified 배치(Bruls et al.)로 네모가 너무 길쭉해지지 않게 한다 ----
+export interface Rect { x: number; y: number; w: number; h: number }
+export function squarify<T extends { size: number }>(items: T[], box: Rect): (T & { rect: Rect })[] {
+  const list = items.filter(i => i.size > 0).toSorted((a, b) => b.size - a.size);
+  const total = list.reduce((s, i) => s + i.size, 0);
+  if (!total || box.w <= 0 || box.h <= 0) return [];
+  const scale = (box.w * box.h) / total;
+  const out: (T & { rect: Rect })[] = [];
+  let rest = { ...box };
+  let row: T[] = [];
+  const worst = (r: T[], side: number) => {
+    const areas = r.map(i => i.size * scale), sum = areas.reduce((a, b) => a + b, 0);
+    return Math.max(...areas.map(a => Math.max((side * side * a) / (sum * sum), (sum * sum) / (side * side * a))));
+  };
+  const place = (r: T[]) => {
+    const sum = r.reduce((s, i) => s + i.size * scale, 0);
+    if (rest.w >= rest.h) { // 왼쪽에 세로 줄
+      const w = sum / rest.h; let y = rest.y;
+      for (const i of r) { const h = (i.size * scale) / w; out.push({ ...i, rect: { x: rest.x, y, w, h } }); y += h; }
+      rest = { x: rest.x + w, y: rest.y, w: rest.w - w, h: rest.h };
+    } else { // 위에 가로 줄
+      const h = sum / rest.w; let x = rest.x;
+      for (const i of r) { const w = (i.size * scale) / h; out.push({ ...i, rect: { x, y: rest.y, w, h } }); x += w; }
+      rest = { x: rest.x, y: rest.y + h, w: rest.w, h: rest.h - h };
+    }
+  };
+  for (const item of list) {
+    const side = Math.min(rest.w, rest.h);
+    if (!row.length || worst([...row, item], side) <= worst(row, side)) row.push(item);
+    else { place(row); row = [item]; }
+  }
+  if (row.length) place(row);
+  return out;
+}

@@ -3,6 +3,7 @@ import type { ShapAnalysis } from "@/lib/prices/shap";
 import { unavailableText } from "@/lib/prices/shap";
 import { formatNumber, formatWon, shortDate } from "@/lib/prices/format";
 import { receipt } from "@/lib/analysis/compute";
+import { FactorMap } from "./factor-map";
 
 /** 원 단위 기여: +12원 / −5원. 0.5원 미만은 0원(중립)으로 보여준다(상세 요인 표와 같은 기준). */
 function signedWon(value: number) {
@@ -17,7 +18,6 @@ export function ForecastReceipt({ item, factors }: { item: LivePrice; factors: S
     return <p className="fv-notice">{factors ? unavailableText(factors.unavailableReason) : "이번 예측의 요인 정보를 불러오지 못했어요."}</p>;
   }
   const r = receipt(factors);
-  const peak = Math.max(...r.groups.map(g => Math.abs(g.total)), 1);
   return <div className="an-receipt-wrap">
     <article className="an-receipt" aria-label={`${item.name} 7일 예측 분해 영수증`}>
       <header className="an-receipt-head">
@@ -52,17 +52,8 @@ export function ForecastReceipt({ item, factors }: { item: LivePrice; factors: S
 
     <div className="an-receipt-side">
       <article className="fv-card an-share">
-        <h3 className="an-card-title">묶음별 영향 크기</h3>
-        <ul className="an-share-list">
-          {r.groups.map(group => <li key={group.category}>
-            <span className="an-share-label">{group.label}</span>
-            <span className="an-share-track" aria-hidden="true">
-              <span className={`an-share-bar ${tone(group.total)}`} style={{ width: `${(Math.abs(group.total) / peak) * 100}%` }} />
-            </span>
-            <span className={`fv-num an-share-value ${tone(group.total)}`}>{signedWon(group.total)}</span>
-          </li>)}
-        </ul>
-        <p className="fv-cap">막대 길이 = 영향 크기, 색 = 방향(빨강 높임·파랑 낮춤, 참고 색이라 옅어요). 요인 {r.count}개.</p>
+        <h3 className="an-card-title">요인 지도 <span className="fv-cap">요인 {r.count}개</span></h3>
+        <FactorMap factors={factors} />
       </article>
       <article className="fv-card an-share">
         <h3 className="an-card-title">기준값이란?</h3>
