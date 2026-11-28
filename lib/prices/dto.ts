@@ -30,6 +30,7 @@ export interface ListIndicatorsDto {
   asOfDate: string;
   stale: boolean;
   headline?: string | null;
+  seasonalDiffRate?: number | null;
   signals: { key: string; label: string; state: string | null; stateLabel: string }[];
   yearRange: { low: number | null; high: number | null; percentile: number | null } | null;
 }

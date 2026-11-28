@@ -6,7 +6,7 @@ import { loadAllIndicatorCards } from "@/lib/prices/all-indicators";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import type { LivePrice, PriceListPage } from "@/lib/prices/model";
 import { useTransition } from "react";
-import { longDate, shortDate, won } from "@/lib/prices/format";
+import { formatPercent, longDate, shortDate, won } from "@/lib/prices/format";
 import { WeeklyChange, ForecastChange } from "@/components/fv/change";
 import { EmptyState, ErrorState, LoadingRegion, Skeleton } from "@/components/fv/state";
 import { FvIcon } from "@/components/fv/icons";
@@ -59,7 +59,7 @@ function Row({ item, href, latest }: { item: LivePrice; href: string; latest: st
     </th>
     <td className="col-price" data-label="현재가">{item.currentPrice === null ? <span className="board-missing">정보 없음</span> : <><b className="fv-num">{won(item.currentPrice)}</b>{latest && item.priceDate && item.priceDate < latest && <small className="board-old">{shortDate(item.priceDate)} 값</small>}</>}</td>
     <td className="col-change" data-label="지난주 대비"><WeeklyChange value={item.weeklyChangeRate} /></td>
-    <td className="col-judge" data-label="평년 대비">{seasonal ? <span className={`judge-pill ${seasonal.state === "down" ? "tone-down" : seasonal.state === "up" ? "tone-up" : "tone-flat"}`}><StateText signal={seasonal} /></span> : <span className="board-missing">정보 없음</span>}</td>
+    <td className="col-judge" data-label="평년 대비">{seasonal ? <span className="board-seasonal"><span className={`judge-pill ${seasonal.state === "down" ? "tone-down" : seasonal.state === "up" ? "tone-up" : "tone-flat"}`}><StateText signal={seasonal} /></span>{item.listIndicators?.seasonalDiffRate != null && <small className="board-seasonal-rate">평년 {formatPercent(item.listIndicators.seasonalDiffRate * 100)}</small>}</span> : <span className="board-missing">정보 없음</span>}</td>
     <td className="col-spark" data-label="최근 8주"><Sparkline id={item.id} name={item.name} /></td>
     <td className="col-position" data-label="1년 중 위치"><PositionCell item={item} /></td>
 
@@ -146,6 +146,7 @@ export function PriceBoard({ initial }: { initial: PriceListPage | null }) {
           </select></label>
       </div>
       <p className="board-result-count fv-cap" role="status">{keyword.trim() ? `‘${keyword.trim()}’ 검색 · ` : ""}{shown.length}개 품목{shown.length !== items.length && ` / 전체 ${items.length}개`}</p>
+      <p className="fv-cap board-judgment-note">평년 대비는 최근 4주 평균을 직전 5년 같은 시기와 비교해요. +10% 이상은 비싼 편, −10% 이하는 싼 편이에요.</p>
 
       {shown.length === 0 ? <EmptyState title="맞는 품목이 없어요" action={<button type="button" className="fv-btn is-quiet" onClick={() => update({ f: null, q: null, c: null })}>조건 지우기</button>}>
         {keyword ? `‘${keyword}’에 맞는 품목이 없어요.` : "이 조건에 맞는 품목이 없어요."}</EmptyState>

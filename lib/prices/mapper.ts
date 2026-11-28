@@ -24,7 +24,7 @@ export function mapSummary(dto: PriceSummaryDto): LivePrice {
     forecastDate: dto.forecastTargetDate, forecastPrice: dto.forecastPrice,
     ...priceChanges(dto.currentPrice, dto.forecastPrice, dto.forecastChangePercent),
     priceHistory: [], forecastPoints: [], guide: null, forecastStatus: null, dataFactors: [], aiSummary: null, forecastBasis: null,
-    listIndicators: dto.indicators ? { asOfDate: dto.indicators.asOfDate, stale: dto.indicators.stale, headline: dto.indicators.headline ?? null, yearRange: dto.indicators.yearRange,
+    listIndicators: dto.indicators ? { asOfDate: dto.indicators.asOfDate, stale: dto.indicators.stale, headline: dto.indicators.headline ?? null, seasonalDiffRate: dto.indicators.seasonalDiffRate ?? null, yearRange: dto.indicators.yearRange,
       signals: dto.indicators.signals.map(s => ({ key: s.key, label: s.label, state: indicatorState(s.state), stateLabel: s.stateLabel })) } : null,
   };
 }
