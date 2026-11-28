@@ -1,7 +1,7 @@
-import { pricesApi } from "./api";
+import { PriceApiError, pricesApi } from "./api";
 import { mapDetail, mapForecast, mapIndicators, mapSummary } from "./mapper";
 import type { PriceModelTrack } from "./dto";
-import type { HistoryPeriod, PriceChartResult, PriceHistoryPeriod, PriceListPage, PriceListQuery } from "./model";
+import type { HistoryPeriod, PriceChartResult, PriceHistoryPeriod, PriceListPage, PriceListQuery, PricePoint } from "./model";
 import { legacyIngredient, sameIngredientName } from "./identity";
 import { mapFactorTrend, mapShapAnalysis } from "./shap";
 
@@ -19,6 +19,23 @@ export async function getPriceChart(id: string, days: PriceHistoryPeriod, signal
 export async function getPriceHistory(id: string, days: PriceHistoryPeriod, signal?: AbortSignal) {
   const history = await pricesApi.history(id, days, signal);
   return { priceHistory: history.points.map(point => ({ date: point.date, price: point.price })), historyEndDate: history.endDate };
+}
+/**
+ * 여러 품목의 실제 가격 이력(id → 점 목록). WAS 묶음 이력 API 한 번으로 받는다.
+ * 묶음 API가 없는 이전 WAS(/items/history를 품목 id로 읽어 400·404·422)면 품목마다 부르는 예전 방식으로 대신한다.
+ * 받지 못한 품목은 결과에 없다.
+ */
+export async function getPriceHistories(ids: string[], days: PriceHistoryPeriod, signal?: AbortSignal): Promise<Map<string, PricePoint[]>> {
+  if (!ids.length) return new Map();
+  const pending = pricesApi.histories(ids, days, signal);  // 잘못된 id는 여기서 바로 던진다(예전 방식으로 대신하지 않음)
+  try {
+    const batch = await pending;
+    return new Map(batch.items.map(history => [String(history.itemId), history.points.map(point => ({ date: point.date, price: point.price }))]));
+  } catch (error) {
+    if (!(error instanceof PriceApiError) || ![400, 404, 422].includes(error.status)) throw error;
+    const rows = await Promise.all(ids.map(id => getPriceHistory(id, days, signal).then(h => [id, h.priceHistory] as const).catch(() => null)));
+    return new Map(rows.filter(row => row !== null));
+  }
 }
 /** Resolve old localStorage/demo slugs through returned catalog IDs, never a numeric guess. */
 export async function resolveFavoriteId(id: string, signal?: AbortSignal): Promise<string | null> {
