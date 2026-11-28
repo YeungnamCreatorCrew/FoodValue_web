@@ -11,6 +11,7 @@ import { PriceTrend } from "@/components/prices/price-trend";
 import { DetailHero } from "./detail-hero";
 import { EvidenceCards } from "./evidence-cards";
 import { ForecastCell } from "./forecast-section";
+import { ModelSwitch } from "./model-switch";
 import { ItemSwitcher } from "./item-switcher";
 import { EmptyState } from "@/components/fv/state";
 
@@ -56,7 +57,8 @@ export function PriceDetail({ item, initialIndicators, yearHistory, supplyFactor
     <ItemSwitcher currentId={item.id} />
     <DetailHero item={item} indicators={indicators} history={yearHistory?.priceHistory ?? []}
       trend={noData ? undefined : <PriceTrend item={chartItem} baseline={baseline} yearHistory={yearHistory} bare forecastName={track === "STRUCT" ? `${trackLabel(track)} 7일 예측` : undefined} />}
-      forecast={noData ? undefined : <TrackContext value={track}><ForecastCell item={forecastItem} track={track} onTrack={changeTrack}
+      forecastControls={noData ? undefined : <ModelSwitch value={track} onChange={changeTrack} />}
+      forecast={noData ? undefined : <TrackContext value={track}><ForecastCell item={forecastItem} track={track}
         pending={forecastItem ? null : { error: struct.error ?? null, reload: struct.reload }} /></TrackContext>} />
     {/* 가격이 없으면 근거·그래프·예측이 각자 "가격이 없어요"를 반복하지 않게 한 번만 말한다. */}
     {noData ? <EmptyState title="가격 기록 없음">최근 조사된 가격이 없어 판단 근거·그래프·예측을 보여드릴 수 없어요.</EmptyState>

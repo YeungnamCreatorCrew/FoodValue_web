@@ -213,7 +213,7 @@
 .hero-card .hero-eyebrow { flex: none; padding: var(--sp-1) var(--sp-3); border-radius: 999px; background: var(--fv-bg); }
 .hero-card .hero-headline { font-size: var(--fs-sub); }
 /* 기준 가격 4칸 + AI 7일 예측 1칸. 예측 칸만 점선으로 다른 종류임을 보인다. */
-.ref-row { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 1.25fr); gap: var(--sp-4); align-items: stretch; padding-top: var(--sp-4); border-top: 1px solid var(--fv-line); }
+.ref-row { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--sp-4); align-items: stretch; padding-top: var(--sp-4); border-top: 1px solid var(--fv-line); }
 .ref-row .ref-strip { padding-top: 0; border-top: 0; }
 .forecast-cell { display: flex; flex-direction: column; gap: 0; padding: var(--sp-2) var(--sp-4); border: 1.5px dashed var(--fv-line-strong); border-radius: var(--r-lg); background: var(--fv-subtle); }
 .forecast-cell .forecast-title { font-size: var(--fs-cap); font-weight: 600; color: var(--fv-text-2); }
@@ -281,6 +281,60 @@
 .model-switch button { min-height: 28px; padding: 0 var(--sp-3); border-radius: 6px; font-size: 13px; font-weight: 700; color: var(--fv-text-2); cursor: pointer; white-space: nowrap; }
 .model-switch button:hover { color: var(--fv-text); }
 .model-switch button[aria-pressed=true] { background: var(--fv-bg); color: var(--fv-text); box-shadow: var(--sh-card); }
+.model-picker { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-1) var(--sp-3); }
+.model-guide-open { min-height: 36px; font-size: 13px; font-weight: 600; color: var(--fv-brand); cursor: pointer; }
+.model-guide-open:hover { text-decoration: underline; text-underline-offset: 3px; }
+.forecast-panel { border: 1px solid var(--fv-line); border-radius: var(--r-lg); overflow: hidden; }
+.forecast-controls { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--sp-3); padding: var(--sp-3) var(--sp-4); background: var(--fv-brand-soft); }
+.forecast-controls > p { font-weight: 700; color: var(--fv-brand); }
+.forecast-controls .model-picker { flex: 1; justify-content: flex-end; gap: var(--sp-4); }
+.forecast-controls .model-switch { background: var(--fv-bg); border: 1px solid var(--fv-line); padding: 4px; }
+.forecast-controls .model-switch button { min-height: 44px; padding: 0 var(--sp-5); }
+.forecast-controls .model-switch button[aria-pressed=true] { background: var(--fv-brand); color: var(--fv-on-brand); }
+.forecast-panel .forecast-cell { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: var(--sp-2) var(--sp-5); padding: var(--sp-4); border: 0; border-radius: 0; background: var(--fv-bg); }
+.forecast-panel .forecast-title { grid-column: 1 / -1; }
+.forecast-panel .forecast-text { gap: var(--sp-4); }
+@media (max-width: 767px) {
+  .forecast-controls .model-picker { flex-basis: 100%; justify-content: space-between; gap: var(--sp-2); }
+  .forecast-controls .model-switch { flex: 1; display: flex; }
+  .forecast-controls .model-switch button { flex: 1; padding: 0 var(--sp-3); }
+  .forecast-panel .forecast-cell { grid-template-columns: minmax(0, 1fr); }
+}
+.model-guide { display: flex; flex-direction: column; gap: var(--sp-4); }
+.model-guide-tabs { display: flex; padding: 4px; gap: 4px; border-radius: var(--r-lg); background: var(--fv-subtle); }
+.model-guide-tabs button { flex: 1; display: flex; align-items: center; justify-content: center; gap: var(--sp-2); padding: var(--sp-3); min-height: 64px; border-radius: var(--r-sm); font-weight: 700; cursor: pointer; }
+.model-guide-tabs button > span:first-child { font-size: 24px; }
+.model-guide-tabs small { display: block; margin-top: 2px; font-size: 12px; font-weight: 500; color: var(--fv-text-2); }
+.model-guide-tabs button[aria-selected=true] { background: var(--fv-brand-soft); color: var(--fv-brand); }
+.model-guide section { display: flex; flex-direction: column; gap: var(--sp-4); }
+.model-guide-intro { display: flex; align-items: center; gap: var(--sp-3); }
+.model-guide-illustration { width: 160px; height: auto; flex: none; object-fit: contain; }
+.model-guide-tabs img { flex: none; object-fit: contain; }
+@media (max-width: 767px) { .model-guide-illustration { width: 104px; } .model-guide-tabs img { width: 44px; height: 34px; } }
+.model-guide-intro h3 { font-size: var(--fs-sub); font-weight: 800; }
+.model-guide-steps { display: flex; flex-direction: column; gap: var(--sp-3); }
+.model-guide-steps > div { padding: var(--sp-4); border: 1px solid var(--fv-line); border-radius: var(--r-lg); }
+.model-guide-steps dt { font-weight: 700; margin-bottom: var(--sp-1); }
+.model-guide-steps dd { color: var(--fv-text-2); font-size: var(--fs-cap); }
+.model-guide-takeaway { padding: var(--sp-3) var(--sp-4); border-radius: var(--r-lg); background: var(--fv-brand-soft); color: var(--fv-brand); font-weight: 600; }
+.model-guide-inputs h4, .model-guide-heading, .model-guide-questions h4 { font-weight: 700; }
+.model-guide-inputs ul { display: flex; flex-wrap: wrap; gap: var(--sp-2); margin-top: var(--sp-2); list-style: none; }
+.model-guide-inputs li { padding: var(--sp-1) var(--sp-3); border: 1px solid var(--fv-line); border-radius: 999px; font-size: var(--fs-cap); color: var(--fv-text-2); }
+.model-guide-flow { display: flex; justify-content: center; align-items: center; gap: var(--sp-3); padding: var(--sp-5); border-radius: var(--r-lg); background: var(--fv-subtle); }
+.model-guide-flow strong { font-size: var(--fs-cap); text-align: center; }
+.model-guide-members { display: flex; flex-direction: column; gap: var(--sp-2); }
+.model-guide-members span { padding: var(--sp-2) var(--sp-3); border: 1px solid var(--fv-line); border-radius: var(--r-sm); background: var(--fv-bg); font-size: 13px; text-align: center; }
+.model-guide-arrow { flex: none; color: var(--fv-text-3); }
+.model-guide-result { padding: var(--sp-3); border-radius: var(--r-sm); background: var(--fv-brand); color: var(--fv-on-brand); }
+.model-guide-questions { display: grid; gap: var(--sp-2); padding-top: var(--sp-4); border-top: 1px solid var(--fv-line); }
+.model-guide-questions p { font-size: var(--fs-cap); color: var(--fv-text-2); margin-bottom: var(--sp-2); }
+.model-guide-select { display: flex; align-items: center; justify-content: center; gap: var(--sp-3); min-height: 48px; padding: var(--sp-3); border-radius: var(--r-sm); background: var(--fv-brand); color: var(--fv-on-brand); font-weight: 700; cursor: pointer; }
+.model-guide-select:hover { filter: brightness(.94); }
+@media (max-width: 767px) {
+  .model-guide-flow { gap: var(--sp-2); padding: var(--sp-3) var(--sp-2); }
+  .model-guide-members span { padding: var(--sp-2); font-size: 12px; }
+  .model-guide-result { padding: var(--sp-2); }
+}
 .forecast-cell .forecast-switch { align-self: flex-start; margin: var(--sp-1) 0; }
 .forecast-skel { height: 28px; width: 70%; margin: var(--sp-1) 0; }
 .forecast-model-name { color: var(--fv-text); }
@@ -293,6 +347,15 @@
 .ev-rule b { display: block; margin-bottom: 2px; color: var(--fv-brand); }
 
 /* 왜 이렇게 나왔을까요? */
+.judgment-explanation { border-top: 1px solid var(--fv-line); }
+.judgment-explanation summary { cursor: pointer; padding: var(--sp-3) 0; min-height: 44px; font-weight: 700; color: var(--fv-brand); }
+.judgment-explanation-body { display: flex; flex-direction: column; gap: var(--sp-3); padding: var(--sp-2) 0 var(--sp-4); }
+.judgment-explanation-body h3 { font-weight: 700; margin-bottom: var(--sp-1); }
+.judgment-comparison { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--sp-3); }
+.judgment-comparison > div { padding: var(--sp-3); background: var(--fv-subtle); border-radius: var(--r-sm); }
+.judgment-comparison dt, .judgment-formula { font-size: var(--fs-cap); color: var(--fv-text-2); }
+.judgment-comparison dd { margin-top: var(--sp-1); font-weight: 800; }
+@media (max-width: 767px) { .judgment-comparison { grid-template-columns: minmax(0, 1fr); } }
 .why-card { display: flex; flex-direction: column; gap: var(--sp-5); padding: var(--sp-6); box-shadow: none; }
 .why-step { flex: none; display: inline-flex; align-items: center; min-height: 24px; padding: 0 var(--sp-2); border-radius: var(--r-sm); background: var(--fv-text); color: var(--fv-bg); font-size: 13px; font-weight: 800; }
 .why-now, .why-so { display: flex; align-items: baseline; gap: var(--sp-3); word-break: keep-all; }
