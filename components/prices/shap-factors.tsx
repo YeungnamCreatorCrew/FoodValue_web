@@ -6,6 +6,7 @@ import { categoryLabels, unavailableText, type ShapAnalysis, type ShapFactor } f
 import { formatNumber, shortDate } from "@/lib/prices/format";
 import { dateNumber } from "@/lib/prices/history";
 import { useFactorTrend } from "@/lib/prices/use-prices";
+import { useTrack } from "@/lib/prices/track";
 import { LoadingRegion, Notice, Skeleton } from "@/components/fv/state";
 import { josa } from "@/components/fv/text";
 import { niceScale } from "@/lib/prices/ticks";
@@ -14,6 +15,9 @@ import { ChartHover } from "./chart-hover";
 const TOP_COUNT = 8;
 const PERIODS = [14, 30, 90] as const;
 const caveat = "영향 값은 각 요인이 모델 예측에 보탠 값이에요. 가격이 움직인 원인은 아니에요.";
+/** 구조식(STRUCT_TERM_SHARE): 식의 항별 몫을 원으로 나눈 값. 기준값 = 현재가. */
+const structCaveat = "영향 값은 구조식의 각 항이 예측에 보탠 몫이에요(회귀 계수로 나눈 값). 가격이 움직인 원인은 아니에요.";
+const isStruct = (analysis: ShapAnalysis) => analysis.method === "STRUCT_TERM_SHARE";
 
 // 배수(예: 1.29배)는 0.01 단위로 움직여서 소수 첫째 자리로는 7일 차이가 "0배"로 사라진다.
 const decimals = (unit: string, value: number) => unit === "원" || unit === "주차" ? 0 : Number.isInteger(value) ? 0 : unit === "배" ? 2 : 1;
@@ -44,7 +48,7 @@ const contributionText = (value: number) => `${signed(Math.round(value), 0)}원`
 const toneClass = (direction: ShapFactor["direction"]) => direction === "down" ? "tone-down" : direction === "up" ? "tone-up" : "tone-flat";
 
 function FactorTrendChart({ itemId, factor, priceUnit }: { itemId: string; factor: ShapFactor; priceUnit: string }) {
-  const { data, error, loading, reload } = useFactorTrend(itemId, factor.id);
+  const { data, error, loading, reload } = useFactorTrend(itemId, factor.id, useTrack());
   const [period, setPeriod] = useState<(typeof PERIODS)[number]>(30);
   const container = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState(360);
@@ -112,7 +116,7 @@ function FactorRow({ itemId, factor, maximum, open, onToggle, priceUnit }: { ite
     </button></h3>
     <div id={`factor-content-${factor.id}`} role="region" aria-labelledby={`factor-${factor.id}`} hidden={!open}>
       {open && <div className="dashboard-factor-expanded">
-        {factor.hasHistory ? <FactorTrendChart itemId={itemId} factor={factor} priceUnit={priceUnit} /> : <p className="factor-history-placeholder">{factor.category === "CALENDAR" ? "예측 대상일의 시기(계절)를 나타내는 값이라 추이가 없어요." : factor.id === "arima_trend" ? "시계열 모델(AutoARIMA)이 본 가격 추세라 따로 값과 추이가 없어요." : "이 요인은 과거 추이를 제공하지 않아요."}</p>}
+        {factor.hasHistory ? <FactorTrendChart itemId={itemId} factor={factor} priceUnit={priceUnit} /> : <p className="factor-history-placeholder">{factor.id === "struct_season" ? "기준일마다 1~3년 전 같은 시기 가격으로 다시 계산하는 값이라 추이가 없어요." : factor.category === "CALENDAR" ? "예측 대상일의 시기(계절)를 나타내는 값이라 추이가 없어요." : factor.id === "arima_trend" ? "시계열 모델(AutoARIMA)이 본 가격 추세라 따로 값과 추이가 없어요." : "이 요인은 과거 추이를 제공하지 않아요."}</p>}
         <div className="dashboard-factor-interpretation"><h4>요인 해석</h4>
           <p>{josa(factor.label, "은", "는")} {verb ? <>예측을 <strong className={tone}>{verb}</strong>으로 작용했어요.</> : "예측에 뚜렷하게 작용하지 않았어요."}</p>
           {factor.previousValue !== null && factor.previousDate && factor.value !== null && <p className="factor-comparison-detail">{shortDate(factor.previousDate)} {displayValue(factor, factor.previousValue, priceUnit)} → 지금 {displayValue(factor, factor.value, priceUnit)}</p>}
@@ -140,7 +144,9 @@ function ShapTable({ item, analysis }: { item: LivePrice; analysis: ShapAnalysis
     {visible.map(factor => <FactorRow key={factor.id} priceUnit={item.unit} itemId={item.id} factor={factor} maximum={maximum} open={expanded === factor.id} onToggle={() => setExpanded(expanded === factor.id ? null : factor.id)} />)}
     {filtered.length > TOP_COUNT && <button type="button" className="fv-link" onClick={() => setShowAll(value => !value)}>
       {showAll ? "주요 요인만 보기" : `영향이 작은 요인 ${filtered.length - TOP_COUNT}개 더 보기`}</button>}
-    <p className="dashboard-factor-note">{analysis.factors.some(factor => factor.value === null) && "‘정보 없음’ 요인은 보여줄 숫자를 받지 못한 요인이에요. "}{caveat}{analysis.basePrice !== null && analysis.predictedPrice !== null && ` 기준값은 모델이 평소 값으로 잡은 출발점이에요. 예측가 ${formatNumber(analysis.predictedPrice)}원 = 기준값 ${formatNumber(analysis.basePrice)}원 + 영향 합. 반올림 때문에 몇 원 다를 수 있어요.`}</p>
+    <p className="dashboard-factor-note">{analysis.factors.some(factor => factor.value === null) && "‘정보 없음’ 요인은 보여줄 숫자를 받지 못한 요인이에요. "}{isStruct(analysis) ? structCaveat : caveat}{analysis.basePrice !== null && analysis.predictedPrice !== null && (isStruct(analysis)
+      ? ` 구조식은 현재가에서 출발해요. 예측가 ${formatNumber(analysis.predictedPrice)}원 = 현재가 ${formatNumber(analysis.basePrice)}원 + 항별 영향 합. 반올림 때문에 몇 원 다를 수 있어요.`
+      : ` 기준값은 모델이 평소 값으로 잡은 출발점이에요. 예측가 ${formatNumber(analysis.predictedPrice)}원 = 기준값 ${formatNumber(analysis.basePrice)}원 + 영향 합. 반올림 때문에 몇 원 다를 수 있어요.`)}</p>
   </section>;
 }
 
