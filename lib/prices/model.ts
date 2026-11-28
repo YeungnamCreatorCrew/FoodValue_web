@@ -25,6 +25,7 @@ export interface LivePrice extends PriceChartData {
   forecastPoints: ForecastPoint[];
   id: string;
   name: string;
+  aliases?: string[];
   category: string;
   categoryCode: Category;
   unit: string;
