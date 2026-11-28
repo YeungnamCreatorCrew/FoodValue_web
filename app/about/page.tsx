@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { loadAbout } from "@/lib/about/data";
 import { longDate } from "@/lib/prices/format";
 import { RuleCards } from "@/components/about/rule-cards";
-import { EvidenceSection } from "@/components/about/evidence";
+import { EvidenceDetail, EvidenceSummary } from "@/components/about/evidence";
 import { ItemPerformance, ModelCompare, ModelHistory, ModelStructure } from "@/components/about/models";
 import { SourceMatrix } from "@/components/about/sources";
 
@@ -33,18 +33,23 @@ export default async function AboutPage() {
       <RuleCards firstItemId={items[0]?.item.id ?? null} />
     </Section>
 
-    <Section id="trust" title="이 기준은 믿을 만한가요?" lead="감으로 정한 기준이 아니에요. 과거 가격 기록에서 주마다 ‘신호가 나온 뒤 실제로 어떻게 됐나’를 세어 평소와 비교했어요.">
-      {failed ? <p className="fv-notice">지금은 검증 기록을 불러오지 못했어요. 잠시 뒤 다시 열어 주세요.</p> : <EvidenceSection items={items} />}
+    <Section id="trust" title="이 기준은 믿을 만한가요?" lead="감으로 정한 기준이 아니에요. 과거 가격 기록에서 ‘신호가 나온 뒤 실제로 그렇게 됐나’를 세어, 신호가 없을 때(평소)와 비교했어요.">
+      {failed ? <p className="fv-notice">지금은 검증 기록을 불러오지 못했어요. 잠시 뒤 다시 열어 주세요.</p> : <>
+        <EvidenceSummary items={items} />
+        <details className="ab-fold"><summary>품목별로 보기</summary><EvidenceDetail items={items} /></details>
+      </>}
     </Section>
 
-    <Section id="model" title="AI 7일 예측은 이렇게 만들어요" lead="서로 다른 모델 세 개의 값을 평균 내요. 판단에는 쓰지 않는 참고 값이에요.">
+    <Section id="model" title="AI 7일 예측은 이렇게 만들어요" lead="판단에는 쓰지 않는 참고 값이에요. 중요한 건 실제로 얼마나 맞았는지예요.">
       <ModelStructure />
-      <h3 className="ab-sub">이번 예측, 모델마다 얼마나 달랐나</h3>
-      {failed ? <p className="fv-notice">지금은 이번 예측을 불러오지 못했어요.</p> : <ModelCompare items={items} />}
-      <h3 className="ab-sub">품목별 과거 성적</h3>
+      <h3 className="ab-sub">품목별로 실제로 얼마나 맞았나요?</h3>
       {failed ? <p className="fv-notice">지금은 품목별 검증 결과를 불러오지 못했어요.</p> : <ItemPerformance items={items} />}
-      <h3 className="ab-sub">모델을 고른 과정</h3>
-      <ModelHistory />
+      <details className="ab-fold"><summary>모델을 고른 과정과 이번 예측의 모델별 값 보기</summary>
+        <h3 className="ab-sub">모델을 고른 과정</h3>
+        <ModelHistory />
+        <h3 className="ab-sub">이번 예측, 모델마다 얼마나 달랐나</h3>
+        {failed ? <p className="fv-notice">지금은 이번 예측을 불러오지 못했어요.</p> : <ModelCompare items={items} />}
+      </details>
       <p className="fv-cap">상세의 예측 요인(SHAP)은 모델 계산에 쓰인 값이에요. 가격이 움직인 원인은 아니에요.</p>
     </Section>
 

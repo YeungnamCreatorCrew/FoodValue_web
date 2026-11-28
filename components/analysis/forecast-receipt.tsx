@@ -3,7 +3,6 @@ import type { ShapAnalysis } from "@/lib/prices/shap";
 import { unavailableText } from "@/lib/prices/shap";
 import { formatNumber, formatWon, shortDate } from "@/lib/prices/format";
 import { receipt } from "@/lib/analysis/compute";
-import { FactorMap } from "./factor-map";
 
 /** 원 단위 기여: +12원 / −5원. 0.5원 미만은 0원(중립)으로 보여준다(상세 요인 표와 같은 기준). */
 function signedWon(value: number) {
@@ -17,7 +16,7 @@ export function ForecastReceipt({ item, factors }: { item: LivePrice; factors: S
   if (!factors || !factors.explained || factors.basePrice === null || factors.predictedPrice === null) {
     return <p className="fv-notice">{factors ? unavailableText(factors.unavailableReason) : "이번 예측의 요인 정보를 불러오지 못했어요."}</p>;
   }
-  const r = receipt(factors);
+  const r = receipt(factors, 3);
   return <div className="an-receipt-wrap">
     <article className="an-receipt" aria-label={`${item.name} 7일 예측 분해 영수증`}>
       <header className="an-receipt-head">
@@ -51,10 +50,6 @@ export function ForecastReceipt({ item, factors }: { item: LivePrice; factors: S
     </article>
 
     <div className="an-receipt-side">
-      <article className="fv-card an-share">
-        <h3 className="an-card-title">요인 지도 <span className="fv-cap">요인 {r.count}개</span></h3>
-        <FactorMap factors={factors} />
-      </article>
       <article className="fv-card an-share">
         <h3 className="an-card-title">기준값이란?</h3>
         <p className="fv-cap">모델이 요인을 하나도 보지 않았을 때 내놓는 값이에요. {/^v2/i.test(factors.modelName ?? "")

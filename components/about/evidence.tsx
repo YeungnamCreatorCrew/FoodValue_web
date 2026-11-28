@@ -35,7 +35,7 @@ function EvidenceCard({ title, question, heads, rows, foot }: { title: string; q
   </article>;
 }
 
-export function EvidenceSection({ items }: { items: AboutItem[] }) {
+export function EvidenceDetail({ items }: { items: AboutItem[] }) {
   const card = <K extends string>(row: AboutItem, key: K) => row.indicators?.cards.find(c => c.key === key);
   const lead = items.flatMap(row => {
     const c = card(row, "WHOLESALE_LEAD") as WholesaleLeadCard | undefined;
@@ -69,4 +69,42 @@ export function EvidenceSection({ items }: { items: AboutItem[] }) {
       heads={["낮은 쪽 뒤 오름", "높은 쪽 뒤 내림"]} rows={gap}
       foot="과거 검증 기록이 있는 품목만 나와요. ‘도매 흐름과 겹침’은 배수 신호가 도매가 움직임과 거의 같이 움직여 따로 판단할 근거가 적다는 뜻이에요. 그래서 배수는 자리만 알려줘요." />
   </div>;
+}
+
+/** 품목 전체를 합친 한 줄 요약(신호 횟수로 가중 평균). 품목별 막대는 EvidenceDetail에 접어 둔다. */
+export function EvidenceSummary({ items }: { items: AboutItem[] }) {
+  type Acc = { after: number; base: number; n: number; items: number };
+  const acc = () => ({ after: 0, base: 0, n: 0, items: 0 });
+  const rows = { leadUp: acc(), leadDown: acc(), low: acc(), high: acc() };
+  const add = (target: Acc, after: number | null, base: number | null, n: number | null) => {
+    if (after === null || base === null || !n) return;
+    target.after += after * n; target.base += base * n; target.n += n; target.items += 1;
+  };
+  for (const row of items) {
+    const lead = row.indicators?.cards.find(c => c.key === "WHOLESALE_LEAD") as WholesaleLeadCard | undefined;
+    const pos = row.indicators?.cards.find(c => c.key === "PRICE_POSITION") as PricePositionCard | undefined;
+    if (lead?.evidence) { add(rows.leadUp, lead.evidence.upAfterRate, lead.evidence.baseUpRate, lead.evidence.sampleUp); add(rows.leadDown, lead.evidence.downAfterRate, lead.evidence.baseDownRate, lead.evidence.sampleDown); }
+    if (pos?.evidence) { add(rows.low, pos.evidence.lowAfterRate, pos.evidence.lowBaseRate, pos.evidence.sampleLow); add(rows.high, pos.evidence.highAfterRate, pos.evidence.highBaseRate, pos.evidence.sampleHigh); }
+  }
+  const lines = [
+    { key: "leadUp", name: "도매 흐름", when: "도매가가 2주 새 5% 넘게 오른 뒤", then: "소매가도 올랐어요", a: rows.leadUp },
+    { key: "leadDown", name: "도매 흐름", when: "도매가가 2주 새 5% 넘게 내린 뒤", then: "소매가도 내렸어요", a: rows.leadDown },
+    { key: "low", name: "1년 중 위치", when: "1년 중 싼 편(하위 25%)일 때", then: "그 뒤 소매가가 올랐어요", a: rows.low },
+    { key: "high", name: "1년 중 위치", when: "1년 중 비싼 편(상위 25%)일 때", then: "그 뒤 소매가가 내렸어요", a: rows.high },
+  ].filter(line => line.a.n > 0);
+  if (!lines.length) return <p className="fv-notice">지금은 과거 검증 기록을 불러오지 못했어요.</p>;
+  return <table className="fv-card ab-sum">
+    <caption className="sr-only">판단 기준의 과거 검증 요약</caption>
+    <thead><tr><th scope="col">지표</th><th scope="col">이럴 때</th><th scope="col" className="num">실제로 그랬던 비율</th><th scope="col" className="num">평소</th><th scope="col" className="num">기록</th></tr></thead>
+    <tbody>{lines.map(line => {
+      const after = line.a.after / line.a.n, base = line.a.base / line.a.n;
+      return <tr key={line.key}>
+        <th scope="row">{line.name}</th>
+        <td>{line.when} <b>{line.then}</b></td>
+        <td className="num fv-num"><strong>{pct(after)}</strong> <span className="fv-badge is-brand">+{formatNumber(Math.max(0, (after - base) * 100), 0)}%p</span></td>
+        <td className="num fv-num">{pct(base)}</td>
+        <td className="num fv-num fv-cap">품목 {line.a.items}개 · {formatNumber(line.a.n)}번</td>
+      </tr>;
+    })}</tbody>
+  </table>;
 }

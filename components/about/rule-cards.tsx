@@ -38,19 +38,28 @@ function MiniRuler({ rule }: { rule: Rule }) {
   </div>;
 }
 
+const MAIN = new Set(["SEASONAL", "PRICE_POSITION", "WHOLESALE_LEAD"]);
+
+function RuleCard({ rule, firstItemId }: { rule: Rule; firstItemId: string | null }) {
+  return <article className="fv-card about-rule">
+    <h3>{rule.name}{rule.badge && <span className={`fv-badge ${rule.badge.startsWith("홈") ? "is-brand" : "tone-flat"}`}>{rule.badge}</span>}</h3>
+    <p>{rule.what}</p>
+    <MiniRuler rule={rule} />
+    <p className="about-rule-line"><b>판단 기준</b>{rule.rule}</p>
+    {firstItemId && <Link href={`/analysis?item=${firstItemId}#judge-title`} prefetch={false} className="fv-link ab-more">분석실에서 실제 계산 보기 ›</Link>}
+  </article>;
+}
+
+/** 판단에 쓰는 3개를 먼저 펼치고, '자리만 알려주는' 배수·출렁임은 접어 둔다. */
 export function RuleCards({ firstItemId }: { firstItemId: string | null }) {
-  return <div className="about-rules">
-    {RULES.map(rule => <article key={rule.key} className="fv-card about-rule">
-      <h3>{rule.name}{rule.badge && <span className={`fv-badge ${rule.badge.startsWith("홈") ? "is-brand" : "tone-flat"}`}>{rule.badge}</span>}</h3>
-      <p>{rule.what}</p>
-      <MiniRuler rule={rule} />
-      <p className="about-rule-line"><b>판단 기준</b>{rule.rule}</p>
-      {firstItemId && <Link href={`/analysis?item=${firstItemId}#judge-title`} prefetch={false} className="fv-link ab-more">분석실에서 실제 계산 보기 ›</Link>}
-    </article>)}
-    <article className="fv-card about-rule ab-rule-note">
-      <h3>판단과 예측은 따로예요</h3>
-      <p>싼 편·비싼 편 판단은 위 지표로만 해요. AI 7일 예측은 판단에 쓰지 않고 참고로만 보여드려요.</p>
-      <p className="fv-cap">‘1년 중 위치’는 통계 용어로 백분위(percentile)예요.</p>
-    </article>
-  </div>;
+  const extra = RULES.filter(rule => !MAIN.has(rule.key));
+  return <>
+    <div className="about-rules">
+      {RULES.filter(rule => MAIN.has(rule.key)).map(rule => <RuleCard key={rule.key} rule={rule} firstItemId={firstItemId} />)}
+    </div>
+    <details className="ab-fold">
+      <summary>판단에는 쓰지 않는 지표 {extra.length}개 보기 <span className="fv-cap">(소매·도매 배수, 가격 출렁임: 지금 자리만 알려줘요)</span></summary>
+      <div className="about-rules">{extra.map(rule => <RuleCard key={rule.key} rule={rule} firstItemId={firstItemId} />)}</div>
+    </details>
+  </>;
 }

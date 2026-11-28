@@ -11,22 +11,13 @@ const MODELS = [
 const SHAPE: Record<string, string> = { XGBOOST: "is-circle", LIGHTGBM: "is-diamond", AUTOARIMA: "is-triangle" };
 
 export function ModelStructure() {
-  return <div className="ab-models">
-    {MODELS.map(m => <article key={m.key} className="fv-card ab-model">
-      <h3 className="ab-card-title"><span className={`ab-mark ${SHAPE[m.key]}`} aria-hidden="true" />{m.name}</h3>
-      <p>{m.how}</p>
-      <p className="fv-cap">보는 것: {m.sees}</p>
-    </article>)}
-    <article className="fv-card ab-model is-sum">
-      <h3 className="ab-card-title"><span className="ab-mark is-mean" aria-hidden="true" />세 모델 평균 = 화면의 7일 뒤 값</h3>
-      <p>세 모델 값을 똑같이 1/3씩 섞어요. 한 모델이 크게 틀려도 나머지가 메워 줘요.</p>
-      <p className="fv-cap">과거 검증에서 직전 가격 그대로 쓰는 것보다 덜 정확한 품목은, AI 값 대신 직전 가격을 보여드려요.</p>
-    </article>
-    <article className="fv-card ab-model is-gemini">
-      <h3 className="ab-card-title">Gemini는 예측하지 않아요</h3>
-      <p>Gemini는 예측 결과를 읽기 쉬운 문장으로 다듬는 데만 써요. 판단과 예측 숫자에는 쓰지 않아요.</p>
-    </article>
-  </div>;
+  return <article className="fv-card ab-model-one">
+    <p><b>서로 다른 모델 세 개의 값을 똑같이 1/3씩 평균 내요.</b> 한 모델이 크게 틀려도 나머지가 메워 줘요.</p>
+    <ul className="ab-model-list">
+      {MODELS.map(m => <li key={m.key}><span className={`ab-mark ${SHAPE[m.key]}`} aria-hidden="true" /><b>{m.name}</b> {m.how}</li>)}
+    </ul>
+    <p className="fv-cap">과거 검증에서 직전 가격 그대로 쓰는 것보다 덜 정확한 품목은 AI 값 대신 직전 가격을 보여드려요. Gemini는 설명 문장을 다듬는 데만 쓰고, 예측 숫자에는 쓰지 않아요.</p>
+  </article>;
 }
 
 /** 이번 7일 예측: 품목마다 세 모델 값과 평균을 '현재가 대비 %' 한 줄 위에 점으로. 품목끼리 가격대가 달라 %로 맞춘다. */

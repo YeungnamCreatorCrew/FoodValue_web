@@ -90,16 +90,6 @@ export function PercentileCalcs({ cards }: { cards: IndicatorCard[] }) {
         formula: `최근 1년 중 ${formatWon(card.fact.currentPrice)}보다 싼 날의 비율`, value: p,
         extra: `1년 최저 ${formatWon(card.fact.low)} · 평균 ${formatWon(card.fact.avg)} · 최고 ${formatWon(card.fact.high)}` }];
     }
-    if (card.key === "RETAIL_WHOLESALE_GAP" && card.fact.percentile !== null && card.fact.ratio !== null) {
-      return [{ key: card.key, title: "소매·도매 배수", colored: false, state: null, labels: ["낮은 쪽", "중간", "높은 쪽"] as [string, string, string],
-        formula: `소매 ${formatWon(card.fact.retailPrice)} ÷ 도매 ${formatWon(card.fact.wholesalePrice)} = ${formatNumber(card.fact.ratio, 2)}배, 1년 중 이보다 낮았던 날의 비율`, value: card.fact.percentile,
-        extra: `평소(1년 중앙값) ${card.fact.normalRatio === null ? "-" : `${formatNumber(card.fact.normalRatio, 2)}배`}` }];
-    }
-    if (card.key === "VOLATILITY" && card.fact.percentile !== null && card.fact.recentRange !== null) {
-      return [{ key: card.key, title: "가격 출렁임", colored: false, state: null, labels: ["덜 출렁임", "보통", "많이 출렁임"] as [string, string, string],
-        formula: `최근 4주 (최고 − 최저) ÷ 평균 = ${formatNumber(card.fact.recentRange * 100, 1)}%, 1년 중 이보다 덜 출렁인 날의 비율`, value: card.fact.percentile,
-        extra: `평소 ${card.fact.normalRange === null ? "-" : `${formatNumber(card.fact.normalRange * 100, 1)}%`}` }];
-    }
     return [];
   });
   const lead = cards.find((card): card is WholesaleLeadCard => card.key === "WHOLESALE_LEAD" && card.verdict !== "WEAK" && card.fact.wholesaleChange2w !== null);

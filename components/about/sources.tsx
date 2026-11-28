@@ -15,16 +15,17 @@ export function SourceMatrix({ items }: { items: AboutItem[] }) {
     { name: "가락시장", what: "품목별 반입량", judge: "no", forecast: "tried" },
     { name: "KREI 관측월보", what: "월별 수급 전망", judge: "no", forecast: "tried" },
   ];
+  const shown = rows.filter(row => row.judge === "yes" || row.forecast === "yes");
   return <article className="fv-card ab-sources">
     <table className="ab-src-table">
       <caption className="sr-only">데이터 출처와 쓰는 곳</caption>
       <thead><tr><th scope="col">출처</th><th scope="col">무엇</th><th scope="col">판단</th><th scope="col">AI 예측(참고)</th></tr></thead>
-      <tbody>{rows.map(row => <tr key={row.name}>
+      <tbody>{shown.map(row => <tr key={row.name}>
         <th scope="row">{row.name}</th>
         <td>{row.what}{row.note && <span className="fv-cap"> · {row.note}</span>}</td>
         {[row.judge, row.forecast].map((use, i) => <td key={i}><span className={`ab-use is-${use}`}>{LABEL[use]}</span></td>)}
       </tr>)}</tbody>
     </table>
-    <p className="fv-cap">판단에는 KAMIS 가격만 써요. 나머지 자료는 AI 예측에만 들어가고, 넣었을 때 성적이 나빠진 자료는 빼 두었어요.</p>
+    <p className="fv-cap">판단에는 KAMIS 가격만 써요. 나머지 자료는 AI 예측에만 들어가요. 넣어 봤지만 성적이 나빠져 뺀 자료는 위 ‘모델을 고른 과정’에 있어요.</p>
   </article>;
 }

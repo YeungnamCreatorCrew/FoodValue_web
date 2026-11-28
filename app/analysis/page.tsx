@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { AnalysisRoom, type OverviewItem } from "@/components/analysis/analysis-room";
+import { AnalysisRoom } from "@/components/analysis/analysis-room";
 import { getPrice, getPriceFactors, getPriceHistory, getPriceIndicators, listPrices } from "@/lib/prices/service";
 import { EmptyState } from "@/components/fv/state";
 
@@ -23,14 +23,11 @@ export default async function AnalysisPage({ searchParams }: PageProps<"/analysi
     <EmptyState title="품목이 없어요">시세를 제공하는 품목이 아직 없어요.</EmptyState>
   </main>;
 
-  // 품목 한눈에 보기용 1년 이력은 품목마다 한 번씩 부른다. 고른 품목은 그 값을 같이 쓴다.
-  const [histories, detail, indicators, factors] = await Promise.all([
-    Promise.all(page.items.slice(0, 12).map(item => getPriceHistory(item.id, 365).catch(() => null))),
+  const [history, detail, indicators, factors] = await Promise.all([
+    getPriceHistory(selected.id, 365).then(result => result.priceHistory).catch(() => []),
     getPrice(selected.id).catch(() => selected),
     getPriceIndicators(selected.id).catch(() => null),
     getPriceFactors(selected.id).catch(() => null),
   ]);
-  const overview: OverviewItem[] = page.items.slice(0, 12).map((item, index) => ({ item, history: histories[index]?.priceHistory ?? [] }));
-  const history = overview.find(row => row.item.id === selected.id)?.history ?? [];
-  return <AnalysisRoom overview={overview} item={detail} indicators={indicators} factors={factors} history={history} />;
+  return <AnalysisRoom items={page.items.slice(0, 12)} item={detail} indicators={indicators} factors={factors} history={history} />;
 }
