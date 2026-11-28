@@ -22,6 +22,8 @@ export interface ShapAnalysis {
   /** Why factors are missing when explained=false (BASELINE_MODEL / NO_FORECAST / NOT_EXPLAINED). */
   unavailableReason: string | null;
   baseDate: string | null;
+  /** 예측 모델 이름(예: v2-ensemble…). 분석실 데이터 흐름도에 쓴다. */
+  modelName: string | null;
   /** 과거 검증(최종 평가) 구간. 기준 모델 안내 문구에 쓴다. */
   evaluationStart: string | null;
   evaluationEnd: string | null;
@@ -54,7 +56,7 @@ export function mapShapAnalysis(dto: PriceFactorsDto): ShapAnalysis {
   const summary = mapAiSummary(dto.summary);
   return {
     explained: dto.explained && dto.factors.length > 0, unavailableReason: dto.unavailableReason,
-    baseDate: dto.baseDate, evaluationStart: dto.evaluationStart ?? null, evaluationEnd: dto.evaluationEnd ?? null, validation: dto.validation ?? null, targetDate: dto.targetDate, basePrice: dto.basePrice, predictedPrice: dto.predictedPrice, summary,
+    baseDate: dto.baseDate, modelName: dto.modelName ?? null, evaluationStart: dto.evaluationStart ?? null, evaluationEnd: dto.evaluationEnd ?? null, validation: dto.validation ?? null, targetDate: dto.targetDate, basePrice: dto.basePrice, predictedPrice: dto.predictedPrice, summary,
     categories: dto.categories.map(row => ({ category: row.category, label: row.label, contribution: row.contribution,
       direction: direction(row.direction), description: row.description ?? summary?.categories[row.category] ?? categoryText(row.label, direction(row.direction)) })),
     factors: dto.factors.map(row => ({ ...row, categoryLabel: categoryLabels[row.category] ?? row.category, direction: direction(row.direction) })),

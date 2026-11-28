@@ -4,6 +4,7 @@
 @import "./styles/board.css";
 @import "./styles/detail.css";
 @import "./styles/about.css";
+@import "./styles/analysis.css";
 
 :root {
   /* 중립색: 토스(TDS) grey 단계. 배경은 흰색, 구분선 grey200, 글자는 grey900/700/600/500 */

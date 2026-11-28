@@ -7,11 +7,11 @@ import { FvIcon, LogoMark } from "@/components/fv/icons";
 import { isTabActive, TABS } from "./tabs";
 import { HelpDrawer } from "./help-drawer";
 
-const TAB_ICON = { home: "home", about: "info" } as const;
+const TAB_ICON = { home: "home", analysis: "chart", about: "info" } as const;
 
 export function ServiceShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
-  const priceArea = pathname === "/" || pathname === "/about" || pathname === "/prices" || pathname.startsWith("/prices/");
+  const priceArea = pathname === "/" || pathname === "/about" || pathname === "/analysis" || pathname === "/prices" || pathname.startsWith("/prices/");
   if (!priceArea) {
     return <div className="service-shell flex min-h-dvh flex-col"><div className="mx-auto flex w-full max-w-[430px] flex-1 flex-col bg-slate-50 md:max-w-[720px] lg:max-w-[960px]">{children}</div></div>;
   }
