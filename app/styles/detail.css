@@ -313,7 +313,5 @@
 .why-item-why { font-size: var(--fs-cap); font-weight: 600; color: var(--fv-text); }
 .why-item-source { font-size: 13px; color: var(--fv-text-3); }
 .why-empty { font-size: var(--fs-cap); color: var(--fv-text-2); }
-.why-other summary { cursor: pointer; font-weight: 700; color: var(--fv-brand); min-height: 32px; }
-.why-other .why-list li { background: var(--fv-subtle); }
 .why-note { font-size: 13px; color: var(--fv-text-3); }
 @media (max-width: 767px) { .why-forces { grid-template-columns: minmax(0, 1fr); } .why-card { padding: var(--sp-4); } .why-now, .why-so { flex-direction: column; gap: var(--sp-1); } }

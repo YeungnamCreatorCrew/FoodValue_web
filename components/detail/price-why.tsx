@@ -11,7 +11,7 @@ function ForceList({ items, empty }: { items: Force[]; empty: string }) {
   if (!items.length) return <p className="why-empty">{empty}</p>;
   return <ul className="why-list">{items.map(item => <li key={item.key}>
     <p className="why-item-title">{item.title}</p>
-    <p className="why-item-detail">{item.detail}</p>
+    {item.detail && <p className="why-item-detail">{item.detail}</p>}
     {item.why && <p className="why-item-why">→ {item.why}</p>}
     <p className="why-item-source">
       {item.source.url ? <a className="fv-inline-link" href={item.source.url} target="_blank" rel="noopener noreferrer">{item.source.name} <span aria-hidden="true">↗</span><span className="sr-only"> (새 탭)</span></a> : <span>{item.source.name}</span>}
@@ -43,7 +43,7 @@ export async function PriceWhy({ item, indicators }: { item: LivePrice; indicato
   }
   news.forEach((factor, index) => {
     const { push, why } = classifyNews(factor.label, factor.detail);
-    const force = { key: `n${index}`, title: factor.label, detail: factor.detail, why, source: factor.source };
+    const force = { key: `n${index}`, title: factor.label, detail: "", why, source: factor.source };
     (push === "down" ? down : push === "up" ? up : other).push(force);
   });
   const newsDown = down.filter(f => f.key !== "lead").length, newsUp = up.filter(f => f.key !== "lead").length;
@@ -63,7 +63,7 @@ export async function PriceWhy({ item, indicators }: { item: LivePrice; indicato
         <div className="why-col is-up"><h3><span aria-hidden="true">↑</span> 값을 올리는 쪽<span className="fv-num">{up.length}</span></h3>
           <ForceList items={up} empty="최근에 값을 올리는 쪽 소식은 없어요." /></div>
       </div>
-      {other.length > 0 && <details className="why-other"><summary>함께 볼 소식 {other.length}개</summary><ForceList items={other} empty="" /></details>}
+      {news.length > 0 && <p className="why-note">소식 내용은 아래 ‘가격 관련 수급 요인’에서 볼 수 있어요.{other.length > 0 && ` 어느 쪽으로도 나누기 어려운 소식 ${other.length}개는 그 목록에만 있어요.`}</p>}
       <p className="why-so"><span className="why-step">그래서</span><span>{synthesis(state, leadState, newsDown, newsUp, josa(item.name, "은", "는"))}</span></p>
       <p className="why-note">소식은 보도·정부 발표를 물량이 늘거나 줄어드는 쪽으로 나눈 거예요. 가격의 원인을 확정하는 것은 아니에요.</p>
     </div>
