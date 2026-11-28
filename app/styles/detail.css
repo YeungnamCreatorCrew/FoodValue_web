@@ -262,3 +262,16 @@
 .ev-body.chart-down .ev-key { background: var(--fv-down-soft); } .ev-body.chart-up .ev-key { background: var(--fv-up-soft); }
 .ev-body .ev-key { background: var(--fv-brand-soft); }
 .forecast-cell { background: #fafbfc; }
+
+.supply-factor-list { margin-top: var(--sp-3); padding: 0 var(--sp-4); list-style: none; }
+.supply-factor {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  padding: var(--sp-3) 0;
+}
+.supply-factor + .supply-factor { border-top: 1px solid var(--fv-line); }
+.supply-factor h3 { font-weight: 700; overflow-wrap: anywhere; }
+.supply-factor p, .supply-factor time, .supply-factor .fv-link { font-size: var(--fs-cap); }
+.supply-factor p, .supply-factor time { color: var(--fv-text-2); }

@@ -1,7 +1,8 @@
 import { notFound, redirect } from "next/navigation";
-import { cache } from "react";
+import { cache, Suspense } from "react";
 import { PriceDetail } from "@/components/detail/price-detail";
 import { DetailError } from "@/components/detail/detail-error";
+import { SupplyFactors } from "@/components/detail/supply-factors";
 import { getPrice, getPriceHistory, getPriceIndicators, resolvePriceRoute } from "@/lib/prices/service";
 import { PriceApiError } from "@/lib/prices/api";
 
@@ -33,5 +34,6 @@ export default async function PriceDetailPage({ params }: PageProps<"/prices/[it
   const [loaded, indicators, yearHistory] = await Promise.all([loadRoutePrice(itemId), getPriceIndicators(itemId).catch(() => null), getPriceHistory(itemId, 365).catch(() => null)]);
   if (loaded.failed) return <DetailError />;
   if (loaded.id !== itemId) redirect("/prices/" + loaded.id);
-  return <PriceDetail item={loaded.item} initialIndicators={indicators} yearHistory={yearHistory} />;
+  return <PriceDetail item={loaded.item} initialIndicators={indicators} yearHistory={yearHistory}
+    supplyFactors={<Suspense fallback={null}><SupplyFactors itemName={loaded.item.name} /></Suspense>} />;
 }
