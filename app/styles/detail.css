@@ -380,3 +380,24 @@
 .why-other .why-list li { background: var(--fv-subtle); }
 .why-note { font-size: 13px; color: var(--fv-text-3); }
 @media (max-width: 767px) { .why-forces { grid-template-columns: minmax(0, 1fr); } .why-card { padding: var(--sp-4); } .why-now, .why-so { flex-direction: column; gap: var(--sp-1); } }
+
+/* 직전 가격인 이유(상세 '왜?' 팝업·분석실 AI 예측 섹션 공용). 예측 쪽이라 판단 색(빨강·파랑) 대신 브랜드·회색만 쓴다. */
+.basis { display: flex; flex-direction: column; gap: var(--sp-3); word-break: keep-all; }
+.basis-head { font-weight: 700; }
+.basis-sub { color: var(--fv-text-2); }
+.basis-sub b { color: var(--fv-text); }
+.basis-bars { display: flex; flex-direction: column; gap: var(--sp-2); }
+.basis-bars li { display: grid; grid-template-columns: minmax(9em, 14em) minmax(0, 1fr) 4.5em; align-items: center; gap: var(--sp-3); font-size: var(--fs-cap); }
+.basis-label { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-1); font-weight: 600; }
+.basis-track { height: 12px; border-radius: var(--r-pill); background: var(--fv-subtle); overflow: hidden; }
+.basis-bar { display: block; height: 100%; border-radius: var(--r-pill); background: var(--fv-line-strong); }
+.basis-bar.is-ai { background: var(--fv-ref); opacity: .55; }
+.basis-bars li.is-chosen .basis-bar { background: var(--fv-brand); opacity: 1; }
+.basis-bars li.is-chosen .basis-value { font-weight: 800; color: var(--fv-brand); }
+.basis-value { text-align: right; }
+.basis-note { padding: var(--sp-3) var(--sp-4); border-radius: var(--r-sm); background: var(--fv-subtle); font-size: var(--fs-cap); color: var(--fv-text-2); }
+.basis-figures { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: var(--sp-3); }
+.basis-figures > div { padding: var(--sp-3) var(--sp-4); border-radius: var(--r-sm); background: var(--fv-subtle); }
+.basis-figures dt { font-size: var(--fs-cap); color: var(--fv-text-2); }
+.basis-figures dd { font-size: var(--fs-sub); font-weight: 800; }
+@media (max-width: 599px) { .basis-bars li { grid-template-columns: minmax(0, 1fr) 4em; } .basis-track { grid-column: 1 / -1; grid-row: 2; } }

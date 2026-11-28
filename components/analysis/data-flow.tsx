@@ -2,6 +2,7 @@ import type { LivePrice, PriceIndicators, PricePoint } from "@/lib/prices/model"
 import type { ShapAnalysis } from "@/lib/prices/shap";
 import { formatNumber, formatWon, shortDate } from "@/lib/prices/format";
 import { StateText } from "@/components/prices/indicator-ui";
+import { josa } from "@/components/fv/text";
 
 /** 요인 묶음 → 실제 데이터 출처(WAS 수집기 기준). */
 const SOURCES: Record<string, { name: string; source: string }> = {
@@ -12,6 +13,15 @@ const SOURCES: Record<string, { name: string; source: string }> = {
 };
 const ARIMA = "arima_trend";
 const CARD_NAMES: Record<string, string> = { SEASONAL: "평년 대비", PRICE_POSITION: "1년 중 위치", RETAIL_WHOLESALE_GAP: "소매·도매 배수", VOLATILITY: "가격 출렁임", WHOLESALE_LEAD: "도매 흐름" };
+
+/** 서버 모델 코드(XGBOOST_EXT 등)를 읽을 수 있는 이름으로. */
+function modelLabel(code: string | null | undefined) {
+  if (!code) return "예측 모델";
+  if (/xgboost/i.test(code)) return "XGBoost";
+  if (/lightgbm|lgbm/i.test(code)) return "LightGBM";
+  if (/arima/i.test(code)) return "AutoARIMA";
+  return code;
+}
 
 function Arrow() {
   return <span className="an-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14" /><path d="m13 6 6 6-6 6" /></svg></span>;
@@ -26,13 +36,14 @@ export function DataFlow({ item, indicators, factors, history }: { item: LivePri
   const years = seasonal?.key === "SEASONAL" ? seasonal.chart?.years ?? [] : [];
   const cards = indicators?.cards.filter(card => card.verdict !== "WEAK" && CARD_NAMES[card.key]) ?? [];
   const signal = indicators?.signals.find(s => s.key === "SEASONAL") ?? null;
+  const others = cards.filter(card => card.key !== "SEASONAL");
 
   const explained = factors?.explained ?? false;
   const inputs = factors?.factors.filter(f => f.id !== ARIMA) ?? [];
   const hasArima = factors?.factors.some(f => f.id === ARIMA) ?? false;
   const groups = Object.entries(SOURCES).map(([key, value]) => ({ key, ...value, count: inputs.filter(f => f.category === key).length })).filter(g => g.count > 0);
   const ensemble = /^v2/i.test(factors?.modelName ?? "");
-  const models = ensemble ? ["XGBoost", "LightGBM", ...(hasArima ? ["AutoARIMA"] : [])] : [factors?.modelName ?? "예측 모델"];
+  const models = ensemble ? ["XGBoost", "LightGBM", ...(hasArima ? ["AutoARIMA"] : [])] : [modelLabel(factors?.modelName)];
 
   return <div className="an-flow">
     <div className="an-lane" aria-label="판단 흐름">
@@ -44,15 +55,15 @@ export function DataFlow({ item, indicators, factors, history }: { item: LivePri
           {years.length > 0 && <p>연도별 주 평균 <b className="fv-num">{years[0].year}~{years.at(-1)!.year}년</b></p>}
         </Node>
         <Arrow />
-        <Node title={`지표 ${cards.length}개 계산`}>
-          <ul className="an-node-list">{cards.map(card => <li key={card.key}>{CARD_NAMES[card.key]}</li>)}</ul>
+        <Node title="평년 대비 계산">
+          <p>최근 4주 평균을 평년(직전 5년) 같은 시기 평균과 비교</p>
         </Node>
         <Arrow />
         <Node title="판단" tone="brand">
           <p className="an-node-big"><StateText signal={signal} /></p>
-          <p className="fv-cap">{indicators?.headline ?? "판단 문장이 없어요"}</p>
         </Node>
       </div>
+      {others.length > 0 && <p className="fv-cap">{josa(others.map(card => CARD_NAMES[card.key]).join("·"), "은", "는")} 같은 가격 기록으로 따로 계산해 ‘같이 볼 신호’로만 보여줘요.</p>}
     </div>
 
     <div className="an-lane is-ref" aria-label="AI 예측 흐름">
