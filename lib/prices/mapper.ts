@@ -15,7 +15,7 @@ export function priceChanges(current: number | null, forecast: number | null, pe
 export function mapSummary(dto: PriceSummaryDto): LivePrice {
   if (!Number.isSafeInteger(dto.id) || dto.id < 1) throw new Error("지원하지 않는 품목 ID입니다.");
   return {
-    id: String(dto.id), name: dto.name, category: categories[dto.category], categoryCode: dto.category,
+    id: String(dto.id), name: dto.name, aliases: dto.aliases ?? [], category: categories[dto.category], categoryCode: dto.category,
     unit: dto.unitLabel ?? "단위 정보 없음", image: itemImage(dto.name, dto.aliases),
     // MERGED는 출처가 아니라 KAMIS 작형별 가격을 이어 붙인 계열이라는 표시(WAS #68). 화면에는 원래 출처인 KAMIS로 쓴다.
     source: dto.source === "MERGED" ? "KAMIS" : dto.source, status: dto.status, quality: dto.quality,
@@ -24,7 +24,7 @@ export function mapSummary(dto: PriceSummaryDto): LivePrice {
     forecastDate: dto.forecastTargetDate, forecastPrice: dto.forecastPrice,
     ...priceChanges(dto.currentPrice, dto.forecastPrice, dto.forecastChangePercent),
     priceHistory: [], forecastPoints: [], guide: null, forecastStatus: null, dataFactors: [], aiSummary: null, forecastBasis: null,
-    listIndicators: dto.indicators ? { asOfDate: dto.indicators.asOfDate, stale: dto.indicators.stale, headline: dto.indicators.headline ?? null, yearRange: dto.indicators.yearRange,
+    listIndicators: dto.indicators ? { asOfDate: dto.indicators.asOfDate, stale: dto.indicators.stale, headline: dto.indicators.headline ?? null, seasonalDiffRate: dto.indicators.seasonalDiffRate ?? null, yearRange: dto.indicators.yearRange,
       signals: dto.indicators.signals.map(s => ({ key: s.key, label: s.label, state: indicatorState(s.state), stateLabel: s.stateLabel })) } : null,
   };
 }

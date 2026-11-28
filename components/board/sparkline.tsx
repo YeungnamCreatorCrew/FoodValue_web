@@ -1,8 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { pricesApi } from "@/lib/prices/api";
-import type { PriceHistoryDto } from "@/lib/prices/dto";
+import { history90 } from "./history-batch";
 import { won } from "@/lib/prices/format";
 
 const DAY = 86_400_000;
@@ -11,18 +10,6 @@ const W = 120, H = 36;
 const MIN_SPAN = 0.3;
 /** 이 안의 변화(±1%)는 회색으로 둔다. */
 const FLAT = 0.01;
-
-/** 같은 품목 이력은 한 번만 받는다(거르기·정렬을 바꿔 줄이 다시 그려져도 다시 부르지 않음). */
-const cache = new Map<string, Promise<PriceHistoryDto>>();
-function history90(id: string) {
-  let hit = cache.get(id);
-  if (!hit) {
-    hit = pricesApi.history(id, 90);
-    hit.catch(() => cache.delete(id));
-    cache.set(id, hit);
-  }
-  return hit;
-}
 
 type State = { id: string; points?: { date: string; price: number }[]; failed?: boolean };
 

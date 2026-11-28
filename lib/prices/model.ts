@@ -25,6 +25,7 @@ export interface LivePrice extends PriceChartData {
   forecastPoints: ForecastPoint[];
   id: string;
   name: string;
+  aliases?: string[];
   category: string;
   categoryCode: Category;
   unit: string;
@@ -64,7 +65,7 @@ export interface ForecastBasis {
   naiveMape: number | null;
   aiPrice: number | null;
 }
-export interface ListIndicators { asOfDate: string; stale: boolean; headline: string | null; signals: IndicatorSignal[]; yearRange: { low: number | null; high: number | null; percentile: number | null } | null }
+export interface ListIndicators { asOfDate: string; stale: boolean; headline: string | null; seasonalDiffRate?: number | null; signals: IndicatorSignal[]; yearRange: { low: number | null; high: number | null; percentile: number | null } | null }
 export interface PriceListQuery {
   category?: Category | "ALL";
   keyword?: string;

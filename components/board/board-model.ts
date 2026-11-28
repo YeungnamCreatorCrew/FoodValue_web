@@ -16,7 +16,7 @@ export const SORT_NOTE: Record<SortKey, string> = {
   position: "1년 중 낮은 쪽에 있는 품목부터 보여요.",
   name: "이름 순서예요.",
 };
-/** 품목이 이 수 이상이면 검색·분류·페이지를 보여준다. 적을 때는 한눈에 보이는 게 낫다. */
+/** 품목이 이 수 이상이면 페이지를 나눈다. 검색은 품목 수와 관계없이 제공한다. */
 export const MANY_ITEMS = 9;
 export const PAGE_SIZE = 20;
 
@@ -46,10 +46,11 @@ export function sortItems(items: LivePrice[], key: SortKey) {
 }
 
 export function filterItems(items: LivePrice[], filter: FilterKey, keyword: string, category: string) {
-  const word = keyword.trim().replace(/\s+/g, "");
+  const normalize = (value: string) => value.normalize("NFKC").toLocaleLowerCase("ko-KR").replace(/\s+/g, "");
+  const word = normalize(keyword);
   return items.filter(item => (filter === "all" || seasonalState(item) === filter)
     && (category === "ALL" || item.categoryCode === category)
-    && (!word || item.name.replace(/\s+/g, "").includes(word)));
+    && (!word || [item.name, ...(item.aliases ?? [])].some(name => normalize(name).includes(word))));
 }
 
 export function countByState(items: LivePrice[]) {

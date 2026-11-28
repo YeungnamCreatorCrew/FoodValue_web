@@ -11,7 +11,7 @@ export interface Rule {
 }
 export const RULES: Record<string, Rule> = {
   SEASONAL: { key: "SEASONAL", name: "평년 대비", what: "최근 4주 평균 가격을 직전 5년 같은 시기 평균과 견줘요.", note: "홈의 판단(싼 편·평년 수준·비싼 편)은 이 지표로 해요.",
-    rule: "10% 넘게 낮으면 싼 편, 10% 넘게 높으면 비싼 편, 그 사이는 평년 수준이에요.", zones: ["싼 편", "평년 수준", "비싼 편"], cuts: ["−10%", "+10%"], widths: [1, 1, 1], colored: true },
+    rule: "10% 이상 낮으면 싼 편, 10% 이상 높으면 비싼 편, 그 사이는 평년 수준이에요.", zones: ["싼 편", "평년 수준", "비싼 편"], cuts: ["−10%", "+10%"], widths: [1, 1, 1], colored: true },
   PRICE_POSITION: { key: "PRICE_POSITION", name: "1년 중 위치", what: "최근 1년 하루하루 가격 중 지금보다 싼 날이 몇 %인지로 자리를 정해요.", note: null,
     rule: "지금보다 싼 날이 25% 이하면 낮은 쪽, 75% 이상이면 높은 쪽, 그 사이는 중간이에요.", zones: ["낮은 쪽", "중간", "높은 쪽"], cuts: ["25%", "75%"], widths: [1, 2, 1], colored: true },
   WHOLESALE_LEAD: { key: "WHOLESALE_LEAD", name: "도매 흐름", what: "시장 도매가가 최근 2주에 얼마나 움직였는지 봐요. 소매가는 보통 도매가를 1~2주 늦게 따라가요.", note: null,
